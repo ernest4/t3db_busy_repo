@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="jumbotron text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <p>ON THE GO</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8" style="background-color:white;">
+        <div id="map" style="width:100%; height:400px;">
+          <!-- google maps go here -->
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <br>
+        <form action="/onthego/formdata" method="get">
+          <div class="form-group">
+            <label>Bus Number:</label>
+            <input class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
+          </div>
+          <div class="form-group">
+            <label>From:</label>
+            <input class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+          </div>
+          <div class="form-group">
+            <label>To:</label>
+            <input class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
