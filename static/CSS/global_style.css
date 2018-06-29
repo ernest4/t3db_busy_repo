@@ -1,0 +1,52 @@
+body {
+    padding-top: 50px;
+}
+
+.navbar {
+    background-color: black;
+    color: white;
+}
+
+.blue1 {
+    background-color: #33b5e5;
+    color: white;
+}
+
+.blue2 {
+    background-color: #0099CC;
+}
+
+a {
+    color: white;
+}
+
+footer a:hover, .navbar-right a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: white;
+}
+
+.jumbotron {
+    background: #fffc9e;
+    color: black;
+    margin-bottom: 0px;
+    margin-top: 500px;
+}
+.jumbotron .btn-primary {
+    background: #4286f4;
+    border-color: #1139ff;
+}
+.jumbotron .btn-primary:hover {
+    background: #1139ff
+}
+.jumbotron p {
+    color: black;
+    max-width: 75%;
+    margin: 1em auto 2em
+}
+.navbar+.jumbotron {
+    margin-top: -20px
+}
