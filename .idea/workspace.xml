@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/static/CSS/globalstyle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/busy/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/busy/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -26,17 +28,22 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="91" selection-start-line="5" selection-start-column="91" selection-end-line="5" selection-end-column="91" />
+            <state relative-caret-position="136">
+              <caret line="8" column="78" selection-start-line="8" selection-start-column="78" selection-end-line="8" selection-end-column="78" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="globalstyle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/CSS/globalstyle">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/busy/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="126" column="35" selection-start-line="126" selection-start-column="35" selection-end-line="126" selection-end-column="35" />
+            <state relative-caret-position="374">
+              <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -87,9 +94,9 @@
         <option value="$PROJECT_DIR$/busy/templates/tourist.html" />
         <option value="$PROJECT_DIR$/busy/wsgi.py" />
         <option value="$PROJECT_DIR$/templates/base.html" />
-        <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/templates/onthego.html" />
         <option value="$PROJECT_DIR$/Procfile" />
+        <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/busy/settings.py" />
       </list>
     </option>
@@ -121,6 +128,12 @@
               <item name="t3db_busy" type="b2602c69:ProjectViewProjectNode" />
               <item name="t3db_busy" type="462c0819:PsiDirectoryNode" />
               <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="t3db_busy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="t3db_busy" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="CSS" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="t3db_busy" type="b2602c69:ProjectViewProjectNode" />
@@ -355,13 +368,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="91" selection-start-line="5" selection-start-column="91" selection-end-line="5" selection-end-column="91" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/busy/wsgi.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -372,10 +378,20 @@
     <entry file="file://$PROJECT_DIR$/Procfile">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/static/CSS/globalstyle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="78" selection-start-line="8" selection-start-column="78" selection-end-line="8" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/busy/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="126" column="35" selection-start-line="126" selection-start-column="35" selection-end-line="126" selection-end-column="35" />
+        <state relative-caret-position="374">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
         </state>
       </provider>
     </entry>
