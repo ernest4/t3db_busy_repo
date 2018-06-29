@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/static/CSS/global_style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/busy/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/busy/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/CSS/globalstyle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/planner.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/planner.PNG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/runningman.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/runningman.PNG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/tourist.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/tourist.PNG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -42,8 +34,8 @@
       <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/busy/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="27" column="9" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
+            <state relative-caret-position="340">
+              <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -435,8 +427,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/busy/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="27" column="9" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
+        <state relative-caret-position="340">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
         </state>
       </provider>
     </entry>
