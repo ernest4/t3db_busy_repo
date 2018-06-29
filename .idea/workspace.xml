@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/busy/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/busy/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,7 +22,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="85">
@@ -33,11 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/busy/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+            <state relative-caret-position="323">
+              <caret line="121" column="83" lean-forward="true" selection-start-line="121" selection-start-column="83" selection-end-line="121" selection-end-column="83" />
             </state>
           </provider>
         </entry>
@@ -88,9 +86,9 @@
         <option value="$PROJECT_DIR$/busy/templates/tourist.html" />
         <option value="$PROJECT_DIR$/busy/wsgi.py" />
         <option value="$PROJECT_DIR$/templates/base.html" />
-        <option value="$PROJECT_DIR$/busy/settings.py" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/templates/onthego.html" />
+        <option value="$PROJECT_DIR$/busy/settings.py" />
       </list>
     </option>
   </component>
@@ -135,7 +133,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="SearchEverywhereHistoryKey" value="setti&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/t3db_busy/busy/settings.py&#10;settings&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/t3db_busy/busy/settings.py&#10;staticfiles_storage&#9;null&#9;null&#10;wsgi&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/wsgi.py&#10;setting&#9;null&#9;null&#10;index&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/templates/index.html&#10;procfile&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/Procfile&#10;urls&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/busyapp/urls.py&#10;touris&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/tourist.html&#10;theplan&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/theplanner.html&#10;planner&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/theplanner.html&#10;tour&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/tourist.html&#10;thepl&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/theplanner.html&#10;sett&#9;null&#9;null&#10;index.ht&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/index.html&#10;base.ht&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/base.html&#10;view&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="wsg&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/t3db_busy/busy/wsgi.py&#10;setti&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/t3db_busy/busy/settings.py&#10;settings&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/t3db_busy/busy/settings.py&#10;staticfiles_storage&#9;null&#9;null&#10;wsgi&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/wsgi.py&#10;setting&#9;null&#9;null&#10;index&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/templates/index.html&#10;procfile&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/Procfile&#10;urls&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/busyapp/urls.py&#10;touris&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/tourist.html&#10;theplan&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/theplanner.html&#10;planner&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/theplanner.html&#10;tour&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/tourist.html&#10;thepl&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/theplanner.html&#10;sett&#9;null&#9;null&#10;index.ht&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/index.html&#10;base.ht&#9;FILE&#9;file://C:/Users/ernes/Google Drive/UCD/MSc in CS/SummerProject/BUSy/busy/templates/base.html&#10;view&#9;null&#9;null" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -286,13 +284,6 @@
     <entry file="file://$PROJECT_DIR$/busy/staticfiles/runningman.PNG" />
     <entry file="file://$PROJECT_DIR$/busy/templates/tourist.html" />
     <entry file="file://$PROJECT_DIR$/busy/templates/index.html" />
-    <entry file="file://$PROJECT_DIR$/busy/wsgi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Procfile">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -337,13 +328,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/busy/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/onthego.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -355,6 +339,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="91" selection-start-line="5" selection-start-column="91" selection-end-line="5" selection-end-column="91" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/busy/wsgi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/busy/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="121" column="83" lean-forward="true" selection-start-line="121" selection-start-column="83" selection-end-line="121" selection-end-column="83" />
         </state>
       </provider>
     </entry>
