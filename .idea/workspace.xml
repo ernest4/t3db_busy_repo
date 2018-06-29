@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/busy/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/busy/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/planner.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/planner.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/runningman.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/runningman.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/tourist.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/tourist.PNG" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -144,6 +146,12 @@
               <item name="t3db_busy" type="b2602c69:ProjectViewProjectNode" />
               <item name="t3db_busy" type="462c0819:PsiDirectoryNode" />
               <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="images" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="t3db_busy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="t3db_busy" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
               <item name="JS" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -165,8 +173,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\ernes\Google Drive\UCD\MSc in CS\SummerProject\t3db_busy\static" />
       <recent name="C:\Users\ernes\Google Drive\UCD\MSc in CS\SummerProject\t3db_busy\static\images" />
+      <recent name="C:\Users\ernes\Google Drive\UCD\MSc in CS\SummerProject\t3db_busy\static" />
       <recent name="C:\Users\ernes\Google Drive\UCD\MSc in CS\SummerProject\BUSy" />
       <recent name="C:\Users\ernes\Google Drive\UCD\MSc in CS\SummerProject\BUSy\busy" />
       <recent name="C:\Users\ernes\Google Drive\UCD\MSc in CS\SummerProject\BUSy\static" />
@@ -205,7 +213,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4978903" visible="true" weight="0.20758928" />
       <window_info anchor="bottom" id="TODO" order="6" />
