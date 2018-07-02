@@ -34,6 +34,34 @@
         </form>
       </div>
     </div>
+
+    <!-- server side rendering of the response to the form submission -->
+    <!-- in next iteration of the product, replace with AJAX call for client side rendering -->
+    {% if busNum %} <!-- if bus number variable is not null...simple check to see if data is returned, before rendering anything below. -->
+    <div class="row" id="response-row-1">
+      <div class="col-sm-4">
+        <p>Your Bus number is: {{ busNum }}</p>
+      </div>
+      <div class="col-sm-4">
+        <p>From: {{ from }}</p>
+      </div>
+      <div class="col-sm-4">
+        <p>To: {{ to }}</p>
+      </div>
+    </div>
+    <div class="row" id="response-row-2">
+      <div class="col-sm-4">
+        <p>Journey time: {{ journeyTime }} min</p>
+      </div>
+      <div class="col-sm-4">
+        <p>Journey cost: €{{ cost }}</p>
+      </div>
+      <div class="col-sm-4">
+        <p>Best time to catch bus: {{ bestStartTime }}</p>
+      </div>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 {% endblock %}
