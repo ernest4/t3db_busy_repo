@@ -14,5 +14,6 @@ django = "*"
 whitenoise = "*"
 pandas = "*"
 scikit-learn = "*"
+scipy = "*"
 
 [dev-packages]
