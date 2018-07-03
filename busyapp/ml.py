@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 from sklearn.externals import joblib
 from datetime import datetime
+
 from busy.settings import STATIC_ROOT
 
 #testing pickle
@@ -26,7 +27,7 @@ def predictor(busNum, start_stop, end_stop):
     #end_stop = #convert input end stop...read the raw program number for now...
 
     #time of day since midnight in seconds
-    now = datetime.now() #time of day since epoch
+    now = datetime.now() + datetime.timedelta(minutes=60) #time of day since epoch + 1h correction for linux server
     time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
     start = {'progrnumber':start_stop, 'actualtime': time_of_day}
