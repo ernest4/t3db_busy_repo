@@ -20,7 +20,7 @@ test_list = ['one', '2', 'three']
 #print(loaded_list)
 
 #using joblib as more efficient model loading for scikit models
-def predictor(busNum, start_stop, end_stop):
+def predictor(busNum, start_stop, end_stop, weatherCode):
     regr = joblib.load(STATIC_ROOT+'/ml_models/firstprediction.pkl')
 
     #start_stop = #convert input start stop...read the raw program number for now...
@@ -28,10 +28,11 @@ def predictor(busNum, start_stop, end_stop):
 
     #time of day since midnight in seconds
     now = datetime.datetime.now() + datetime.timedelta(minutes=60) #time of day since epoch + 1h correction for linux server
-    time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+    #time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+    time_of_day = 50000 #TESTING
 
-    start = {'progrnumber':start_stop, 'actualtime': time_of_day}
-    end = {'progrnumber':end_stop, 'actualtime': time_of_day}
+    start = {'progrnumber':start_stop, 'actualtime': time_of_day, 'weather_code': weatherCode}
+    end = {'progrnumber':end_stop, 'actualtime': time_of_day, 'weather_code': weatherCode}
     index = [0]
 
     start_df = pd.DataFrame(data=start, index=index)
@@ -39,8 +40,8 @@ def predictor(busNum, start_stop, end_stop):
 
 
     # Needed to arrange columns in correct order
-    start_df = start_df[['progrnumber','actualtime']]
-    end_df = end_df[['progrnumber','actualtime']]
+    start_df = start_df[['progrnumber','actualtime', 'weather_code']]
+    end_df = end_df[['progrnumber','actualtime', 'weather_code']]
 
     startPrediction = regr.predict(start_df)
     endPredicion = regr.predict(end_df)
@@ -50,4 +51,5 @@ def predictor(busNum, start_stop, end_stop):
 
     return time_est
 
-predictor(1,2,3)
+#TESTING CASE
+#predictor(1,1,20,803) #Should output: 2503 seconds
