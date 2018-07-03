@@ -24,12 +24,8 @@ from busy.settings import STATIC_ROOT
 def getWeather():
     r = requests.get('http://api.openweathermap.org/data/2.5/weather', params={'q':'dublin', 'APPID': os.environ.get('APPID')})
     weatherData = r.json()
-    print(weatherData)
     weatherCode = weatherData['weather'][0]['id']
-    print(weatherCode)
     return weatherCode
-
-getWeather()
 
 #using joblib as more efficient model loading for scikit models
 def predictor_svm(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
@@ -61,7 +57,7 @@ def predictor_svm(busNum, start_stop, end_stop, time_of_day, weatherCode, testin
     print(endPredicion)
     time_est = endPredicion - startPrediction
 
-    return time_est
+    return time_est[0]
 
 
 def predictor_regression(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
@@ -91,4 +87,4 @@ def predictor_regression(busNum, start_stop, end_stop, time_of_day, weatherCode,
     # Estimated time
     time_est = endPredicion - startPrediction
 
-    return time_est
+    return time_est[0]

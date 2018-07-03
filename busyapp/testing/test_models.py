@@ -23,7 +23,7 @@ class ModelTest(TestCase):
                                                 end_stop=20,
                                                 time_of_day=50000,
                                                 weatherCode=803,
-                                                testing=True)[0]), 2503) #???
+                                                testing=True)), 2503) #???
 
     def test_46A_regression(self):
         self.assertEqual(round(ml.predictor_regression(busNum='46A',
@@ -31,7 +31,7 @@ class ModelTest(TestCase):
                                                       end_stop=4,
                                                       time_of_day=43200,
                                                       weatherCode=None,
-                                                      testing=True)[0]), 229)
+                                                      testing=True)), 229)
 
 
     #run your clean up here (if any)
