@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
-from .ml import predictor
+from .ml import predictor_svm
+from .ml import predictor_regression
 
 import random
 import datetime
@@ -37,10 +38,16 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
-            #call the machine learning function
-            journeyTime = predictor(busNum, fromVar, toVar)
+            #Automatically get current time of day
+            now = datetime.datetime.now() + datetime.timedelta(minutes=60)  # time of day since epoch + 1h correction for linux server
+            time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
-            # some random numbers for DEBUGING
+            weatherCode = 803 #TESTING get real weather code from API...
+
+            #call the machine learning function
+            journeyTime = predictor_regression(busNum, fromVar, toVar, time_of_day, weatherCode)
+
+            # some random numbers for TESTING
             cost = "data unavailable"
             bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60) #note 1h addition for linux servers
 
