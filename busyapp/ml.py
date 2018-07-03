@@ -20,7 +20,7 @@ test_list = ['one', '2', 'three']
 
 #using joblib as more efficient model loading for scikit models
 def predictor(busNum, start_stop, end_stop):
-    regr = joblib.load(STATIC_ROOT+'/ml_models/test_file')
+    regr = joblib.load(STATIC_ROOT+'/ml_models/firstprediction.pkl')
 
     #start_stop = #convert input start stop...read the raw program number for now...
     #end_stop = #convert input end stop...read the raw program number for now...
