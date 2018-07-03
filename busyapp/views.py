@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_svm
 from .ml import predictor_regression
+from .ml import getWeather
 
 import random
 import datetime
@@ -12,17 +13,22 @@ import datetime
 def index(request):
     return render(request, 'index.html')
 
+
 def onthego(request):
     return render(request, 'onthego.html')
+
 
 def theplanner(request):
     return render(request, 'theplanner.html')
 
+
 def tourist(request):
     return render(request, 'tourist.html')
 
+
 def testView(request):
     return HttpResponse("Hi!")
+
 
 def onthegoform(request):
     if request.method == 'GET':
@@ -45,10 +51,10 @@ def onthegoform(request):
             weatherCode = 803 #TESTING get real weather code from API...
 
             #call the machine learning function
-            journeyTime = predictor_regression(busNum, fromVar, toVar, time_of_day, weatherCode)
+            journeyTime = predictor_regression(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
 
             # some random numbers for TESTING
-            cost = "data unavailable"
+            cost = getWeather() #TESTING weather value in place of cost for now...
             bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60) #note 1h addition for linux servers
 
             # server side rendering - replace with AJAX for client side rendering in the future
@@ -60,6 +66,7 @@ def onthegoform(request):
                                                     'bestStartTime' : bestStartTime})
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
+
 
 def plannerform(request):
     if request.method == 'GET':
@@ -79,6 +86,7 @@ def plannerform(request):
             return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
+
 
 def touristform(request):
     if request.method == 'GET':

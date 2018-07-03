@@ -15,5 +15,6 @@ whitenoise = "*"
 pandas = "*"
 scikit-learn = "*"
 scipy = "*"
+requests = "*"
 
 [dev-packages]

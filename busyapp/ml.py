@@ -1,5 +1,7 @@
 import pickle
 import pandas as pd
+import requests
+import os
 from sklearn.externals import joblib
 
 from busy.settings import STATIC_ROOT
@@ -17,6 +19,17 @@ from busy.settings import STATIC_ROOT
 #    loaded_list = pickle.load(inputFile)
 
 #print(loaded_list)
+
+#get weather information
+def getWeather():
+    r = requests.get('http://api.openweathermap.org/data/2.5/weather', params={'q':'dublin', 'APPID': os.environ.get('APPID')})
+    weatherData = r.json()
+    print(weatherData)
+    weatherCode = weatherData['weather'][0]['id']
+    print(weatherCode)
+    return weatherCode
+
+getWeather()
 
 #using joblib as more efficient model loading for scikit models
 def predictor_svm(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
