@@ -5,7 +5,7 @@ from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor
 
 import random
-import datetime
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -37,11 +37,12 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
+            #call the machine learning function
             journeyTime = predictor(busNum, fromVar, toVar)
 
             # some random numbers for DEBUGING
             cost = "data unavailable"
-            bestStartTime = "data unavailable" #datetime.datetime.now() + datetime.timedelta(minutes=10)
+            bestStartTime = datetime.now() #+ datetime.timedelta(minutes=10)
 
             # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'onthego.html', {'busNum' : busNum,
