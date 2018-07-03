@@ -42,7 +42,7 @@ def onthegoform(request):
 
             # some random numbers for DEBUGING
             cost = "data unavailable"
-            bestStartTime = datetime.datetime.now() + datetime.datetime.timedelta(minutes=60) #note 1h addition for linux servers
+            bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60) #note 1h addition for linux servers
 
             # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'onthego.html', {'busNum' : busNum,
