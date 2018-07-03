@@ -2,24 +2,25 @@ import pickle
 import pandas as pd
 from sklearn.externals import joblib
 from datetime import datetime
+from busy.settings import STATIC_ROOT
 
 #testing pickle
 
 test_list = ['one', '2', 'three']
 
 #writing pickle
-with open("ml_models/test_file",'wb') as outputFile:
-    pickle.dump(test_list, outputFile)
+#with open("./ml_models/test_file",'wb') as outputFile:
+#    pickle.dump(test_list, outputFile)
 
 #loading pickle
-with open("ml_models/test_file", 'rb') as inputFile:
-    loaded_list = pickle.load(inputFile)
+#with open("./ml_models/test_file", 'rb') as inputFile:
+#    loaded_list = pickle.load(inputFile)
 
-print(loaded_list)
+#print(loaded_list)
 
 #using joblib as more efficient model loading for scikit models
 def predictor(busNum, start_stop, end_stop):
-    regr = joblib.load('firstprediction.pkl')
+    regr = joblib.load(STATIC_ROOT+'ml_models/test_file')
 
     #start_stop = #convert input start stop...read the raw program number for now...
     #end_stop = #convert input end stop...read the raw program number for now...
