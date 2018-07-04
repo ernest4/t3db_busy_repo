@@ -33,6 +33,14 @@ class ModelTest(TestCase):
                                                       weatherCode=None,
                                                       testing=True)), 229)
 
+    def test_46A_ann(self):
+        self.assertEqual(round(ml.predictor_ann(busNum='46A',
+                                                  start_stop=1,
+                                                  end_stop=4,
+                                                  time_of_day=43200,
+                                                  weatherCode=None,
+                                                  testing=True)), 229)
+
 
     #run your clean up here (if any)
     def tearDown(self):

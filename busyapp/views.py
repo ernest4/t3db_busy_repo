@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_svm
 from .ml import predictor_regression
+from .ml import predictor_ann
 from .ml import getWeather
 
 import random
@@ -48,11 +49,9 @@ def onthegoform(request):
             now = datetime.datetime.now() + datetime.timedelta(minutes=60)  # time of day since epoch + 1h correction for linux server
             time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
-            weatherCode = 803 #TESTING get real weather code from API...
-
             #call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTime = {'h' : 0, 'm' : 0, 's' : 0}
-            journeyTimeSeconds = predictor_regression(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
+            journeyTimeSeconds = predictor_ann(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['s'] = round(journeyTime['s']) #get rid of trailing floating point for seconds.

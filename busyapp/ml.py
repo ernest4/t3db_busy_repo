@@ -60,6 +60,38 @@ def predictor_svm(busNum, start_stop, end_stop, time_of_day, weatherCode, testin
     return time_est[0]
 
 
+def predictor_ann(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
+    if testing:
+        svm = joblib.load('static/ml_models/NNmodel.pkl')
+    else:
+        svm = joblib.load(STATIC_ROOT+'/ml_models/NNmodel.pkl')
+
+    #start_stop = #convert input start stop...read the raw program number for now...
+    #end_stop = #convert input end stop...read the raw program number for now...
+
+    start = {'progrnumber':start_stop, 'actualtime': time_of_day, 'weather_code': weatherCode}
+    end = {'progrnumber':end_stop, 'actualtime': time_of_day, 'weather_code': weatherCode}
+    index = [0]
+
+    start_df = pd.DataFrame(data=start, index=index)
+    end_df = pd.DataFrame(data=end, index=index)
+
+
+    # Needed to arrange columns in correct order
+    start_df = start_df[['progrnumber','actualtime', 'weather_code']]
+    end_df = end_df[['progrnumber','actualtime', 'weather_code']]
+
+    startPrediction = svm.predict(start_df)
+    endPredicion = svm.predict(end_df)
+
+    # Estimated time
+    print(startPrediction)
+    print(endPredicion)
+    time_est = endPredicion - startPrediction
+
+    return time_est[0]
+
+
 def predictor_regression(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
     if testing:
         regr = joblib.load('static/ml_models/firstprediction.pkl')
