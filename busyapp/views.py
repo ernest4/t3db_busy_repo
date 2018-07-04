@@ -50,8 +50,12 @@ def onthegoform(request):
 
             weatherCode = 803 #TESTING get real weather code from API...
 
-            #call the machine learning function
-            journeyTime = predictor_regression(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
+            #call the machine learning function & parse the returned seconds into hours, minutes & seconds.
+            journeyTime = {'h' : 0, 'm' : 0, 's' : 0}
+            journeyTimeSeconds = predictor_regression(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
+            journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
+            journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
+            journeyTime['s'] = round(journeyTime['s']) #get rid of trailing floating point for seconds.
 
             # some random numbers for TESTING
             cost = getWeather() #TESTING weather value in place of cost for now...
