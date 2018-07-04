@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import os
 from sklearn.externals import joblib
+import datetime
 
 from busy.settings import STATIC_ROOT
 
@@ -21,11 +22,33 @@ from busy.settings import STATIC_ROOT
 #print(loaded_list)
 
 #get weather information
+hourSinceLastCall = 0
+weatherCode = 0
 def getWeather():
-    r = requests.get('http://api.openweathermap.org/data/2.5/weather', params={'q':'dublin', 'APPID': os.environ.get('APPID')})
-    weatherData = r.json()
-    weatherCode = weatherData['weather'][0]['id']
+    global hourSinceLastCall
+    global weatherCode
+
+    def fetchRealTimeWeatherCode():
+        r = requests.get('http://api.openweathermap.org/data/2.5/weather',
+                         params={'q': 'dublin', 'APPID': os.environ.get('APPID')})
+        weatherData = r.json()
+        weatherCode = weatherData['weather'][0]['id']
+        return weatherCode
+
+    #if app just started up...
+    if hourSinceLastCall == 0:
+        hourSinceLastCall = datetime.datetime.now() + datetime.timedelta(minutes=60)
+        weatherCode = fetchRealTimeWeatherCode()
+
+    # else query OpenWeather API every hour
+    currentCallTime = datetime.datetime.now()
+    if currentCallTime > hourSinceLastCall:
+        hourSinceLastCall = currentCallTime + datetime.timedelta(minutes=60)
+        #cache the weather code
+        weatherCode = fetchRealTimeWeatherCode()
+
     return weatherCode
+
 
 #using joblib as more efficient model loading for scikit models
 def predictor_svm(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
