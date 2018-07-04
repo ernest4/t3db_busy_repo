@@ -38,8 +38,8 @@ class ModelTest(TestCase):
                                                   start_stop=1,
                                                   end_stop=4,
                                                   time_of_day=43200,
-                                                  weatherCode=None,
-                                                  testing=True)), 229)
+                                                  weatherCode=801,
+                                                  testing=True)), 238)
 
 
     #run your clean up here (if any)
