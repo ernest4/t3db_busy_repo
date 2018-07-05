@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import requests
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_svm
@@ -25,6 +26,13 @@ def theplanner(request):
 
 def tourist(request):
     return render(request, 'tourist.html')
+
+def busStops(request):
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json")
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
+    else:
+        return -1
 
 
 def testView(request):

@@ -11,4 +11,5 @@ urlpatterns = [
     path('onthego/formdata', views.onthegoform, name="onthegoform"),
     path('planner/formdata', views.plannerform, name="onthegoform"),
     path('tourist/formdata', views.touristform, name="onthegoform"),
+    path('busstops', views.busStops, name="busstops"),
 ]
