@@ -2,6 +2,7 @@
 
 var map;
 
+//Loads the map
 function initMap(){
     var mapDiv = document.getElementById("map");
     var mapOptions = {
@@ -12,33 +13,60 @@ function initMap(){
     map = new google.maps.Map(mapDiv, mapOptions);
 }
 
+
+var markers = new Array();
+
+//Makes a marker for a stop and adds onlick functionality
 function addMarkers(latlong, infowindow, stopid, fullname, routes){
     var marker = new google.maps.Marker({
         position: latlong,
-        title: 'test marker',
+        title: "Bus Stop No. "+stopid,
         draggable: false,
         map: map
     });
 
     google.maps.event.addListener(marker, 'click', function(content){
-        infowindow.setContent("<b>Bus Stop No. "+stopid+"</b><br><br>Name: "+fullname+"<br><br><b>Routes serving this stop:</b><br><br>"+routes);
+        infowindow.setContent("<button type=\"button\" id="+stopid+" onclick=\"stopIDButton(this)\">Bus Stop No. <b>"+stopid+"</b></button>"
+                            +"<br><br>"
+                            +"<b>Name:</b> "+fullname
+                            +"<br><br>"
+                            +"<b>Routes serving this stop:</b>"
+                            +"<br><br>"+routes);
         infowindow.open(map, marker);
     });
+
+    markers.push(marker);
 }
 
+//Responds to onclick event when but stop number is clicked on a marker
+function stopIDButton(element){
+    console.log(element.id);
+    console.log(element.innerHTML);
+}
+
+
+//Populate the map with the markers
 $( window ).on( "load", function() {
     console.log( "Page ready!!" );
 
     var infowindow = new google.maps.InfoWindow();
-    //addMarkers(new google.maps.LatLng(53.3498, -6.2603), infowindow);
+    //addMarkers(new google.maps.LatLng(53.3498, -6.2603), infowindow, 5, "testName", [5,6,7,8,8]);
 
     $.getJSON("/busstops", function(busData){
-        console.log(busData.results[0].stopid);
+        //console.log(busData.results[0].stopid);
 
         _.forEach(busData.results, function(bus_stop){
-            //console.log(value.operators[0].routes);
-            //console.log(value.longitude);
-            addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), infowindow, bus_stop.stopid, bus_stop.fullname, bus_stop.operators[0].routes);
+            //console.log(bus_stop.operators[0].routes);
+            //console.log(bus_stop.longitude);
+            addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude),
+                         infowindow,
+                          bus_stop.stopid,
+                           bus_stop.fullname,
+                            bus_stop.operators[0].routes);
         });
+    });
+
+    var markerCluster = new MarkerClusterer(map, markers, {
+        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
 });
