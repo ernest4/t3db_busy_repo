@@ -69,7 +69,7 @@ $( window ).on( "load", function() {
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
         });
 
-        alert("Zoom in on the map to find your location and choose the closest bus stop. Click on the cluster markers to reveal more stops.");
+        //alert("Zoom in on the map to find your location and choose the closest bus stop. Click on the cluster markers to reveal more stops.");
 
     }).fail(function() {
 
