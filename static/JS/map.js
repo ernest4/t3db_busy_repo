@@ -52,7 +52,7 @@ $( window ).on( "load", function() {
     var infowindow = new google.maps.InfoWindow();
     //addMarkers(new google.maps.LatLng(53.3498, -6.2603), infowindow, 5, "testName", [5,6,7,8,8]);
 
-    $.getJSON("/busstops3", function(busData){
+    $.getJSON("/busstops", function(busData){
         _.forEach(busData.results, function(bus_stop){
             //console.log(bus_stop.operators[0].routes);
             addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude),
@@ -61,17 +61,26 @@ $( window ).on( "load", function() {
                            bus_stop.fullname,
                             bus_stop.operators[0].routes);
         });
+
     }).done(function() {
-        console.log("Done!!");
+
+        console.log("Done!!"); //for DEBUGING
+        var markerCluster = new MarkerClusterer(map, markers, {
+            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        });
+
+        alert("Zoom in on the map to find your location and choose the closest bus stop. Click on the cluster markers to reveal more stops.");
+
     }).fail(function() {
+
+        console.log("Failr"); //for DEBUGING
         alert("Warnign: map markers could not load...");
+
     }).always(function(){
-        console.log("Always...!");
+
+        console.log("Always...!"); //for DEBUGING
+
     });
 
     //console.log(markers[0]);
-
-    var markerCluster = new MarkerClusterer(map, markers, {
-        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-    });
 });
