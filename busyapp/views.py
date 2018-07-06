@@ -8,6 +8,8 @@ from .ml import predictor_regression
 from .ml import predictor_ann
 from .ml import getWeather
 
+from busy.settings import STATIC_ROOT
+
 import random
 import datetime
 
@@ -28,12 +30,17 @@ def tourist(request):
     return render(request, 'tourist.html')
 
 def busStops(request):
-    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json")
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
-    else:
-        return -1
 
+    #if the above API fails, try another...
+    r = requests.get("https://data.smartdublin.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
+    else: #If all APIs fail, use local file
+        with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
+            return HttpResponse(file.read())
 
 def testView(request):
     return HttpResponse("Hi!")
