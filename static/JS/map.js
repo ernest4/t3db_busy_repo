@@ -14,7 +14,7 @@ function initMap(){
 }
 
 
-var markers = new Array();
+var markers = [];
 
 //Makes a marker for a stop and adds onlick functionality
 function addMarkers(latlong, infowindow, stopid, fullname, routes){
@@ -52,19 +52,24 @@ $( window ).on( "load", function() {
     var infowindow = new google.maps.InfoWindow();
     //addMarkers(new google.maps.LatLng(53.3498, -6.2603), infowindow, 5, "testName", [5,6,7,8,8]);
 
-    $.getJSON("/busstops", function(busData){
-        //console.log(busData.results[0].stopid);
-
+    $.getJSON("/busstops3", function(busData){
         _.forEach(busData.results, function(bus_stop){
             //console.log(bus_stop.operators[0].routes);
-            //console.log(bus_stop.longitude);
             addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude),
                          infowindow,
                           bus_stop.stopid,
                            bus_stop.fullname,
                             bus_stop.operators[0].routes);
         });
+    }).done(function() {
+        console.log("Done!!");
+    }).fail(function() {
+        alert("Warnign: map markers could not load...");
+    }).always(function(){
+        console.log("Always...!");
     });
+
+    //console.log(markers[0]);
 
     var markerCluster = new MarkerClusterer(map, markers, {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
