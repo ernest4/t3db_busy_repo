@@ -30,8 +30,8 @@
             <label>To:</label>
         
             <!-- AUTOCOMPLETE USER INPUT -->  
-            <input onkeyup="pred()" id="location" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
-            <datalist id="stop_list"></datalist>  
+            <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+            <datalist id="stop_list"></datalist>
               
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>

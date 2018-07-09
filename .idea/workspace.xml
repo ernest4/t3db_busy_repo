@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="" />
+    <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/onthego.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/onthego.html" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +50,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/busyapp/urls.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
@@ -83,11 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="onthego.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="onthego.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/onthego.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="33" column="50" selection-start-line="33" selection-start-column="50" selection-end-line="33" selection-end-column="50" />
+            <state relative-caret-position="289">
+              <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -141,11 +144,11 @@
         <option value="$PROJECT_DIR$/busyapp/testing/test_models.py" />
         <option value="$PROJECT_DIR$/busyapp/ml.py" />
         <option value="$PROJECT_DIR$/templates/tourist.html" />
-        <option value="$PROJECT_DIR$/templates/onthego.html" />
         <option value="$PROJECT_DIR$/static/JS/map.js" />
         <option value="$PROJECT_DIR$/templates/base.html" />
         <option value="$PROJECT_DIR$/busyapp/views.py" />
         <option value="$PROJECT_DIR$/busyapp/urls.py" />
+        <option value="$PROJECT_DIR$/templates/onthego.html" />
       </list>
     </option>
   </component>
@@ -578,13 +581,6 @@
     <entry file="file://$PROJECT_DIR$/static/JS/autocomplete.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/onthego.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="33" column="50" selection-start-line="33" selection-start-column="50" selection-end-line="33" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/busyapp/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-221">
@@ -596,6 +592,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/onthego.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
         </state>
       </provider>
     </entry>
