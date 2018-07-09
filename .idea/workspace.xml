@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/busyapp/ml.py" beforeDir="false" afterPath="$PROJECT_DIR$/busyapp/ml.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busyapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/busyapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/JS/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/JS/map.js" afterDir="false" />
-    </list>
+    <list default="true" id="2855f796-4acc-40c8-9f71-21541f9345d7" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,8 +41,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/busyapp/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="45" column="21" selection-start-line="45" selection-start-column="21" selection-end-line="45" selection-end-column="21" />
+            <state relative-caret-position="425">
+              <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
             </state>
           </provider>
         </entry>
@@ -624,8 +620,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/busyapp/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="45" column="21" selection-start-line="45" selection-start-column="21" selection-end-line="45" selection-end-column="21" />
+        <state relative-caret-position="425">
+          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
         </state>
       </provider>
     </entry>
