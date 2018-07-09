@@ -31,7 +31,11 @@ function addMarkers(latlong, infowindow, stopid, fullname, routes){
                             +"<b>Name:</b> "+fullname
                             +"<br><br>"
                             +"<b>Routes serving this stop:</b>"
-                            +"<br><br>"+routes);
+                            +"<br><br>"+routes
+                            +"<br><br>"
+                            +"<button type=\"button\">From</button>"
+                            +"<br><br>"
+                            +"<button type=\"button\">To</button>");
         infowindow.open(map, marker);
     });
 
