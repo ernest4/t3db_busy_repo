@@ -5,7 +5,7 @@ function pred() {
 
                     var to_input = document.getElementById("location"); 
                     var xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open( "GET", "https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&stopname="+to_input+"&stopid="+to_input, false ); // false for synchronous request
+                    xmlHttp.open( "GET", "/autocomp"+"?format=json&stopname="+to_input+"&stopid="+to_input, false ); // false for synchronous request
                     xmlHttp.setRequestHeader("Content-Type", "application/json");
                     xmlHttp.send();
                     var response = xmlHttp.responseText;
