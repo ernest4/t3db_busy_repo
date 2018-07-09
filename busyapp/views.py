@@ -42,6 +42,11 @@ def busStops(request):
         with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
             return HttpResponse(file.read())
 
+def busStopAutosuggest(request):
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation")
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
+
 def testView(request):
     return HttpResponse("Hi!")
 
