@@ -6,7 +6,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
-        <h1>ON THE GO</h1>
+        <p>ON THE GO</p>
       </div>
     </div>
     <div class="row">
@@ -28,45 +28,16 @@
           </div>
           <div class="form-group">
             <label>To:</label>
-            <input class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+        
+            <!-- AUTOCOMPLETE USER INPUT -->  
+            <input onkeyup="pred()" id="location" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+            <datalist id="stop_list"></datalist>  
+              
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>
     </div>
-
-    <!-- server side rendering of the response to the form submission -->
-    <!-- in next iteration of the product, replace with AJAX call for client side rendering -->
-    {% if busNum %} <!-- if bus number variable is not null...simple check to see if data is returned, before rendering anything below. -->
-    <br/>
-    <div class="row">
-      <div class="col-sm-6">
-        <h2>Your Input</h2>
-        <ul class="list-group">
-          <li class="list-group-item">Bus number: {{ busNum }}</li>
-          <li class="list-group-item">From: {{ from }}</li>
-          <li class="list-group-item">To: {{ to }}</li>
-        </ul>
-      </div>
-      <div class="col-sm-6">
-        <ul class="list-group">
-          <h2>Our Estimation</h2>
-          {% if journeyTime.h %}
-          <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds</li>
-          {% elif journeyTime.m %}
-          <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds</li>
-          {% else %} <!-- have hours, minute & seconds -->
-          <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
-          {% endif %}
-
-          <li class="list-group-item">Journey cost: €{{ cost }}</li>
-          <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
-        </ul>
-      </div>
-    </div>
-    </div>
-    {% endif %}
-
   </div>
 </div>
 {% endblock %}
