@@ -26,28 +26,38 @@ function addMarkers(latlong, infowindow, stopid, fullname, routes){
     });
 
     google.maps.event.addListener(marker, 'click', function(content){
-        infowindow.setContent("<button type=\"button\" id="+stopid+" onclick=\"stopIDButton(this)\">Bus Stop No. <b>"+stopid+"</b></button>"
+        infowindow.setContent("<b>Bus Stop No: </b>"+stopid
                             +"<br><br>"
                             +"<b>Name:</b> "+fullname
                             +"<br><br>"
                             +"<b>Routes serving this stop:</b>"
                             +"<br><br>"+routes
                             +"<br><br>"
-                            +"<button type=\"button\">From</button>"
+                            +"<button type=\"button\" id=\"from_"+stopid+"\" onclick=\"fromButton(this)\">From "+stopid+"</button>"
                             +"<br><br>"
-                            +"<button type=\"button\">To</button>");
+                            +"<button type=\"button\" id=\"to_"+stopid+"\" onclick=\"toButton(this)\">To "+stopid+"</button>");
         infowindow.open(map, marker);
     });
 
     markers.push(marker);
 }
 
-//Responds to onclick event when but stop number is clicked on a marker
-function stopIDButton(element){
-    console.log(element.id);
+//Responds to onclick event when from button is clicked on a marker
+function fromButton(element){
+    console.log(element.id.slice(5));
     console.log(element.innerHTML);
+
+    //$( "#from" ).value = element.id.slice(5);
+    document.getElementById('from').value = element.id.slice(5);
 }
 
+//Responds to onclick event when to button is clicked on a marker
+function toButton(element){
+    console.log(element.id.slice(3));
+    console.log(element.innerHTML);
+
+    document.getElementById('to').value = element.id.slice(3);
+}
 
 //Populate the map with the markers
 $( window ).on( "load", function() {

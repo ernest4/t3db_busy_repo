@@ -241,4 +241,4 @@ def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCod
     print(endPredicion)
     time_est = endPredicion - startPrediction
 
-    return time_est[0]
+    return time_est[0]*16397

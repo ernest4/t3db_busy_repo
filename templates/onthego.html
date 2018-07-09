@@ -24,7 +24,7 @@
           </div>
           <div class="form-group">
             <label>From:</label>
-            <input class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <input id="from" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
           </div>
           <div class="form-group">
             <label>To:</label>
@@ -34,7 +34,7 @@
             <!-- <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
             <datalist id="stop_list"></datalist> -->
 
-            <input class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+            <input id="to" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
               
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>
@@ -66,7 +66,8 @@
           <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
           {% endif %}
 
-          <li class="list-group-item">Journey cost: €{{ cost }}</li>
+          <!-- <li class="list-group-item">Journey cost: €{{ cost }}</li> -->
+          <li class="list-group-item">Journey cost: € -- </li>
           <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
         </ul>
       </div>

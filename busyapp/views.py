@@ -70,14 +70,18 @@ def onthegoform(request):
             now = datetime.datetime.now() + datetime.timedelta(minutes=60)  # time of day since epoch + 1h correction for linux server
             time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
+            year2018inSeconds = 1514764800
+            startOfYear = datetime.datetime.utcfromtimestamp(year2018inSeconds)
+            ratio = (startOfYear - now).total_seconds()
+            dayOfYear = ratio
+
             #call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTime = {'h' : 0, 'm' : 0, 's' : 0}
             #journeyTimeSeconds = predictor_ann(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
 
             weekDay = {'mon':0, 'tue':1, 'wed':0, 'thu':0, 'fri':0, 'sat':0, 'sun':0} #testing...
-            dayOfYear = 0.6
 
-            journeyTimeSeconds = predictor_ann_improved(busNum,int(fromVar)/95,int(toVar)/95,time_of_day/86400,int(getWeather())/804,0,0,0,0,0,0,dayOfYear,weekDay)
+            journeyTimeSeconds = predictor_ann_improved(busNum,float(fromVar)/59,float(toVar)/59,time_of_day/86400,float(getWeather())/804,0,0,0,0,0,0,dayOfYear,weekDay)
 
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
@@ -91,8 +95,7 @@ def onthegoform(request):
             return render(request, 'onthego.html', {'busNum' : busNum,
                                                     'from': fromVar,
                                                     'to': toVar,
-                                                    #'journeyTime' : journeyTime,
-                                                    'journeyTime' : journeyTimeSeconds,
+                                                    'journeyTime' : journeyTime,
                                                     'cost' : cost,
                                                     'bestStartTime' : bestStartTime})
         else:
