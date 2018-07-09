@@ -144,17 +144,51 @@ def predictor_regression(busNum, start_stop, end_stop, time_of_day, weatherCode,
 
     return time_est[0]
 
-def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCode, sec_school, primary, trinity, ucd, bankhol, event, day_of_the_year, day_of_week, testing=False):
+def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
     if testing:
-        svm = joblib.load('static/ml_models/NNmodelEVENTS.pkl')
+        ann_improved = joblib.load('static/ml_models/NNmodelEVENTS.pkl')
     else:
-        svm = joblib.load(STATIC_ROOT+'/ml_models/NNmodelEVENTS.pkl')
+        ann_improved = joblib.load(STATIC_ROOT+'/ml_models/NNmodelEVENTS.pkl')
 
     #start_stop = #convert input start stop...read the raw program number for now...
     #end_stop = #convert input end stop...read the raw program number for now...
 
-    start = {'progrnumber':start_stop, 'actualtime': time_of_day, 'weather_code': weatherCode}
-    end = {'progrnumber':end_stop, 'actualtime': time_of_day, 'weather_code': weatherCode}
+    start = {'secondary_school': secondary_school,
+             'primary_school': primary_school,
+             'trinity': trinity,
+             'ucd': ucd,
+             'bank_holiday': bank_holiday,
+             'event': event,
+             'progrnumber': start_stop,
+             'actualtime': time_of_day,
+             'day_of_year': day_of_year,
+             'weather_code': weatherCode,
+             'mon': weekday['mon'],
+             'tue': weekday['tue'],
+             'wed': weekday['wed'],
+             'thu': weekday['thu'],
+             'fri': weekday['fri'],
+             'sat': weekday['sat'],
+             'sun': weekday['sun'],
+             'starting_stop': 0}
+    end = {'secondary_school': secondary_school,
+             'primary_school': primary_school,
+             'trinity': trinity,
+             'ucd': ucd,
+             'bank_holiday': bank_holiday,
+             'event': event,
+             'progrnumber': end_stop,
+             'actualtime': time_of_day,
+             'day_of_year': day_of_year,
+             'weather_code': weatherCode,
+             'mon': weekday['mon'],
+             'tue': weekday['tue'],
+             'wed': weekday['wed'],
+             'thu': weekday['thu'],
+             'fri': weekday['fri'],
+             'sat': weekday['sat'],
+             'sun': weekday['sun'],
+             'starting_stop': 0}
     index = [0]
 
     start_df = pd.DataFrame(data=start, index=index)
@@ -162,11 +196,45 @@ def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCod
 
 
     # Needed to arrange columns in correct order
-    start_df = start_df[['progrnumber','actualtime', 'weather_code']]
-    end_df = end_df[['progrnumber','actualtime', 'weather_code']]
+    start_df = start_df[['secondary_school',
+                         'primary_school',
+                         'trinity',
+                         'ucd',
+                         'bank_holiday',
+                         'event',
+                         'progrnumber',
+                         'actualtime',
+                         'day_of_year',
+                         'weather_code',
+                         'mon',
+                         'tue',
+                         'wed',
+                         'thu',
+                         'fri',
+                         'sat',
+                         'sun',
+                         'starting_stop']]
+    end_df = end_df[['secondary_school',
+                         'primary_school',
+                         'trinity',
+                         'ucd',
+                         'bank_holiday',
+                         'event',
+                         'progrnumber',
+                         'actualtime',
+                         'day_of_year',
+                         'weather_code',
+                         'mon',
+                         'tue',
+                         'wed',
+                         'thu',
+                         'fri',
+                         'sat',
+                         'sun',
+                         'starting_stop']]
 
-    startPrediction = svm.predict(start_df)
-    endPredicion = svm.predict(end_df)
+    startPrediction = ann_improved.predict(start_df)
+    endPredicion = ann_improved.predict(end_df)
 
     # Estimated time
     print(startPrediction)

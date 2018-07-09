@@ -6,6 +6,7 @@ from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_svm
 from .ml import predictor_regression
 from .ml import predictor_ann
+from .ml import predictor_ann_improved
 from .ml import getWeather
 
 from busy.settings import STATIC_ROOT
@@ -71,7 +72,13 @@ def onthegoform(request):
 
             #call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTime = {'h' : 0, 'm' : 0, 's' : 0}
-            journeyTimeSeconds = predictor_ann(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
+            #journeyTimeSeconds = predictor_ann(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
+
+            weekDay = {'mon':0, 'tue':1, 'wed':0, 'thu':0, 'fri':0, 'sat':0, 'sun':0} #testing...
+            dayOfYear = 0.6
+
+            journeyTimeSeconds = predictor_ann_improved(busNum,int(fromVar)/95,int(toVar)/95,time_of_day/86400,int(getWeather())/804,0,0,0,0,0,0,dayOfYear,weekDay)
+
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['s'] = round(journeyTime['s']) #get rid of trailing floating point for seconds.
@@ -84,7 +91,8 @@ def onthegoform(request):
             return render(request, 'onthego.html', {'busNum' : busNum,
                                                     'from': fromVar,
                                                     'to': toVar,
-                                                    'journeyTime' : journeyTime,
+                                                    #'journeyTime' : journeyTime,
+                                                    'journeyTime' : journeyTimeSeconds,
                                                     'cost' : cost,
                                                     'bestStartTime' : bestStartTime})
         else:

@@ -41,6 +41,9 @@ class ModelTest(TestCase):
                                                   weatherCode=801,
                                                   testing=True)), 238)
 
+    def test_46A_ann_improved(self):
+        pass #for now do nothing...
+
 
     #run your clean up here (if any)
     def tearDown(self):
