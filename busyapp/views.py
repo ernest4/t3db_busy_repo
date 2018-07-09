@@ -43,7 +43,9 @@ def busStops(request):
             return HttpResponse(file.read())
 
 def busStopAutosuggest(request):
-    r = requests.get()
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation")
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
 
 def testView(request):
     return HttpResponse("Hi!")

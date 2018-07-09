@@ -12,4 +12,5 @@ urlpatterns = [
     path('planner/formdata', views.plannerform, name="onthegoform"),
     path('tourist/formdata', views.touristform, name="onthegoform"),
     path('busstops', views.busStops, name="busstops"),
+    path('autocomp', views.busStopAutosuggest, name="autocomp"),
 ]
