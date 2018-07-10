@@ -49,6 +49,30 @@ def getWeather():
 
     return weatherCode
 
+def getNormalizedWeather():
+    return getWeather()/804 #Max weather code value is 804
+
+def getNormalizedDayOfYear():
+    now = datetime.datetime.now() + datetime.timedelta(minutes=60)  # time of day since epoch + 1h correction for linux server
+    year2018inSeconds = 1514764800 #seconds since epoch till January 1st 2018
+    startOfYear = datetime.datetime.utcfromtimestamp(year2018inSeconds)
+    ratio = (startOfYear - now).total_seconds()
+    return ratio
+
+def secondsSinceMidnight():
+    now = datetime.datetime.now() + datetime.timedelta(minutes=60)  # time of day since epoch + 1h correction for linux server
+    time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+    return time_of_day
+
+def secondsNormalizedSinceMidnight():
+    return secondsSinceMidnight()/86400
+
+def getWeekDayBinaryArray():
+    weekDay = [0, 0, 0, 0, 0, 0, 0]  # Binary representation of the 7 days of the week
+    indexOfToday = datetime.datetime.today().weekday()
+    weekDay[indexOfToday] = 1
+    return weekDay
+
 
 #using joblib as more efficient model loading for scikit models
 def predictor_svm(busNum, start_stop, end_stop, time_of_day, weatherCode, testing=False):
@@ -163,14 +187,15 @@ def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCod
              'actualtime': time_of_day,
              'day_of_year': day_of_year,
              'weather_code': weatherCode,
-             'mon': weekday['mon'],
-             'tue': weekday['tue'],
-             'wed': weekday['wed'],
-             'thu': weekday['thu'],
-             'fri': weekday['fri'],
-             'sat': weekday['sat'],
-             'sun': weekday['sun'],
+             'mon': weekday[0],
+             'tue': weekday[1],
+             'wed': weekday[2],
+             'thu': weekday[3],
+             'fri': weekday[4],
+             'sat': weekday[5],
+             'sun': weekday[6],
              'starting_stop': 0}
+
     end = {'secondary_school': secondary_school,
              'primary_school': primary_school,
              'trinity': trinity,
@@ -181,13 +206,13 @@ def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCod
              'actualtime': time_of_day,
              'day_of_year': day_of_year,
              'weather_code': weatherCode,
-             'mon': weekday['mon'],
-             'tue': weekday['tue'],
-             'wed': weekday['wed'],
-             'thu': weekday['thu'],
-             'fri': weekday['fri'],
-             'sat': weekday['sat'],
-             'sun': weekday['sun'],
+             'mon': weekday[0],
+             'tue': weekday[1],
+             'wed': weekday[2],
+             'thu': weekday[3],
+             'fri': weekday[4],
+             'sat': weekday[5],
+             'sun': weekday[6],
              'starting_stop': 0}
     index = [0]
 
@@ -214,6 +239,7 @@ def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCod
                          'sat',
                          'sun',
                          'starting_stop']]
+
     end_df = end_df[['secondary_school',
                          'primary_school',
                          'trinity',
@@ -241,4 +267,4 @@ def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCod
     print(endPredicion)
     time_est = endPredicion - startPrediction
 
-    return time_est[0]*16397
+    return time_est[0]*16397 #multiply to convert from normalized to real seconds

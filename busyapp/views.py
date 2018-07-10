@@ -8,6 +8,11 @@ from .ml import predictor_regression
 from .ml import predictor_ann
 from .ml import predictor_ann_improved
 from .ml import getWeather
+from .ml import getNormalizedDayOfYear
+from .ml import secondsSinceMidnight
+from .ml import getWeekDayBinaryArray
+from .ml import getNormalizedWeather
+from .ml import secondsNormalizedSinceMidnight
 
 from busy.settings import STATIC_ROOT
 
@@ -66,23 +71,32 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
-            #Automatically get current time of day
-            now = datetime.datetime.now() + datetime.timedelta(minutes=60)  # time of day since epoch + 1h correction for linux server
-            time_of_day = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+            #normalize the input data
+            busNum = busNum
+            fromVarNorm = float(fromVar)/59
+            toVarNorm = float(toVar)/59
 
-            year2018inSeconds = 1514764800
-            startOfYear = datetime.datetime.utcfromtimestamp(year2018inSeconds)
-            ratio = (startOfYear - now).total_seconds()
-            dayOfYear = ratio
+            time_of_day = secondsNormalizedSinceMidnight()
+            weather = getNormalizedWeather()
+            dayOfYear = getNormalizedDayOfYear()
+            weekDay = getWeekDayBinaryArray()
 
-            #call the machine learning function & parse the returned seconds into hours, minutes & seconds.
-            journeyTime = {'h' : 0, 'm' : 0, 's' : 0}
-            #journeyTimeSeconds = predictor_ann(busNum, fromVar, toVar, time_of_day, weatherCode=getWeather())
+            # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
+            journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
+                                                        start_stop=fromVarNorm,
+                                                        end_stop=toVarNorm,
+                                                        time_of_day=time_of_day,
+                                                        weatherCode=weather,
+                                                        secondary_school=0,
+                                                        primary_school=0,
+                                                        trinity=0,
+                                                        ucd=0,
+                                                        bank_holiday=0,
+                                                        event=0,
+                                                        day_of_year=dayOfYear,
+                                                        weekday=weekDay)
 
-            weekDay = {'mon':0, 'tue':1, 'wed':0, 'thu':0, 'fri':0, 'sat':0, 'sun':0} #testing...
-
-            journeyTimeSeconds = predictor_ann_improved(busNum,float(fromVar)/59,float(toVar)/59,time_of_day/86400,float(getWeather())/804,0,0,0,0,0,0,dayOfYear,weekDay)
-
+            journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['s'] = round(journeyTime['s']) #get rid of trailing floating point for seconds.
