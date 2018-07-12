@@ -58,6 +58,9 @@ def testView(request):
     return HttpResponse("Hi!")
 
 
+def personas(request):
+    return render(request, "personas.html")
+
 def onthegoform(request):
     if request.method == 'GET':
         form = OnTheGoForm(request.GET)
