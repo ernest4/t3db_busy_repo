@@ -54,7 +54,7 @@ def busStopAutosuggest(request):
         return HttpResponse(r.text)
 
 def loadTest(request):
-    with open(STATIC_ROOT+'load_testing/loaderio-e39f002a9fff5739d5e13b22d4f09b69.txt', 'r', encoding="utf8") as file:
+    with open(STATIC_ROOT+'/load_testing/loaderio-e39f002a9fff5739d5e13b22d4f09b69.txt', 'r', encoding="utf8") as file:
         return HttpResponse(file.read())
 
 def testView(request):
