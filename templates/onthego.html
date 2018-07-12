@@ -18,6 +18,7 @@
       <div class="col-sm-4">
         <br>
         
+        <!--Input box for route number with autocomplete RTPI query-->  
         <form action="/onthego/formdata" method="get">
           <div class="form-group">
             <label>Bus Number:</label>
@@ -25,14 +26,14 @@
             <datalist id="route_list"></datalist>
           </div>
             
-            
+        <!-- Input box for "from" with autocomplete RTPI query -->
           <div class="form-group">
             <label>From:</label>
             <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
             <datalist id="stop_list"></datalist>
           </div>
             
-            
+        <!-- Input box for "to" with autocomplete RTPI query -->    
           <div class="form-group">
             <label>To:</label>
             <!-- AUTOCOMPLETE USER INPUT -->  
