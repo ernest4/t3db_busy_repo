@@ -13,4 +13,5 @@ urlpatterns = [
     path('tourist/formdata', views.touristform, name="onthegoform"),
     path('busstops', views.busStops, name="busstops"),
     path('autocomp', views.busStopAutosuggest, name="autocomp"),
+    path('loaderio-e39f002a9fff5739d5e13b22d4f09b69.txt', views.loadTest, name="loaderio"),
 ]
