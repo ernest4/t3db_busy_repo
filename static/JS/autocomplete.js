@@ -26,5 +26,40 @@ function pred() {
                   
                   
                   
+function pred1(){
+    
+    
+        var route_input = document.getElementById("route_number"); 
+        $.getJSON( "/autocomp" + "?format=json&route="+to_input, function(route_data) {
             
+           _.forEach(route_data.results, function(routeNames){
+               
+               routeOption = "option value=\"" + routeNames.route + "\"> 
+               </option>;
+             $('#route_list').append(routeOption);
+                
+            });
+                 
+        }).done(function(){
+            console.log("got autosuggest route data");
+        }).fail(function(){
+            alert("failed route autosuggest");
+        }).always(function(){
+            //
+        });
+}
+     
+            
+        
+               
+            
+            
+            
+            
+        }
+    
+    
+    
+
+}            
 
