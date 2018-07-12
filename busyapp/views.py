@@ -58,7 +58,7 @@ def loadTest(request):
         return HttpResponse(file.read())
 
 def testView(request):
-    return HttpResponse("Hi!")
+    return render(request, 'testpage.html')
 
 
 def onthegoform(request):

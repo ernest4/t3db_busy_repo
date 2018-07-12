@@ -47,7 +47,7 @@ function fromButton(element){
     console.log(element.id.slice(5));
     console.log(element.innerHTML);
 
-    //$( "#from" ).value = element.id.slice(5);
+    //$( "#from" ).html(element.id.slice(5));
     document.getElementById('from').value = element.id.slice(5);
 }
 
