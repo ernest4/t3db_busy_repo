@@ -31,14 +31,22 @@
             <label>Bus Number:</label>
             <input class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
           </div>
+            
+            
           <div class="form-group">
             <label>From:</label>
-            <input class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <datalist id="stop_list"></datalist>  
           </div>
-          <div class="form-group">
+            
+            
+        <div class="form-group">
             <label>To:</label>
-            <input class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
-          </div>
+            <!-- AUTOCOMPLETE USER INPUT -->  
+            <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+            <datalist id="stop_list"></datalist>
+            </div>
+            
           <div class="form-group">
             <label>When:</label>
             <input class="form-control" type="text" placeholder="e.g. 12:30" name="when_var" required>
