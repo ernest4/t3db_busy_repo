@@ -48,10 +48,10 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-4" style="background-color:white;">
+      <div id="error_message_1" class="col-sm-4" style="background-color:white;">
         <p>Your current location: </p>
       </div>
-      <div id="error_message" class="col-sm-4" style="background-color:white;">
+      <div id="error_message_2" class="col-sm-4" style="background-color:white;">
         <p>Lorem impsum</p>
       </div>
         <div class="col-sm-4" style="background-color:white;">
@@ -158,18 +158,21 @@ $( window ).on( "load", function() {
 
     var infowindow = new google.maps.InfoWindow();
 
-    var errorMSG = document.getElementById("error_message");
+    var errorMSG_1 = document.getElementById("error_message_1");
+    var errorMSG_2 = document.getElementById("error_message_2");
 
     if (navigator.geolocation) {
-        console.log("Got location");
-        navigator.geolocation.getCurrentPosition(showPosition);
+      console.log("Got location");
+      errorMSG_1.innerHTML = "Got location";
+      navigator.geolocation.getCurrentPosition(showPosition);
     } else { 
-        errorMSG.innerHTML = "Geolocation is not supported by this browser.";
+      console.log("Failed to get location");
+      errorMSG_2.innerHTML = "Geolocation is not supported by this browser.";
     }
 
     function showPosition(position) {
         addMarkers(new google.maps.LatLng(position.coords.latitude, position.coords.longitude), infowindow, 5, "testName", [5,6,7,8,8])
-        errorMSG.innerHTML = "Latitude: " + position.coords.latitude + 
+        errorMSG_2.innerHTML = "Latitude: " + position.coords.latitude + 
         "<br>Longitude: " + position.coords.longitude;
     }
 
