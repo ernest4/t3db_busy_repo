@@ -52,7 +52,7 @@
         <p>Your current location: </p>
       </div>
       <div id="error_message_2" class="col-sm-4" style="background-color:white;">
-        <p>Lorem impsum</p>
+        <p>Displaying stops within ~ 1km</p>
       </div>
         <div class="col-sm-4" style="background-color:white;">
         <div id="map_test" style="width:100%; height:400px;">
@@ -100,7 +100,7 @@ function initMap(){
     var mapDiv = document.getElementById("map_test");
     var mapOptions = {
         center: new google.maps.LatLng(53.3498, -6.2603),
-        zoom: 11
+        zoom: 14
     };
 
     map = new google.maps.Map(mapDiv, mapOptions);
@@ -110,7 +110,7 @@ function initMap(){
 var markers = [];
 
 //Makes a marker for a stop and adds onlick functionality
-function addMarkers(latlong, infowindow, stopid, fullname, routes){
+function addMarkers(latlong, infowindow, infowindow_content, stopid, user = false){
     var marker = new google.maps.Marker({
         position: latlong,
         title: "Bus Stop No. "+stopid,
@@ -118,21 +118,18 @@ function addMarkers(latlong, infowindow, stopid, fullname, routes){
         map: map
     });
 
+    //Add the pop up box to marker
     google.maps.event.addListener(marker, 'click', function(content){
-        infowindow.setContent("<b>Bus Stop No: </b>"+stopid
-                            +"<br><br>"
-                            +"<b>Name:</b> "+fullname
-                            +"<br><br>"
-                            +"<b>Routes serving this stop:</b>"
-                            +"<br><br>"+routes
-                            +"<br><br>"
-                            +"<button type=\"button\" id=\"from_"+stopid+"\" onclick=\"fromButton(this)\">From "+stopid+"</button>"
-                            +"<br><br>"
-                            +"<button type=\"button\" id=\"to_"+stopid+"\" onclick=\"toButton(this)\">To "+stopid+"</button>");
+        infowindow.setContent(infowindow_content);
         infowindow.open(map, marker);
     });
 
-    markers.push(marker);
+    if (user === false){
+      markers.push(marker);
+    } else {
+      marker.title = stopid; //This will just display the user string "You Are Here" instead of number
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
 }
 
 //Responds to onclick event when from button is clicked on a marker
@@ -160,21 +157,78 @@ $( window ).on( "load", function() {
 
     var errorMSG_1 = document.getElementById("error_message_1");
     var errorMSG_2 = document.getElementById("error_message_2");
+    var userPosition = {lat: 53.3498, lng: -6.2603}; //Will be center of Dublin by default if no user position recieved...
 
-    if (navigator.geolocation) {
+    //get and display the user location
+    if (navigator && navigator.geolocation) {
       console.log("Got location");
-      errorMSG_1.innerHTML = "Got location";
+      errorMSG_1.innerHTML += "Got location";
       navigator.geolocation.getCurrentPosition(showPosition);
     } else { 
       console.log("Failed to get location");
-      errorMSG_2.innerHTML = "Geolocation is not supported by this browser.";
+      errorMSG_2.innerHTML += "Geolocation is not supported by this browser. We could not find your location.";
     }
 
     function showPosition(position) {
-        addMarkers(new google.maps.LatLng(position.coords.latitude, position.coords.longitude), infowindow, 5, "testName", [5,6,7,8,8])
-        errorMSG_2.innerHTML = "Latitude: " + position.coords.latitude + 
-        "<br>Longitude: " + position.coords.longitude;
+
+      let infowindow_content = "<b>You Are Here</b>";
+
+      userPosition.lat = position.coords.latitude;
+      userPosition.lng = position.coords.longitude;
+      addMarkers(new google.maps.LatLng(userPosition.lat, userPosition.lng), infowindow, infowindow_content, "You Are Here", true);
+      map.panTo({lat: userPosition.lat, lng: userPosition.lng});
+
+      errorMSG_2.innerHTML += "Latitude: " + userPosition.lat + 
+      "<br>Longitude: " + userPosition.lng;
     }
+
+    //populate the markers around the user
+    $.getJSON("/busstops", function(busData){
+
+        _.forEach(busData.results, function(bus_stop){
+            //console.log(bus_stop.operators[0].routes);
+
+            let user_radius = 0.01;
+
+            if (bus_stop.latitude < (userPosition.lat + user_radius) && bus_stop.latitude > (userPosition.lat - user_radius)
+             && bus_stop.longitude < (userPosition.lng + user_radius) && bus_stop.longitude > (userPosition.lng - user_radius)){
+              let infowindow_content = "<b>Bus Stop No: </b>"+bus_stop.stopid
+                                  +"<br><br>"
+                                  +"<b>Name:</b> "+bus_stop.fullname
+                                  +"<br><br>"
+                                  +"<b>Routes serving this stop:</b>"
+                                  +"<br><br>"+bus_stop.operators[0].routes
+                                  +"<br><br>"
+                                  +"<button type=\"button\" id=\"from_"+bus_stop.stopid+"\" onclick=\"fromButton(this)\">From "+bus_stop.stopid+"</button>"
+                                  +"<br><br>"
+                                  +"<button type=\"button\" id=\"to_"+bus_stop.stopid+"\" onclick=\"toButton(this)\">To "+bus_stop.stopid+"</button>";
+
+              addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude),
+                          infowindow,
+                            infowindow_content,
+                              bus_stop.stopid);
+            }
+        });
+
+    }).done(function() {
+
+        console.log("Done!!"); //for DEBUGING
+        //var markerCluster = new MarkerClusterer(map, markers, {
+        //    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        //});
+
+        //alert("Zoom in on the map to find your location and choose the closest bus stop. Click on the cluster markers to reveal more stops.");
+
+    }).fail(function() {
+
+        console.log("Failr"); //for DEBUGING
+        alert("Warnign: map markers could not load...");
+
+    }).always(function(){
+
+        console.log("Always...!"); //for DEBUGING
+
+    });
 
   //addMarkers(new google.maps.LatLng(53.3498, -6.2603), infowindow, 5, "testName", [5,6,7,8,8]);
 
