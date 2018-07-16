@@ -110,12 +110,13 @@ function initMap(){
 var markers = [];
 
 //Makes a marker for a stop and adds onlick functionality
-function addMarkers(latlong, infowindow, infowindow_content, stopid, user = false){
+function addMarkers(latlong, color, infowindow, infowindow_content, stopid, user = false){
     var marker = new google.maps.Marker({
         position: latlong,
         title: "Bus Stop No. "+stopid,
         draggable: false,
-        map: map
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png'
     });
 
     //Add the pop up box to marker
@@ -175,7 +176,7 @@ $( window ).on( "load", function() {
 
       userPosition.lat = position.coords.latitude;
       userPosition.lng = position.coords.longitude;
-      addMarkers(new google.maps.LatLng(userPosition.lat, userPosition.lng), infowindow, infowindow_content, "You Are Here", true);
+      addMarkers(new google.maps.LatLng(userPosition.lat, userPosition.lng), "red", infowindow, infowindow_content, "You Are Here", true);
       map.panTo({lat: userPosition.lat, lng: userPosition.lng});
 
       errorMSG_2.innerHTML += "Latitude: " + userPosition.lat + 
@@ -203,10 +204,8 @@ $( window ).on( "load", function() {
                                   +"<br><br>"
                                   +"<button type=\"button\" id=\"to_"+bus_stop.stopid+"\" onclick=\"toButton(this)\">To "+bus_stop.stopid+"</button>";
 
-              addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude),
-                          infowindow,
-                            infowindow_content,
-                              bus_stop.stopid);
+              //UNCOMMENT TO DISPLAY MARKERS WITHIN 1KM RADIUS....
+              //addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "green", infowindow, infowindow_content, bus_stop.stopid);
             }
         });
 
@@ -230,9 +229,39 @@ $( window ).on( "load", function() {
 
     });
 
-  //addMarkers(new google.maps.LatLng(53.3498, -6.2603), infowindow, 5, "testName", [5,6,7,8,8]);
+    $.getJSON("/directions", function(directionsData){
+      //console.log(directionsData.routes[0].legs[0].steps);
 
-    //console.log(markers[0]);
+      let index = 0;
+
+      _.forEach(directionsData.routes[0].legs[0].steps, function(step){
+        index++;
+
+        console.log(step);
+
+        if (step.travel_mode === "TRANSIT") { //must be bus...
+          var infowindow_content = "<b>["+index+"]Take a: </b>"+step.html_instructions
+                                  +"<br><br>"
+                                  +"<b>Stop Name:</b> "+step.transit_details.departure_stop.name
+                                  +"<br><br>"
+                                  +"<b>Routes serving this stop:</b>"
+                                  +"<br><br>"+step.transit_details.line.short_name
+                                  +"<br><br>";
+        } else { //must be walking...
+          var infowindow_content = "<b>["+index+"]On foot: </b>"+step.html_instructions;
+        }
+
+        addMarkers(new google.maps.LatLng(step.start_location), "blue", infowindow, infowindow_content, step.html_instructions);
+
+      });
+
+    }).done(function(){
+      console.log("Got directions data...");
+    }).fail(function(){
+      console.log("Failed to get directions data...");
+    }).always(function(){
+      //...
+    });
 });
 </script>
 <script src="{% static 'JS/lodash.js '%}"></script>
