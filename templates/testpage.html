@@ -242,15 +242,14 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       }).done(function() {
 
       console.log("Done!!"); //for DEBUGING
+
       //var markerCluster = new MarkerClusterer(map, markers, {
       //    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
       //});
 
-      //alert("Zoom in on the map to find your location and choose the closest bus stop. Click on the cluster markers to reveal more stops.");
-
       }).fail(function() {
 
-      console.log("Failr"); //for DEBUGING
+      console.log("Failed!!"); //for DEBUGING
       alert("Warnign: map markers could not load...");
 
       }).always(function(){
@@ -266,7 +265,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
                 +"&destination="+to.lat+","+to.lng
                 +"&mode="+"transit"
                 +"&transit_mode="+"bus", function(directionsData){
-                  
+
         //console.log(directionsData.routes[0].legs[0].steps);
 
         let index = 0;
@@ -274,7 +273,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         _.forEach(directionsData.routes[0].legs[0].steps, function(step){
           index++;
 
-          console.log(step);
+          console.log(step); //FOR DEBUGGING
 
           if (step.travel_mode === "TRANSIT") { //must be bus...
             var infowindow_content = "<b>["+index+"]Take a: </b>"+step.html_instructions
@@ -288,7 +287,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             var infowindow_content = "<b>["+index+"]On foot: </b>"+step.html_instructions;
           }
 
-          addMarkers(new google.maps.LatLng(step.start_location), "blue", infowindow, infowindow_content, step.html_instructions);
+          addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
 
         });
 
