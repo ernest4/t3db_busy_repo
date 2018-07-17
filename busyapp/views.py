@@ -50,7 +50,13 @@ def busStops(request):
             return HttpResponse(file.read())
 
 def directions(request):
-    r = requests.get("https://maps.googleapis.com/maps/api/directions/json?origin=53.309549,-6.2262923&destination=53.338331,-6.2854988&mode=transit&transit_mode=bus&key=" + os.environ.get('directionsAPI'))
+    params = request.GET;
+    r = requests.get("https://maps.googleapis.com/maps/api/directions/json?"
+                     +"origin="+params['origin']
+                     +"&destination="+params['destination']
+                     +"&mode="+params['mode']
+                     +"&transit_mode="+params['transit_mode']
+                     +"&key=" + os.environ.get('directionsAPI'))
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
@@ -64,6 +70,8 @@ def loadTest(request):
         return HttpResponse(file.read())
 
 def testView(request):
+    #r = request.GET;
+    #return render(request, 'testpage.html', {'msg1' : r['t']})
     return render(request, 'testpage.html')
 
 
