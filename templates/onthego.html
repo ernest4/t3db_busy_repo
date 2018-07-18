@@ -17,26 +17,63 @@
       </div>
       <div class="col-sm-4">
         <br>
+        
+        <!--Input box for route number with autocomplete RTPI query-->  
         <form action="/onthego/formdata" method="get">
           <div class="form-group">
             <label>Bus Number:</label>
-            <input class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
+            <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
+            <datalist id="route_list"></datalist>
           </div>
+            
+        <!-- Input box for "from" with autocomplete RTPI query -->
           <div class="form-group">
             <label>From:</label>
-            <input class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <input id="location_from" onkeyup="pred()" list="stop_list_from" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <datalist id="stop_list_from"></datalist>
           </div>
+            
+        <!-- Input box for "to" with autocomplete RTPI query -->    
           <div class="form-group">
             <label>To:</label>
-        
-            <!-- AUTOCOMPLETE USER INPUT -->
-            <!-- commented out for now, uncomment and fix the flood of many responses later.... -->
-            <!-- <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
-            <datalist id="stop_list"></datalist> -->
-
-            <input class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
-              
+            <!-- AUTOCOMPLETE USER INPUT -->  
+           <!-- <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>-->
+            
+          <input id="location_to" list="stop_list_to" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+            <!-- <datalist id="stop_list"></datalist> -->
+            <datalist id="stop_list_to">
+              <option>Detroit Lions</option>
+              <option>Detroit Pistons</option>
+              <option>Detroit Red Wings</option>
+              <option>Detroit Tigers</option>
+              <option>Detroit Lions</option>
+              <option>Detroit Pistons</option>
+              <option>Detroit Red Wings</option>
+              <option>Detroit Tigers</option>
+              <option>Detroit Lions</option>
+              <option>Detroit Pistons</option>
+              <option>Detroit Red Wings</option>
+              <option>Detroit Tigers</option>
+              <option>Detroit Lions</option>
+              <option>Detroit Pistons</option>
+              <option>Detroit Red Wings</option>
+              <option>Detroit Tigers</option>
+              <option>Detroit Lions</option>
+              <option>Detroit Pistons</option>
+              <option>Detroit Red Wings</option>
+              <option>Detroit Tigers</option>
+            </datalist>
           </div>
+
+          <!-- experimental jQuery autosuggest -->
+          <div class="form-group">
+            <div class="ui-widget">
+              <label for="tags">Tags: </label>
+              <input id="tags">
+            </div>
+          </div>
+          <!-- experimental jQuery autosuggest -->
+
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>
