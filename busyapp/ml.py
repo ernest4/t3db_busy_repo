@@ -2,8 +2,10 @@ import pickle
 import pandas as pd
 import requests
 import os
-from sklearn.externals import joblib
 import datetime
+import json
+from pprint import pprint
+from sklearn.externals import joblib
 
 from busy.settings import STATIC_ROOT
 
@@ -168,14 +170,38 @@ def predictor_regression(busNum, start_stop, end_stop, time_of_day, weatherCode,
 
     return time_est[0]
 
-def predictor_ann_improved(busNum, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
-    if testing:
-        ann_improved = joblib.load('static/ml_models/NNmodelEVENTS.pkl')
-    else:
-        ann_improved = joblib.load(STATIC_ROOT+'/ml_models/NNmodelEVENTS.pkl')
 
-    #start_stop = #convert input start stop...read the raw program number for now...
-    #end_stop = #convert input end stop...read the raw program number for now...
+def getModel(busNum, busDirection, testing):
+    # To uppercase
+    busNum = busNum.upper()
+
+    with open('static/bus_data/routes.json') as f:
+        data = json.load(f)
+
+        try:
+            # Match bus direction 'I' / 1 inbound, 'O' / 2 outbound
+            if busDirection in data[busNum]['I'][1]:
+                direction = '1'
+            elif busDirection in data[busNum]['O'][1]:
+                direction = '0'
+        except:
+            # Return None if direction or route not found
+            return
+
+    file = busNum + '_' + direction
+
+    if testing:
+        return joblib.load('static/ml_models/' + file + '.pkl')
+    else:
+        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl')
+
+
+def findProgrNumber(start_stop, end_stop):
+    pass
+
+
+def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
+    ann_improved = getModel(busNum, busDirection, testing)
 
     start = {'secondary_school': secondary_school,
              'primary_school': primary_school,
