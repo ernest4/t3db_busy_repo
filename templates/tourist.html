@@ -27,18 +27,30 @@
       <div class="col-sm-3">
         <br>
         <form action="/tourist/formdata" method="get">
+            
+         <!--Input box for route number with autocomplete RTPI query-->      
           <div class="form-group">
             <label>Bus Number:</label>
-            <input class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
-          </div>
+            <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
+            <datalist id="route_list"></datalist>
+          </div>    
+        
+         <!-- Input box for "from" with autocomplete RTPI query -->    
           <div class="form-group">
             <label>From:</label>
-            <input class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
+            <datalist id="stop_list"></datalist>  
           </div>
-          <div class="form-group">
+            
+           
+         <!-- Input box for "to" with autocomplete RTPI query -->  
+        <div class="form-group">
             <label>To:</label>
-            <input class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
-          </div>
+            <!-- AUTOCOMPLETE USER INPUT -->  
+            <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
+            <datalist id="stop_list"></datalist>
+            </div>
+            
           <div class="form-group">
             <label>When:</label>
             <input class="form-control" type="text" placeholder="e.g. 12:30" name="when_var" required>

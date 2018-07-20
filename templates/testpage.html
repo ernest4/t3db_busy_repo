@@ -6,6 +6,7 @@
   {% load static %}
 
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -61,10 +62,21 @@
       </div>
     </div>
     <div class="row">
-      <div id="error_message_3" class="col-sm-4" style="background-color: white">
+      <div class="col-sm-12" style="background-color: white">
+        <!-- experimental jQuery autosuggest -->
+          <div class="ui-widget">
+            <label for="destination">Tags: </label>
+            <input id="destination" required>
+          </div>
+          <!-- experimental jQuery autosuggest -->
+          <button class="btn btn-primary" id="directionsButton">Get Directions</button>
+      </div>
+    </div>
+    <div class="row">
+      <div id="error_message_1" class="col-sm-4" style="background-color: white">
         <p>{{ msg1 }}</p>
       </div>
-      <div id="error_message_3" class="col-sm-4" style="background-color: white">
+      <div id="error_message_2" class="col-sm-4" style="background-color: white">
         <p>{{ msg2 }}</p>
       </div>
       <div id="error_message_3" class="col-sm-4" style="background-color: white">
@@ -105,6 +117,7 @@
   'use strict';
 
 var map;
+var markers = []; //Create an array of markers for the marker cluster function
 
 //Loads the map
 function initMap(){
@@ -117,8 +130,6 @@ function initMap(){
     map = new google.maps.Map(mapDiv, mapOptions);
 }
 
-
-var markers = []; //Create an array of markers for the marker cluster function
 
 //Makes a marker for and add onlick functionality
 function addMarkers(latlong, color = "red", infowindow, infowindow_content, stopid, isUser = false){
@@ -146,6 +157,22 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
     }
 }
 
+
+//makes the markers invisible by calling this function like setMapForMarkers(some_marker_array, null);
+function setMapForMarkers(markerArray, map){
+  for (let i = 0; i < markerArray.length; i++){
+    markerArray[i].setMap(map);
+  }
+}
+
+
+//makes markers invisible and deletes them
+function deleteMarkers(markerArray){
+  setMapForMarkers(markerArray, null); //Hide all the markers first
+  markerArray = [] //Remove references to the markers to delte them
+}
+
+
 //Responds to onclick event when from button is clicked on a marker
 function fromButton(element){
     console.log(element.id.slice(5)); //Extract the bus number e.g. "from_623" -> "623"
@@ -154,6 +181,7 @@ function fromButton(element){
     document.getElementById('from').value = element.id.slice(5); //Populate a form field
 }
 
+
 //Responds to onclick event when to button is clicked on a marker
 function toButton(element){
     console.log(element.id.slice(3)); //Extract the bus number e.g. "to_623" -> "623"
@@ -161,6 +189,7 @@ function toButton(element){
 
     document.getElementById('to').value = element.id.slice(3); //Populate a form field
 }
+
 
 //Populate the map with information & markers
 $( window ).on( "load", function() { //When DOM & other resourses all loaded and ready...
@@ -183,17 +212,20 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       errorMSG_2.innerHTML += "Geolocation is not supported by this browser. We could not find your location.";
     }
 
+
     function gotPosition(position) { //success
       userPosition = showUserPosition(position);
-      displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
-      displayRouteMarkers(userPosition, {lat: 53.338331, lng: -6.2854988});
+      //displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
+      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988});
     }
+
 
     function failedToGetPosition(error){
       console.log("Error code:" + error.code + ", " + "Error message: " + error.message);
 
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
+
 
     function showUserPosition(position){
       //Conversts isUser position from geolocation coords to {lat: xxx, lng: xxx}
@@ -214,6 +246,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
       return userPosition
     }
+
 
     function displayBusStopMarkersAtLocation(coords = {lat: 53.3498, lng: -6.2603}, radius = 0.01){
       //populate the markers around the isUser
@@ -259,16 +292,22 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       });
     }
 
-    function displayRouteMarkers(from, to){
+
+    function displayDirectionMarkers(from, to){
+      //check if input is string or object and convert to string if needed
+      let origin = typeof from === "string" ? from : from.lat+","+from.lng;
+      let destination = typeof to === "string" ? to : to.lat+","+to.lng;
+
       $.getJSON("/directions" 
-                + "?origin="+from.lat+","+from.lng
-                +"&destination="+to.lat+","+to.lng
+                + "?origin="+origin
+                +"&destination="+destination
                 +"&mode="+"transit"
                 +"&transit_mode="+"bus", function(directionsData){
 
         //console.log(directionsData.routes[0].legs[0].steps);
 
         let index = 0;
+        let markerColor = "blue"; //Blue is bus, Yellow is walking, Red is the user starting location.
 
         _.forEach(directionsData.routes[0].legs[0].steps, function(step){
           index++;
@@ -276,6 +315,8 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
           console.log(step); //FOR DEBUGGING
 
           if (step.travel_mode === "TRANSIT") { //must be bus...
+
+
             var infowindow_content = "<b>["+index+"]Take a: </b>"+step.html_instructions
                                     +"<br><br>"
                                     +"<b>Stop Name:</b> "+step.transit_details.departure_stop.name
@@ -286,8 +327,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
           } else { //must be walking...
             var infowindow_content = "<b>["+index+"]On foot: </b>"+step.html_instructions;
           }
-
-          addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
+          if (index == 1) { //First marker is the user starting location, make it red & remove the initial user marker...
+            addMarkers(new google.maps.LatLng(step.start_location), "red", infowindow, infowindow_content, step.html_instructions);
+          } else { //2nd and further markers are directional waypoints - make them yellow...
+            addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
+          }
 
         });
 
@@ -299,11 +343,53 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         //...
       });
     }
+
+
+    //set the directions button callback...
+    $( '#directionsButton' ).click(function(){
+      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
+      //console.log(typeof $('#destination').val());
+      deleteMarkers(markers); //clear current direction markers
+
+      let destination = $('#destination').val();
+      displayDirectionMarkers(userPosition, destination); //show the new direction markers
+    });
+
+
+    //set the autocomplete callback...
+    $( "#destination" ).autocomplete({
+        source: function(request, response){
+            var availableTags = [];
+
+            var to_input = request.term; //This is the user input
+            //console.log(to_input); //DEBUGGING
+
+            $.getJSON( "/autocomp" + "?format=json&operator=bac&stopname="+to_input, function(data) {
+
+                _.forEach(data.results, function(busStops){
+                    //availableTags.push(busStops.stopid+" "+busStops.fullname );
+                    availableTags.push({ label: busStops.fullname+" "+busStops.stopid, value: busStops.latitude+","+busStops.longitude });
+                });
+
+                //console.log(availableTags); //DEBUGGING
+                response(availableTags);
+
+            }).done(function(){
+                console.log("got autosuggest data");
+            }).fail(function(){
+                alert("failed autosuggest");
+            }).always(function(){
+                //
+            });
+        },
+        minLength: 3 //Number of characters after which the autosuggest should start...
+    });
 });
 </script>
 <script src="{% static 'JS/lodash.js '%}"></script>
 <!-- <script src="{% static 'JS/map.js' %}"></script> -->
 <script src="{% static 'JS/autocomplete.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXmxcpjGKrWHVNpa0s865Eq69p9s1PsHg&callback=initMap" type="text/javascript"></script>
 </body>

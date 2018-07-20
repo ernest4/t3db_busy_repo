@@ -49,19 +49,33 @@ def busStops(request):
         with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
             return HttpResponse(file.read())
 
+#function to return Google Directions API query results for the map
 def directions(request):
     params = request.GET;
-    r = requests.get("https://maps.googleapis.com/maps/api/directions/json?"
-                     +"origin="+params['origin']
-                     +"&destination="+params['destination']
-                     +"&mode="+params['mode']
-                     +"&transit_mode="+params['transit_mode']
-                     +"&key=" + os.environ.get('directionsAPI'))
+    r = requests.get("https://maps.googleapis.com/maps/api/directions/json",
+                     params={'origin': params['origin'],
+                             'destination': params['destination'],
+                             'mode': params['mode'],
+                             'transit_mode': params['transit_mode'],
+                             'key': os.environ.get('directionsAPI')})
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
+#function to return RTPI query results for Bus Stop Autosuggests
 def busStopAutosuggest(request):
-    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation")
+    params = request.GET;
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation",
+                     params={'format': params['format'],
+                             'operator': params['operator'],
+                             'stopname': params['stopname']})
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
+    else:
+        return HttpResponse("format=" + params['format']+ ", operator=" + params['operator']+ ", stopname=" + params['stopname'])
+    
+#Function for RTPI querying for Route Number Autosuggests.
+def routeNumberAutosuggest(request):
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routelistinformation")
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
@@ -74,6 +88,9 @@ def testView(request):
     #return render(request, 'testpage.html', {'msg1' : r['t']})
     return render(request, 'testpage.html')
 
+
+def personas(request):
+    return render(request, "personas.html")
 
 def onthegoform(request):
     if request.method == 'GET':

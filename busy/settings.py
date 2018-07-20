@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'busyapp.apps.BusyappConfig',
 ]
 
+SECURE_SSL_REDIRECT = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -126,7 +128,11 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allow all host headers
 # '*' means 'any' - it's not secure
 #ALLOWED_HOSTS = ['*', 'busyapp.herokuapp.com']
-ALLOWED_HOSTS = ['http://busyapptesting.herokuapp.com/', 'busyapp.herokuapp.com', 'busyapptesting.herokuapp.com']
+ALLOWED_HOSTS = ['http://busyapptesting.herokuapp.com/',
+                 'busyapp.herokuapp.com',
+                 'busyapptesting.herokuapp.com',
+                 'http://www.dublinbusy.com/',
+                 'https://www.dublinbusy.com/']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
