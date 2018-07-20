@@ -116,9 +116,13 @@ def onthegoform(request):
             busNum = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
+            busDirect = form.cleaned_data['bus_direction']
 
             #normalize the input data
             busNum = busNum
+
+            #find the model.
+
             fromVarNorm = float(fromVar)/59
             toVarNorm = float(toVar)/59
 
@@ -129,6 +133,7 @@ def onthegoform(request):
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
+                                                        busDirect=busDirect,
                                                         start_stop=fromVarNorm,
                                                         end_stop=toVarNorm,
                                                         time_of_day=time_of_day,
