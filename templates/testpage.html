@@ -118,6 +118,7 @@
 
 var map;
 var markers = []; //Create an array of markers for the marker cluster function
+var userMarker; //User marker handle
 
 //Loads the map
 function initMap(){
@@ -154,6 +155,7 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
     } else {
       marker.title = stopid; //This will just display the isUser string "You Are Here" instead of bus stop number
       marker.setAnimation(google.maps.Animation.BOUNCE);
+      userMarker = marker;
     }
 }
 
@@ -306,7 +308,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
         //console.log(directionsData.routes[0].legs[0].steps);
 
-        let index = 0;
+        let index = 0; //keep track of which step along the route we are on...
         let markerColor = "blue"; //Blue is bus, Yellow is walking, Red is the user starting location.
 
         _.forEach(directionsData.routes[0].legs[0].steps, function(step){
@@ -315,7 +317,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
           console.log(step); //FOR DEBUGGING
 
           if (step.travel_mode === "TRANSIT") { //must be bus...
-
+            markerColor = "blue";
 
             var infowindow_content = "<b>["+index+"]Take a: </b>"+step.html_instructions
                                     +"<br><br>"
@@ -325,13 +327,18 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
                                     +"<br><br>"+step.transit_details.line.short_name
                                     +"<br><br>";
           } else { //must be walking...
+            markerColor = "yellow";
             var infowindow_content = "<b>["+index+"]On foot: </b>"+step.html_instructions;
           }
           if (index == 1) { //First marker is the user starting location, make it red & remove the initial user marker...
-            addMarkers(new google.maps.LatLng(step.start_location), "red", infowindow, infowindow_content, step.html_instructions);
+            markerColor = "red";
+            deleteMarkers([userMarker]);
+            //addMarkers(new google.maps.LatLng(step.start_location), "red", infowindow, infowindow_content, step.html_instructions);
           } else { //2nd and further markers are directional waypoints - make them yellow...
-            addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
+            //addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
           }
+
+          addMarkers(new google.maps.LatLng(step.start_location), markerColor, infowindow, infowindow_content, step.html_instructions);
 
         });
 

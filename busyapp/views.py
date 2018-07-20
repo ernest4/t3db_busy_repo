@@ -72,6 +72,17 @@ def busStopAutosuggest(request):
         return HttpResponse(r.text)
     else:
         return HttpResponse("format=" + params['format']+ ", operator=" + params['operator']+ ", stopname=" + params['stopname'])
+
+#function to return RTPI query results for Bus Routes Autosuggests
+def busRoutesAutosuggest(request):
+    params = request.GET;
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routelistinformation",
+                     params={'format': params['format'],
+                             'operator': params['operator']})
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
+    else:
+        return HttpResponse("format=" + params['format']+ ", operator=" + params['operator'])
     
 #Function for RTPI querying for Route Number Autosuggests.
 def routeNumberAutosuggest(request):

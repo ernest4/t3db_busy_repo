@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'busyapp.apps.BusyappConfig',
 ]
 
-SECURE_SSL_REDIRECT = True
+#SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False #FOR LOCAL TESTING, SET IT TRUE WHEN DEPLOYING FOR HTTPS TO WORK
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
