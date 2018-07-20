@@ -188,7 +188,7 @@ def getModel(busNum, busDirection, testing):
             # Return None if direction or route not found
             return
 
-    file = busNum + '_' + direction
+    file = busNum + '_' + busDirection
 
     if testing:
         return joblib.load('static/ml_models/' + file + '.pkl')
