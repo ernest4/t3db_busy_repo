@@ -44,7 +44,7 @@ $( window ).on ("load", function () {
 
                 _.forEach(data.results, function(busRoute){
                     //availableTags.push(busStops.stopid+" "+busStops.fullname );
-                    if (busRoute.route.includes(bus_num_input)) {
+                    if (busRoute.route.includes(bus_num_input)) { //Manual pruning of results as RTPI does not offer search of bus route based on partial ID...
                         availableTags.push({ label: busRoute.route, value: busRoute.route });
                     }
                 });
