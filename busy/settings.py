@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'busyapp.apps.BusyappConfig',
+    'bootstrap_datepicker_plus',  # Date picker widget
+    # https://pypi.org/project/django-bootstrap-datepicker-plus/
 ]
 
 #SECURE_SSL_REDIRECT = True
@@ -63,6 +65,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# REQUIRED FOR DATE PICKER
+# Use BOOTSTRAP3 if you are using Bootstrap 3
+BOOTSTRAP4 = {
+    'include_jquery': True,
+}
 
 ROOT_URLCONF = 'busy.urls'
 

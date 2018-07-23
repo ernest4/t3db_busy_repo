@@ -183,13 +183,13 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
             # Match bus direction 'I' / 1 inbound, 'O' / 2 outbound
             if busDirection in data[busNum]['I'][1]:
                 direction = '1'
-                start_prog_num = getProgrNumb(data, busNum, 'I', start_stop)
-                end_prog_num = getProgrNumb(data, busNum, 'I', end_stop)
+                start_prog_num = getProgNum(data, busNum, 'I', start_stop)
+                end_prog_num = getProgNum(data, busNum, 'I', end_stop)
 
             elif busDirection in data[busNum]['O'][1]:
                 direction = '0'
-                start_prog_num = getProgrNumb(data, busNum, 'O', start_stop)
-                end_prog_num = getProgrNumb(data, busNum, 'O', end_stop)
+                start_prog_num = getProgNum(data, busNum, 'O', start_stop)
+                end_prog_num = getProgNum(data, busNum, 'O', end_stop)
 
             file = busNum + '_' + direction  # replace busDirection with direction when not testing
 
@@ -202,10 +202,11 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
         return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
 
 
-def getProgrNumb(data, busNum, direction, stop_id):
+def getProgNum(data, busNum, direction, stop_id):
     # Return program number + 1 as index in model file names starts with 1
     try:
         return data[busNum][direction][0]['stop' + str(stop_id)][0] + 1
+
     except:
         return
 
@@ -213,13 +214,17 @@ def getProgrNumb(data, busNum, direction, stop_id):
 def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
     ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
 
+    # Normalization required before modelling
+    startStopNorm = float(start_stop) / 59
+    endstopNorm = float(end_stop) / 59
+
     start = {'secondary_school': secondary_school,
              'primary_school': primary_school,
              'trinity': trinity,
              'ucd': ucd,
              'bank_holiday': bank_holiday,
              'event': event,
-             'progrnumber': start_stop,
+             'progrnumber': startStopNorm,
              'actualtime': time_of_day,
              'day_of_year': day_of_year,
              'weather_code': weatherCode,
@@ -238,7 +243,7 @@ def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_d
              'ucd': ucd,
              'bank_holiday': bank_holiday,
              'event': event,
-             'progrnumber': end_stop,
+             'progrnumber': endstopNorm,
              'actualtime': time_of_day,
              'day_of_year': day_of_year,
              'weather_code': weatherCode,

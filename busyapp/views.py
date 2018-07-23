@@ -121,11 +121,6 @@ def onthegoform(request):
             #normalize the input data
             busNum = busNum
 
-            #find the model.
-
-            fromVarNorm = float(fromVar)/59
-            toVarNorm = float(toVar)/59
-
             time_of_day = secondsNormalizedSinceMidnight()
             weather = getNormalizedWeather()
             dayOfYear = getNormalizedDayOfYear()
@@ -134,8 +129,8 @@ def onthegoform(request):
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
                                                         busDirection=busDirect,
-                                                        start_stop=fromVarNorm,
-                                                        end_stop=toVarNorm,
+                                                        start_stop=fromVar,
+                                                        end_stop=toVar,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
                                                         secondary_school=0,
@@ -171,18 +166,20 @@ def plannerform(request):
     if request.method == 'GET':
         form = PlannerForm(request.GET)
 
-        #Example of reading unvalidated form data. This may crash the app.
-        #print(form['busnum'].value())
-        #print(form.data['busnum'])
+        # Example of reading unvalidated form data. This may crash the app.
+        print(form['busnum_var'].value())
+        print(form.data['busnum_var'])
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
             busVar = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
-            whenVar = form.cleaned_data['when_var']
+            busDirect = form.cleaned_data['bus_direction']
+            timeVar = form.cleaned_data['time']
+            dateVar = form.cleaned_data['date']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
+            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+timeVar+"<br>"+"Date: "+dateVar) #FOR DEBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
