@@ -123,8 +123,8 @@ def onthegoform(request):
 
             #find the model.
 
-            fromVarNorm = float(fromVar)/59
-            toVarNorm = float(toVar)/59
+            fromVar = float(fromVar)
+            toVar = float(toVar)
 
             time_of_day = secondsNormalizedSinceMidnight()
             weather = getNormalizedWeather()
@@ -134,8 +134,8 @@ def onthegoform(request):
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
                                                         busDirection=busDirect,
-                                                        start_stop=fromVarNorm,
-                                                        end_stop=toVarNorm,
+                                                        start_stop=fromVar,
+                                                        end_stop=toVar,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
                                                         secondary_school=0,
@@ -146,6 +146,16 @@ def onthegoform(request):
                                                         event=0,
                                                         day_of_year=dayOfYear,
                                                         weekday=weekDay)
+
+            if journeyTimeSeconds == -1: #Model could not be retreived
+                # server side rendering - replace with AJAX for client side rendering in the future
+                errorMSG = "Oops something went wrong :/"
+                return render(request, 'onthego.html', {'busNum': busNum,
+                                                        'from': fromVar,
+                                                        'to': toVar,
+                                                        'journeyTime': errorMSG,
+                                                        'cost': errorMSG,
+                                                        'bestStartTime': errorMSG})
 
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)

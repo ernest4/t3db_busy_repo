@@ -175,11 +175,15 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
     # To uppercase
     busNum = busNum.upper()
 
-    with open('static/bus_data/routes.json') as f:
+    if testing:
+        routesFileString = 'static/bus_data/routes.json'
+    else:
+        routesFileString = STATIC_ROOT+'/bus_data/routes.json'
+
+    with open(routesFileString) as f:
         data = json.load(f)
 
         try:
-
             # Match bus direction 'I' / 1 inbound, 'O' / 2 outbound
             if busDirection in data[busNum]['I'][1]:
                 direction = '1'
@@ -197,9 +201,9 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
             return
 
     if testing:
-        return joblib.load('static/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
+        return joblib.load('static/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num, float(direction)
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
+        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num, float(direction)
 
 
 def getProgrNumb(data, busNum, direction, stop_id):
@@ -211,7 +215,16 @@ def getProgrNumb(data, busNum, direction, stop_id):
 
 
 def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
-    ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
+    #Fetch the right model
+    ann_improved, start_stop, end_stop, busDirection = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
+
+    #Abort if model could not be found
+    if ann_improved is None:
+        return -1
+
+    #Normalize values
+    start_stop = start_stop/59
+    end_stop = end_stop/59
 
     start = {'secondary_school': secondary_school,
              'primary_school': primary_school,
