@@ -171,7 +171,7 @@ def predictor_regression(busNum, start_stop, end_stop, time_of_day, weatherCode,
     return time_est[0]
 
 
-def getModel(busNum, busDirection, testing):
+def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
     # To uppercase
     busNum = busNum.upper()
 
@@ -179,29 +179,39 @@ def getModel(busNum, busDirection, testing):
         data = json.load(f)
 
         try:
+
             # Match bus direction 'I' / 1 inbound, 'O' / 2 outbound
             if busDirection in data[busNum]['I'][1]:
                 direction = '1'
+                start_prog_num = getProgrNumb(data, busNum, 'I', start_stop)
+                end_prog_num = getProgrNumb(data, busNum, 'I', end_stop)
+
             elif busDirection in data[busNum]['O'][1]:
                 direction = '0'
+                start_prog_num = getProgrNumb(data, busNum, 'O', start_stop)
+                end_prog_num = getProgrNumb(data, busNum, 'O', end_stop)
+
+            file = busNum + '_' + direction  # replace busDirection with direction when not testing
+
         except:
-            # Return None if direction or route not found
             return
 
-    file = busNum + '_' + busDirection
-
     if testing:
-        return joblib.load('static/ml_models/' + file + '.pkl')
+        return joblib.load('static/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl')
+        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
 
 
-def findProgrNumber(start_stop, end_stop):
-    pass
+def getProgrNumb(data, busNum, direction, stop_id):
+    # Return program number + 1 as index in model file names starts with 1
+    try:
+        return data[busNum][direction][0]['stop' + str(stop_id)][0] + 1
+    except:
+        return
 
 
 def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
-    ann_improved = getModel(busNum, busDirection, testing)
+    ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
 
     start = {'secondary_school': secondary_school,
              'primary_school': primary_school,

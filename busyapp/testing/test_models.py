@@ -2,6 +2,7 @@ from django.test import TestCase #this inherits from unittest.TestCase
 from busyapp import ml
 from sklearn.externals import joblib
 import datetime
+import json
 
 class ModelTest(TestCase):
     #run your setup here (if any)
@@ -71,20 +72,27 @@ class ModelTest(TestCase):
 
 
     # Test findModel to return file name
-    def test_getModel(self):
+    def test_getModelAndProgNum(self):
         # Assert return pkl reference
-        self.assertTrue(ml.getModel('46a', 'Phoenix Park', True), joblib.load('static/ml_models/46A_1.pkl'))
+        self.assertTrue(ml.getModelAndProgNum('46a', 'Phoenix Park', 2795, 810, True), ('46A_1', 11, 3))
+        #print(ml.getModelAndProgNum('46a', 'Phoenix Park', 2795, 810, True))
 
         # Assert return None if route not found
-        self.assertEqual(ml.getModel('3000', 'Phoenix Park', True), None)
+        self.assertEqual(ml.getModelAndProgNum('3000', 'Phoenix Park', 0, 0, True), None)
 
         # Assert return None if direction not found
-        self.assertEqual(ml.getModel('1', '', True), None)
+        self.assertEqual(ml.getModelAndProgNum('1', '', 0, 0, True), None)
 
 
-    # def test_findProgrNumber(self, start_stop, end_stop):
-    #     self.assertEqual(ml.findProgrNumber(810, 2795), 3, 11 )
+    def test_getProgrNumb(self):
+        with open('static/bus_data/routes.json') as f:
+            data = json.load(f)
 
+            self.assertEqual(ml.getProgrNumb(data, '46A', 'I', 2795), 12)
+
+            self.assertEqual(ml.getProgrNumb(data, '4', 'I', 327), 2)
+
+            self.assertEqual(ml.getProgrNumb(data, '36', 'I', 0), None)
 
     #run your clean up here (if any)
     def tearDown(self):
