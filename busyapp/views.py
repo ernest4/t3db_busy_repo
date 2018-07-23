@@ -121,11 +121,6 @@ def onthegoform(request):
             #normalize the input data
             busNum = busNum
 
-            #find the model.
-
-            fromVar = float(fromVar)
-            toVar = float(toVar)
-
             time_of_day = secondsNormalizedSinceMidnight()
             weather = getNormalizedWeather()
             dayOfYear = getNormalizedDayOfYear()
@@ -181,18 +176,20 @@ def plannerform(request):
     if request.method == 'GET':
         form = PlannerForm(request.GET)
 
-        #Example of reading unvalidated form data. This may crash the app.
-        #print(form['busnum'].value())
-        #print(form.data['busnum'])
+        # Example of reading unvalidated form data. This may crash the app.
+        print(form['busnum_var'].value())
+        print(form.data['busnum_var'])
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
             busVar = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
-            whenVar = form.cleaned_data['when_var']
+            busDirect = form.cleaned_data['bus_direction']
+            timeVar = form.cleaned_data['time']
+            dateVar = form.cleaned_data['date']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
+            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+timeVar+"<br>"+"Date: "+dateVar) #FOR DEBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 

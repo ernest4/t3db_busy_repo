@@ -16,5 +16,7 @@ pandas = "*"
 scikit-learn = "*"
 scipy = "*"
 requests = "*"
+django-bootstrap-datepicker-plus = "*"
+
 
 [dev-packages]

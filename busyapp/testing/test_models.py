@@ -74,8 +74,9 @@ class ModelTest(TestCase):
     # Test findModel to return file name
     def test_getModelAndProgNum(self):
         # Assert return pkl reference
-        self.assertTrue(ml.getModelAndProgNum('46a', 'Phoenix Park', 2795, 810, True), ('46A_1', 11, 3))
-        #print(ml.getModelAndProgNum('46a', 'Phoenix Park', 2795, 810, True))
+        self.assertTrue(ml.getModelAndProgNum('46a', 'Phoenix Park', 810, 2795, True), ('46A_1', 12, 4))
+
+        print(ml.getModelAndProgNum('46a', 'Phoenix Park', 810, 2795, True))
 
         # Assert return None if route not found
         self.assertEqual(ml.getModelAndProgNum('3000', 'Phoenix Park', 0, 0, True), None)
@@ -84,15 +85,18 @@ class ModelTest(TestCase):
         self.assertEqual(ml.getModelAndProgNum('1', '', 0, 0, True), None)
 
 
-    def test_getProgrNumb(self):
+    def test_getProgNum(self):
         with open('static/bus_data/routes.json') as f:
             data = json.load(f)
 
-            self.assertEqual(ml.getProgrNumb(data, '46A', 'I', 2795), 12)
+            self.assertEqual(ml.getProgNum(data, '46A', 'I', 2795), 12)
 
-            self.assertEqual(ml.getProgrNumb(data, '4', 'I', 327), 2)
+            self.assertEqual(ml.getProgNum(data, '7', 'I', 2040), 40)
 
-            self.assertEqual(ml.getProgrNumb(data, '36', 'I', 0), None)
+            self.assertEqual(ml.getProgNum(data, '4', 'I', 7113), 3)
+
+            self.assertEqual(ml.getProgNum(data, '36', 'I', 0), None)
+
 
     #run your clean up here (if any)
     def tearDown(self):
