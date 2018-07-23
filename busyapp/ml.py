@@ -191,7 +191,7 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
                 start_prog_num = getProgrNumb(data, busNum, 'O', start_stop)
                 end_prog_num = getProgrNumb(data, busNum, 'O', end_stop)
 
-            file = busNum + '_' + busDirection  # replace busDirection with direction when not testing
+            file = busNum + '_' + direction  # replace busDirection with direction when not testing
 
         except:
             return
@@ -203,7 +203,11 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
 
 
 def getProgrNumb(data, busNum, direction, stop_id):
-    return data[busNum][direction][0]['stop' + str(stop_id)][0]
+    # Return program number + 1 as index in model file names starts with 1
+    try:
+        return data[busNum][direction][0]['stop' + str(stop_id)][0] + 1
+    except:
+        return
 
 
 def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):

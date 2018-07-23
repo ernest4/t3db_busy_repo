@@ -88,7 +88,11 @@ class ModelTest(TestCase):
         with open('static/bus_data/routes.json') as f:
             data = json.load(f)
 
-            self.assertEqual(ml.getProgrNumb(data, '46A', 'I', 2795), 11)
+            self.assertEqual(ml.getProgrNumb(data, '46A', 'I', 2795), 12)
+
+            self.assertEqual(ml.getProgrNumb(data, '4', 'I', 327), 2)
+
+            self.assertEqual(ml.getProgrNumb(data, '36', 'I', 0), None)
 
     #run your clean up here (if any)
     def tearDown(self):
