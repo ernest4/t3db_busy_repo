@@ -31,31 +31,34 @@
             
         <!--Input box for route number with autocomplete RTPI query-->  
           <div class="form-group">
-            <label>Bus Number:</label>
+            <p2>Bus Number:</p2>
             <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
             <datalist id="route_list"></datalist>
           </div>    
-            
+        <br>
           <!-- Input box for "from" with autocomplete RTPI query -->
           <div class="form-group">
-            <label>From:</label>
+            <p2>From:</p2>
             <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
             <datalist id="stop_list"></datalist>   
           </div>
+        <br>
             
             <!-- Input box for "to" with autocomplete RTPI query -->     
             <div class="form-group">
-            <label>To:</label>
+            <p2>To:</p2>
             <!-- AUTOCOMPLETE USER INPUT -->  
             <input id="location" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
             <datalist id="stop_list"></datalist>    
             </div>
+        <br>
             
             
           <div class="form-group">
-            <label>When:</label>
+            <p2>When:</p2>
             <input class="form-control" type="text" placeholder="e.g. 12:30" name="when_var" required>
           </div>
+        <br>
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>

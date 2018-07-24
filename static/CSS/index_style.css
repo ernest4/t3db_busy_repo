@@ -1,16 +1,56 @@
 .jumbotron {
-    background: black;
+    background:  #e6e6e6;
     color: black;
     padding-bottom: 80px
+        
+}
+
+.glyphicon {
+    color:gray;
+  position:relative;
+  top:1px;
+  display:inline-block;
+  font-family:'Glyphicons Halflings';
+  font-style:normal;
+  font-weight:400;
+  line-height:1;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+
+
+
+.btn {
+    
+    color:black;
+    background-color: #e6e6e6;
+    border-color: white;
+}
+
+.btn:hover {
+    
+    color:white;
+    background-color:#e6e6e6;
+    border-color:white;
 }
 
 .jumbotron .btn-primary {
-    background: black;
+    background: white;
     border-color: black;
+    
 }
 
-.jumbotron .btn-primary:hover {
-    background: black;
+.jumbotron .btn-primary {
+    background:white;
+    color: black;
+    border-color: white;
+}
+
+.btn-primary:hover {
+    background: #cccccc;
+    color: white;
+    border-color: #cccccc;
 }
 
 .jumbotron p {
@@ -25,7 +65,7 @@
 
 .jumbotron .lang-logo {
     display: block;
-    background: #b01302;
+    background: #black;
     border-radius: 50%;
     overflow: hidden;
     width: 100px;
