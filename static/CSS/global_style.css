@@ -2,6 +2,14 @@ body {
     padding-top: 50px;
 }
 
+
+.nav navbar-nav navbar-right {
+    
+    color:black;
+    
+    
+}
+
 .navbar {
     background-color: black;
     color: white;
@@ -13,7 +21,7 @@ body {
 }
 
 .blue2 {
-    background-color: #0099CC;
+    background-color: black;
 }
 
 a {
@@ -26,21 +34,22 @@ footer a:hover, .navbar-right a:hover {
 }
 
 .navbar-brand:hover {
+    background-color: aqua;
     color: white;
 }
 
 .jumbotron {
-    background: #fffc9e;
+    background: black;
     color: black;
     margin-bottom: 0px;
     margin-top: 500px;
 }
 .jumbotron .btn-primary {
-    background: #4286f4;
-    border-color: #1139ff;
+    background: black;
+    border-color: black;
 }
 .jumbotron .btn-primary:hover {
-    background: #1139ff
+    background: black
 }
 .jumbotron p {
     color: black;
