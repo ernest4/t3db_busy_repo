@@ -7,19 +7,10 @@
     <div class="row">
       <div class="col-sm-12">
         <p>The Planner</p>
-          <br>
+        <br>
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-3">
-        <h2>Popular Locations</h2>
-        <ul class="list-group">
-          <li class="list-group-item">Guiness Storehouse</li>
-          <li class="list-group-item">Howth Village</li>
-          <li class="list-group-item">O'Connell Street</li>
-          <li class="list-group-item">Kilmainham Goal</li>
-        </ul>
-      </div>
       <div class="col-sm-6" style="background-color:white;">
         <div id="map" style="width:100%; height:400px;">
           <!-- google maps go here -->
@@ -31,7 +22,7 @@
 
           <!--Input box for route number with autocomplete RTPI query-->
           <div class="form-group">
-            <p2>Bus Number:</p2>
+            <label>Bus Number:</label>
             <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
             <datalist id="route_list"></datalist>
           </div>
@@ -52,31 +43,23 @@
           </div>
 
           <div class="form-group">
-            <label>Time:</label>
-            <input id="time" class="form-control" type="text" placeholder="e.g. 12:30" name="time" required>
-          </div>
-
-          <div class="form-group">
             <label>Direction:</label>
             <input id="direction" class="form-control" type="text" placeholder="0 or 1" name="bus_direction" required>
           </div>
 
           <div class="form-group">
-            <label>Date:</label>
-            <input id="date" class="form-control" type="text" placeholder="23/07/2018" name="date" required>
+            <label>Time:</label>
+            <input id="time" class="form-control" type="text" placeholder="e.g. 13:30" name="time_var" required>
           </div>
+
+          <div class="form-group">
+            <label>Date:</label>
+            <input id="date" class="form-control" type="text" placeholder="e.g. 8/20/18" name="date_var" required>
+          </div>
+
           <button class="btn btn-primary" type="submit">Submit</button>
 
         </form>
-
-        <form>{% load bootstrap4 %}       {# import bootstrap4/bootstrap3 #}
-              {% bootstrap_css %}         {# Embed Bootstrap CSS #}
-              {% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
-              {% block extrahead %}       {# Extra Resources Start #}
-              {{ form.media }}            {# Form required JS and CSS #}
-              {% endblock %}              {# Extra Resources End #}
-        </form>
-
 
       </div>
     </div>

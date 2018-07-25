@@ -1,5 +1,5 @@
 from django import forms
-#from bootstrap_datepicker_plus import DatePickerInput
+from django.forms.widgets import SelectDateWidget
 
 
 class OnTheGoForm(forms.Form):
@@ -13,8 +13,8 @@ class PlannerForm(forms.Form):
     from_var = forms.CharField()
     to_var = forms.CharField()
     bus_direction = forms.CharField()
-    when_var = forms.CharField()
-    date_var = forms.CharField()
+    time_var = forms.TimeField()
+    date_var = forms.DateField()  # Default formats '%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'
 
 
 class TouristForm(forms.Form):
