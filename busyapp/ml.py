@@ -201,9 +201,9 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
             return
 
     if testing:
-        return joblib.load('static/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num, float(direction)
+        return joblib.load('static/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num, float(direction)
+        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
 
 
 def getProgNum(data, busNum, direction, stop_id):
@@ -217,7 +217,7 @@ def getProgNum(data, busNum, direction, stop_id):
 
 def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
     #Fetch the right model
-    ann_improved, start_stop, end_stop, busDirection = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
+    ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
 
     #Abort if model could not be found
     if ann_improved is None:
