@@ -2,6 +2,14 @@
 
 var map;
 var markers = []; //Create an array of markers for the marker cluster function
+var Shopmarkers = []; // Arrays for each type of destination
+var travelmarkers = [];
+var activitiesmarkers = [];
+var outdoorsmarkers = [];
+var familymarkers = [];
+var sightsmarkers = [];
+// Create one object that contains all tourist markers
+var markerslists = [travelmarkers, Shopmarkers , activitiesmarkers , sightsmarkers,  familymarkers, outdoorsmarkers ];
 var userMarker; //User marker handle
 
 //Loads the map
@@ -13,6 +21,7 @@ function initMap(){
     };
 
     map = new google.maps.Map(mapDiv, mapOptions);
+
 }
 
 
@@ -44,6 +53,89 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
 }
 
 
+//______________________________________________________________________________________________________________________
+// ADITIONAL CODE FOR EXPLORE BRANCH
+
+var travel_links = [
+       ['Dublin Airport', 53.4264513, -6.2521038, 5],
+       ['Europcar Dublin City', 53.3484939, -6.2400041, 4],
+       ['St Stephen\'s Green Luas', 53.3391899, -6.2635223, 3],
+       ['Dublin Connolly Station', 53.351829, -6.2517332, 2],
+       ['Aircoach O\'Connell Street', 53.3517839, -6.2633345, 1]
+   ];
+var Shopping = [
+       ['Grafton Street', 53.3421532, -6.2620394, 6],
+       ['Henry Street', 53.3493502, -6.2652141, 5],
+       ['Dundrum Shopping Centre', 53.2874809, -6.2438303, 4],
+       ['St Stephen\'s Green Shopping Centre', 53.3399155, -6.26479, 3],
+       ['Powerscourt Townhouse Centre', 53.3422148, -6.2639623, 2],
+       ['O\'Connell Street', 53.3512448, -6.2629729, 1]
+   ];
+
+   var Activities = [
+       ['AdventureRooms Dublin', 53.3494134, -6.2721929, 5],
+       ['Incognito Escape Room', 53.3434981, -6.2833655, 4],
+       ['Escape Boats', 53.3413279, -6.2411257, 3],
+       ['Hop on Hop Off', 53.3505611, -6.2631577, 2],
+       ['GoQuest Indoor Challenge Zone', 53.4007191, -6.3176467, 1]
+   ];
+   var SightSeeing = [
+       ['Trinity College Dublin', 53.3517996, -6.2699275, 8],
+       ['Guinness Storehouse', 53.3418772, -6.2889033, 7],
+       ['Saint Patrick\'s Cathedral', 53.3395186, -6.2736707, 6],
+       ['Temple Bar', 53.3454388, -6.2690681, 5],
+       ['Dublin Castle', 53.3428893, -6/2696224, 4],
+       ['Chris Church Cathedral', 53.3435162, -6.2732542, 3],
+       ['St Stephen\'s Green', 53.3369012, -6.2619592, 2],
+       ['City Hall', 53.3438672, -6.269369, 1]
+   ];
+   var Family = [
+       ['Dublin Zoo Phoenix Park', 53.3561967, -6.3074838, 5],
+       ['The Ark - Temple Bar', 53.3449479, -6.2672568, 4],
+       ['Viking Splash Tours', 53.3392812, -6.260881, 3],
+       ['Imaginosity, Dublin Children\'s Museum', 53.2774382, -6.2187599, 2],
+       ['The Chocolate Warehouse, Dublin', 53.3148733, -6.3343803, 1]    ];    var Outdoors = [
+       ['Phoenix Park', 53.3558855, -6.3320073, 5],
+       ['National Botanic Gardens', 53.3725525, -6.274101, 4],
+       ['Howth', 53.3776565, -6.200751, 3],
+       ['Graystones', 53.1450113, -6.1506192, 2],
+       ['Sandymount Strand', 53.3305784, -6.2332952, 1]
+   ];
+
+
+function addExMarkers(latlong, color = "pink", attraction, type ){
+  //create a marker
+    var marker = new google.maps.Marker({
+        position: latlong,
+        title: attraction,
+        draggable: false,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+    });
+
+    markerslists[type].push(marker);
+
+    //Add the pop up box to marker for onclick
+   // google.maps.event.addListener(marker, 'click', function(content){
+   //     infowindow.setContent(infowindow_content);
+   //     infowindow.open(map, marker);
+ //   });
+
+}
+
+function showDestinations(destinations, type){
+    for (var i = 0 ; i < destinations.length ; i++){
+        var latlon = {lat: destinations[i][1], lng: destinations[i][2]};
+        addExMarkers(latlon,'blue', destinations[i][0], type);
+
+        }
+    }
+
+
+//______________________________________________________________________________________________________________________
+
+
+
 //makes the markers invisible by calling this function like setMapForMarkers(some_marker_array, null);
 function setMapForMarkers(markerArray, map){
   for (let i = 0; i < markerArray.length; i++){
@@ -55,7 +147,7 @@ function setMapForMarkers(markerArray, map){
 //makes markers invisible and deletes them
 function deleteMarkers(markerArray){
   setMapForMarkers(markerArray, null); //Hide all the markers first
-  markerArray = [] //Remove references to the markers to delte them
+  markerArray = [] //Remove references to the markers to delete them
 }
 
 
@@ -104,6 +196,16 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       //displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
       //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988});
     }
+
+    //------------------------------------------------------------------
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------------
 
 
     function failedToGetPosition(error){
@@ -256,5 +358,66 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       let destination = $('#destination').val();
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
+
+    $( '#ShoppingCheck' ).click(function(){
+
+        if (document.getElementById("ShoppingCheck").checked) {
+            showDestinations(Shopping, 1);
+        }
+        else {
+            deleteMarkers(markerslists[1]);
+        }
+        });
+
+    $( '#TravelLinksCheck' ).click(function(){
+
+        if (document.getElementById("TravelLinksCheck").checked) {
+            showDestinations(travel_links, 0);
+        }
+        else {
+            deleteMarkers(markerslists[0]);
+        }
+        });
+    $( '#ActivitiesCheck' ).click(function(){
+
+        if (document.getElementById("ActivitiesCheck").checked) {
+            showDestinations(Activities, 2);
+        }
+        else {
+            deleteMarkers(markerslists[2]);
+        }
+        });
+    $( '#SightsCheck' ).click(function(){
+
+        if (document.getElementById("SightsCheck").checked) {
+            showDestinations(SightSeeing, 3);
+        }
+        else {
+            deleteMarkers(markerslists[3]);
+        }
+        });
+     $( '#FamilyCheck' ).click(function(){
+
+        if (document.getElementById("FamilyCheck").checked) {
+            showDestinations(Family, 4);
+        }
+        else {
+            deleteMarkers(markerslists[4]);
+        }
+        });
+    $( '#OutdoorsCheck' ).click(function(){
+
+        if (document.getElementById("OutdoorsCheck").checked) {
+            showDestinations(Outdoors, 5);
+        }
+        else {
+            deleteMarkers(markerslists[5]);
+        }
+        });
+
+
+   // });
+
+
 
 });
