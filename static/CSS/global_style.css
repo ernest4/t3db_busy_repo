@@ -28,12 +28,12 @@ body {
 
 .navbar {
     background-color: white;
-    color: white;
+    color: black;
 }
 
 .blue1 {
     background-color: white;
-    color: white;
+    color: black;
 }
 
 .blue2 {
@@ -43,7 +43,6 @@ body {
 a {
     background-color:white;
     color:black;
-     
 }
 
 
@@ -55,7 +54,7 @@ footer a:hover, .navbar-right a:hover {
 
 .navbar-brand:hover {
     background-color: #e6e6e6;
-    color: white;
+    color: black;
 }
 
 .jumbotron {

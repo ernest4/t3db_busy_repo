@@ -116,7 +116,8 @@ def onthegoform(request):
             busNum = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
-            busDirect = form.cleaned_data['bus_direction']
+
+            busDirect = 'Phoenix Park' #Hard coded for testing, will be retrieved from DB later...
 
             #normalize the input data
             busNum = busNum
