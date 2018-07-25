@@ -1,12 +1,11 @@
 from django import forms
-from bootstrap_datepicker_plus import DatePickerInput
+#from bootstrap_datepicker_plus import DatePickerInput
 
 
 class OnTheGoForm(forms.Form):
     busnum_var = forms.CharField()
     from_var = forms.CharField()
     to_var = forms.CharField()
-    bus_direction = forms.CharField()
 
 
 class PlannerForm(forms.Form):

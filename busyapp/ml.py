@@ -175,11 +175,15 @@ def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
     # To uppercase
     busNum = busNum.upper()
 
-    with open('static/bus_data/routes.json') as f:
+    if testing:
+        routesFileString = 'static/bus_data/routes.json'
+    else:
+        routesFileString = STATIC_ROOT+'/bus_data/routes.json'
+
+    with open(routesFileString) as f:
         data = json.load(f)
 
         try:
-
             # Match bus direction 'I' / 1 inbound, 'O' / 2 outbound
             if busDirection in data[busNum]['I'][1]:
                 direction = '1'
@@ -212,7 +216,12 @@ def getProgNum(data, busNum, direction, stop_id):
 
 
 def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, testing=False):
+    #Fetch the right model
     ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
+
+    #Abort if model could not be found
+    if ann_improved is None:
+        return -1
 
     # Normalization required before modelling
     startStopNorm = float(start_stop) / 59

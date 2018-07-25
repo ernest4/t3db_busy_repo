@@ -189,7 +189,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
                 +"&mode="+"transit"
                 +"&transit_mode="+"bus", function(directionsData){
 
-        //console.log(directionsData.routes[0].legs[0].steps);
+        //console.log(directionsData.routes[0].legs[0].steps); //DEBUGGING
 
         let index = 0; //keep track of which step along the route we are on...
         let markerColor = "blue"; //Blue is bus, Yellow is walking, Red is the user starting location.
@@ -221,9 +221,21 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             //addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
           }
 
+          //Add route markers
           addMarkers(new google.maps.LatLng(step.start_location), markerColor, infowindow, infowindow_content, step.html_instructions);
 
         });
+
+        //Add the destination marker
+        index++; //This is the number of the final step (i.e. destination)
+        //Create and parse a latitude, longitude object for the marker
+        let to_obj = {}
+        to_obj.lat = parseFloat(to.split(',')[0]);
+        to_obj.lng = parseFloat(to.split(',')[1]);
+        //console.log(to_obj); //DEBUGGING
+        markerColor = "red";
+        var infowindow_content = "<b>["+index+"]Destination</b>";
+        addMarkers(new google.maps.LatLng(to_obj), markerColor, infowindow, infowindow_content, "");
 
       }).done(function(){
         console.log("Got directions data...");
@@ -244,5 +256,5 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       let destination = $('#destination').val();
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
-    
+
 });

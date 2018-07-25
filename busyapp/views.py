@@ -116,7 +116,8 @@ def onthegoform(request):
             busNum = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
-            busDirect = form.cleaned_data['bus_direction']
+
+            busDirect = 'Phoenix Park' #Hard coded for testing, will be retrieved from DB later...
 
             #normalize the input data
             busNum = busNum
@@ -141,6 +142,16 @@ def onthegoform(request):
                                                         event=0,
                                                         day_of_year=dayOfYear,
                                                         weekday=weekDay)
+
+            if journeyTimeSeconds == -1: #Model could not be retreived
+                # server side rendering - replace with AJAX for client side rendering in the future
+                errorMSG = "Oops something went wrong :/"
+                return render(request, 'onthego.html', {'busNum': busNum,
+                                                        'from': fromVar,
+                                                        'to': toVar,
+                                                        'journeyTime': errorMSG,
+                                                        'cost': errorMSG,
+                                                        'bestStartTime': errorMSG})
 
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)

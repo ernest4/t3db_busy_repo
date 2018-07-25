@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'busyapp.apps.BusyappConfig',
-    'bootstrap_datepicker_plus',  # Date picker widget
+    #'bootstrap_datepicker_plus',  # Date picker widget
     # https://pypi.org/project/django-bootstrap-datepicker-plus/
 ]
 
