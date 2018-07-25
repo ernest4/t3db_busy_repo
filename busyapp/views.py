@@ -57,7 +57,7 @@ def directions(request):
                              'destination': params['destination'],
                              'mode': params['mode'],
                              'transit_mode': params['transit_mode'],
-                             'key': os.environ.get('directionsAPI')})
+                             'key': os.environ.get('DIRECTIONS_API')})
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
