@@ -103,14 +103,14 @@ var Shopping = [
    ];
 
 
-function addExMarkers(latlong, color = "pink", attraction, type ){
+function addExMarkers(latlong, color = "pink", attraction, type , icon){
   //create a marker
     var marker = new google.maps.Marker({
         position: latlong,
         title: attraction,
         draggable: false,
         map: map,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+        icon: icon
     });
 
     markerslists[type].push(marker);
@@ -123,10 +123,10 @@ function addExMarkers(latlong, color = "pink", attraction, type ){
 
 }
 
-function showDestinations(destinations, type){
+function showDestinations(destinations, type, icon){
     for (var i = 0 ; i < destinations.length ; i++){
         var latlon = {lat: destinations[i][1], lng: destinations[i][2]};
-        addExMarkers(latlon,'blue', destinations[i][0], type);
+        addExMarkers(latlon,'blue', destinations[i][0], type, icon);
 
         }
     }
@@ -359,10 +359,12 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
 
+    // Functions to add explorer icons based on checkboxes
     $( '#ShoppingCheck' ).click(function(){
+        var icon = 'http://maps.google.com/mapfiles/ms/micons/shopping.png';
 
         if (document.getElementById("ShoppingCheck").checked) {
-            showDestinations(Shopping, 1);
+            showDestinations(Shopping, 1, icon);
         }
         else {
             deleteMarkers(markerslists[1]);
@@ -370,45 +372,50 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#TravelLinksCheck' ).click(function(){
+        var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'; //http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
 
         if (document.getElementById("TravelLinksCheck").checked) {
-            showDestinations(travel_links, 0);
+            showDestinations(travel_links, 0, icon);
         }
         else {
             deleteMarkers(markerslists[0]);
         }
         });
     $( '#ActivitiesCheck' ).click(function(){
+        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon14.png';
 
         if (document.getElementById("ActivitiesCheck").checked) {
-            showDestinations(Activities, 2);
+            showDestinations(Activities, 2, icon);
         }
         else {
             deleteMarkers(markerslists[2]);
         }
         });
     $( '#SightsCheck' ).click(function(){
+        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon2.png';
 
         if (document.getElementById("SightsCheck").checked) {
-            showDestinations(SightSeeing, 3);
+            showDestinations(SightSeeing, 3, icon);
         }
         else {
             deleteMarkers(markerslists[3]);
         }
         });
      $( '#FamilyCheck' ).click(function(){
+         var icon = 'http://maps.google.com/mapfiles/ms/micons/hiker.png';
 
         if (document.getElementById("FamilyCheck").checked) {
-            showDestinations(Family, 4);
+            showDestinations(Family, 4, icon);
         }
         else {
             deleteMarkers(markerslists[4]);
         }
         });
     $( '#OutdoorsCheck' ).click(function(){
+        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
 
         if (document.getElementById("OutdoorsCheck").checked) {
-            showDestinations(Outdoors, 5);
+            showDestinations(Outdoors, 5, icon);
         }
         else {
             deleteMarkers(markerslists[5]);
