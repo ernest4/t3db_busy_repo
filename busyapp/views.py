@@ -36,6 +36,9 @@ def theplanner(request):
 def tourist(request):
     return render(request, 'tourist.html')
 
+def accessibility(request):
+    return render(request, 'accessibility.html')
+
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
     if r.status_code == requests.codes.ok:
@@ -195,6 +198,28 @@ def plannerform(request):
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
 
+def accessibilityform(request):
+    if request.method == 'GET':
+        form = AccessibilityForm(request.GET)
+
+        # Example of reading unvalidated form data. This may crash the app.
+        print(form['busnum_var'].value())
+        print(form.data['busnum_var'])
+
+        #Prefered way of handling forms, validate first before using.
+        if form.is_valid():
+            busVar = form.cleaned_data['busnum_var']
+            fromVar = form.cleaned_data['from_var']
+            toVar = form.cleaned_data['to_var']
+            busDirect = form.cleaned_data['bus_direction']
+            timeVar = form.cleaned_data['time']
+            dateVar = form.cleaned_data['date']
+
+            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+timeVar+"<br>"+"Date: "+dateVar) #FOR DEBUGGING
+        else:
+            return HttpResponse("Oops! Form invalid :/ Try again?")
+        
+        
 def touristform(request):
     if request.method == 'GET':
         form = TouristForm(request.GET)
