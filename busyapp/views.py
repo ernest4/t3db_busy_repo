@@ -5,16 +5,12 @@ import numpy as np
 import os
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
-from .ml import predictor_svm
-from .ml import predictor_regression
-from .ml import predictor_ann
 from .ml import predictor_ann_improved
 from .ml import getWeather
-from .ml import getNormalizedDayOfYear
+from .ml import getDayOfYear
 from .ml import secondsSinceMidnight
 from .ml import getWeekDayBinaryArray
-from .ml import getNormalizedWeather
-from .ml import secondsNormalizedSinceMidnight
+from .ml import getWeather
 
 from busy.settings import STATIC_ROOT
 
@@ -120,12 +116,9 @@ def onthegoform(request):
 
             busDirect = 'Phoenix Park' #Hard coded for testing, will be retrieved from DB later...
 
-            #normalize the input data
-            busNum = busNum
-
-            time_of_day = secondsNormalizedSinceMidnight()
-            weather = getNormalizedWeather()
-            dayOfYear = getNormalizedDayOfYear()
+            time_of_day = secondsSinceMidnight()
+            weather = getWeather()
+            dayOfYear = getDayOfYear()
             weekDay = getWeekDayBinaryArray()
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
@@ -142,7 +135,8 @@ def onthegoform(request):
                                                         bank_holiday=0,
                                                         event=0,
                                                         day_of_year=dayOfYear,
-                                                        weekday=weekDay)
+                                                        weekday=weekDay,
+                                                        delay=0) #0 FOR TESTING
 
             if journeyTimeSeconds == -1: #Model could not be retreived
                 # server side rendering - replace with AJAX for client side rendering in the future
