@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import requests
+import numpy as np
 import os
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
@@ -173,6 +174,8 @@ def onthegoform(request):
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
 
+
+
 def plannerform(request):
     if request.method == 'GET':
         form = PlannerForm(request.GET)
@@ -191,6 +194,45 @@ def plannerform(request):
             dateVar = form.cleaned_data['date_var']
 
             return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+str(timeVar)+"<br>"+"Date: "+str(dateVar)) #FOR DEBUGGING
+
+        else:
+            return HttpResponse("Oops! Form invalid :/ Try again?")
+
+
+def bestTime(request):
+    if request.method == 'GET':
+        form = PlannerForm(request.GET)
+
+        # Example of reading unvalidated form data. This may crash the app.
+        # print(form['busnum_var'].value())
+        # print(form.data['busnum_var'])
+
+        # Prefered way of handling forms, validate first before using.
+        if form.is_valid():
+            busVar = form.cleaned_data['busnum_var']
+            fromVar = form.cleaned_data['from_var']
+            toVar = form.cleaned_data['to_var']
+            busDirect = form.cleaned_data['bus_direction']
+            timeVar = form.cleaned_data['time_var']
+            dateVar = form.cleaned_data['date_var']
+
+
+            #time_var = time_var.to_datetime...
+            rolling_time = time_var - 3600
+
+            min_time = np.inf
+            for i in range(13):
+
+                trip_time = prediction
+
+                if trip_time < min_time:
+                    min_time = trip_time
+
+                rolling_time += 600
+
+
+
+            return min_time
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
