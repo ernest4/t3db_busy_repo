@@ -26,7 +26,7 @@ function initMap(){
 }
 
 
-//Makes a marker for and add onlick functionality
+//Makes a marker for busstops and add onlick functionality
 function addMarkers(latlong, color = "red", infowindow, infowindow_content, stopid, isUser = false){
   //create a marker
     var marker = new google.maps.Marker({
@@ -53,10 +53,7 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
     }
 }
 
-
-//______________________________________________________________________________________________________________________
-// ADITIONAL CODE FOR EXPLORE BRANCH
-
+// Explorer map point indormation
 var travel_links = [
        ['Dublin Airport', 53.4264513, -6.2521038],
        ['Europecar Dublin City', 53.3484939, -6.2400041],
@@ -106,6 +103,7 @@ var Outdoors = [
    ];
 
 
+// Function to create explorer markers
 function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_content){
   //create a marker
 
@@ -116,7 +114,7 @@ function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_c
         map: map,
         icon: icon
     });
-
+    // Keep track of the different groups of markers
     markerslists[type].push(marker);
 
     //Add the pop up box to marker for onclick
@@ -127,22 +125,18 @@ function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_c
 
 }
 
+// Fucntion to show groups of destinations at a time
 function showDestinations(destinations, type, icon){
+    // Set up info window for each type
     var infowindow = new google.maps.InfoWindow();
     for (var i = 0 ; i < destinations.length ; i++){
-
         var latlon = {lat: destinations[i][1], lng: destinations[i][2]};
-
         let infowindow_content = "<b>"+destinations[i][0]+"</b>";
-
-
+        //Create markers
         addExMarkers(latlon, destinations[i][0], type, icon,infowindow, infowindow_content);
 
         }
     }
-
-
-//______________________________________________________________________________________________________________________
 
 
 
@@ -359,6 +353,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
 
+
     // Functions to add explorer icons based on checkboxes
     $( '#ShoppingCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/ms/micons/shopping.png';
@@ -371,8 +366,6 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         }
         });
 
-
-
     $( '#TravelLinksCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png';
 
@@ -383,6 +376,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[0]);
         }
         });
+
     $( '#ActivitiesCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon14.png';
 
@@ -393,6 +387,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[2]);
         }
         });
+
     $( '#SightsCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon2.png';
 
@@ -403,6 +398,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[3]);
         }
         });
+
      $( '#FamilyCheck' ).click(function(){
          var icon = 'http://maps.google.com/mapfiles/ms/micons/hiker.png';
 
@@ -413,6 +409,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[4]);
         }
         });
+
     $( '#OutdoorsCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
 
@@ -423,7 +420,5 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[5]);
         }
         });
-
-
 
 });
