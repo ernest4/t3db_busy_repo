@@ -11,6 +11,7 @@ var sightsmarkers = [];
 // Create one object that contains all tourist markers
 var markerslists = [travelmarkers, Shopmarkers , activitiesmarkers , sightsmarkers,  familymarkers, outdoorsmarkers ];
 var userMarker; //User marker handle
+var boxeschecked //global var to count number of boxes checked in explore
 
 //Loads the map
 function initMap(){
@@ -25,7 +26,7 @@ function initMap(){
 }
 
 
-//Makes a marker for and add onlick functionality
+//Makes a marker for busstops and add onlick functionality
 function addMarkers(latlong, color = "red", infowindow, infowindow_content, stopid, isUser = false){
   //create a marker
     var marker = new google.maps.Marker({
@@ -52,59 +53,60 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
     }
 }
 
-
-//______________________________________________________________________________________________________________________
-// ADITIONAL CODE FOR EXPLORE BRANCH
-
+// Explorer map point indormation
 var travel_links = [
-       ['Dublin Airport', 53.4264513, -6.2521038, 5],
-       ['Europcar Dublin City', 53.3484939, -6.2400041, 4],
-       ['St Stephen\'s Green Luas', 53.3391899, -6.2635223, 3],
-       ['Dublin Connolly Station', 53.351829, -6.2517332, 2],
-       ['Aircoach O\'Connell Street', 53.3517839, -6.2633345, 1]
+       ['Dublin Airport', 53.4264513, -6.2521038],
+       ['Europecar Dublin City', 53.3484939, -6.2400041],
+       ['St Stephen\'s Green Luas', 53.3391899, -6.2635223],
+       ['Dublin Connolly Station', 53.351829, -6.2517332],
+       ['Aircoach O\'Connell Street', 53.3517839, -6.2633345]
    ];
 var Shopping = [
-       ['Grafton Street', 53.3421532, -6.2620394, 6],
-       ['Henry Street', 53.3493502, -6.2652141, 5],
-       ['Dundrum Shopping Centre', 53.2874809, -6.2438303, 4],
-       ['St Stephen\'s Green Shopping Centre', 53.3399155, -6.26479, 3],
-       ['Powerscourt Townhouse Centre', 53.3422148, -6.2639623, 2],
-       ['O\'Connell Street', 53.3512448, -6.2629729, 1]
+       ['Grafton Street', 53.3421532, -6.2620394],
+       ['Henry Street', 53.3493502, -6.2652141],
+       ['Dundrum Shopping Centre', 53.2874809, -6.2438303],
+       ['St Stephen\'s Green Shopping Centre', 53.3399155, -6.26479],
+       ['Powerscourt Townhouse Centre', 53.3422148, -6.2639623],
+       ['O\'Connell Street', 53.3512448, -6.2629729]
    ];
 
-   var Activities = [
-       ['AdventureRooms Dublin', 53.3494134, -6.2721929, 5],
-       ['Incognito Escape Room', 53.3434981, -6.2833655, 4],
-       ['Escape Boats', 53.3413279, -6.2411257, 3],
-       ['Hop on Hop Off', 53.3505611, -6.2631577, 2],
-       ['GoQuest Indoor Challenge Zone', 53.4007191, -6.3176467, 1]
+var Activities = [
+       ['AdventureRooms Dublin', 53.3494134, -6.2721929],
+       ['Incognito Escape Room', 53.3434981, -6.2833655],
+       ['Escape Boats', 53.3413279, -6.2411257],
+       ['Hop on Hop Off', 53.3505611, -6.2631577],
+       ['GoQuest Indoor Challenge Zone', 53.4007191, -6.3176467]
    ];
-   var SightSeeing = [
-       ['Trinity College Dublin', 53.3517996, -6.2699275, 8],
-       ['Guinness Storehouse', 53.3418772, -6.2889033, 7],
-       ['Saint Patrick\'s Cathedral', 53.3395186, -6.2736707, 6],
-       ['Temple Bar', 53.3454388, -6.2690681, 5],
-       ['Dublin Castle', 53.3428893, -6/2696224, 4],
-       ['Chris Church Cathedral', 53.3435162, -6.2732542, 3],
-       ['St Stephen\'s Green', 53.3369012, -6.2619592, 2],
-       ['City Hall', 53.3438672, -6.269369, 1]
+var SightSeeing = [
+       ['Trinity College Dublin', 53.3517996, -6.2699275],
+       ['Guinness Storehouse', 53.3418772, -6.2889033],
+       ['St. Patrick\'s Cathedral', 53.3395186, -6.2736707],
+       ['Temple Bar', 53.3454388, -6.2690681],
+       ['Dublin Castle', 53.3428893, -6/2696224],
+       ['Christ Church Cathedral', 53.3435162, -6.2732542],
+       ['St Stephen\'s Green', 53.3369012, -6.2619592],
+       ['City Hall', 53.3438672, -6.269369]
    ];
-   var Family = [
-       ['Dublin Zoo Phoenix Park', 53.3561967, -6.3074838, 5],
-       ['The Ark - Temple Bar', 53.3449479, -6.2672568, 4],
+var Family = [
+       ['Dublin Zoo Phoenix Park', 53.3561967, -6.3074838],
+       ['The Ark - Temple Bar', 53.3449479, -6.2672568],
        ['Viking Splash Tours', 53.3392812, -6.260881, 3],
-       ['Imaginosity, Dublin Children\'s Museum', 53.2774382, -6.2187599, 2],
-       ['The Chocolate Warehouse, Dublin', 53.3148733, -6.3343803, 1]    ];    var Outdoors = [
-       ['Phoenix Park', 53.3558855, -6.3320073, 5],
-       ['National Botanic Gardens', 53.3725525, -6.274101, 4],
-       ['Howth', 53.3776565, -6.200751, 3],
-       ['Graystones', 53.1450113, -6.1506192, 2],
-       ['Sandymount Strand', 53.3305784, -6.2332952, 1]
+       ['Imaginosity, Dublin Children\'s Museum', 53.2774382, -6.2187599],
+       ['The Chocolate Warehouse, Dublin', 53.3148733, -6.3343803]
+   ];
+var Outdoors = [
+       ['Phoenix Park', 53.3558855, -6.3320073],
+       ['National Botanic Gardens', 53.3725525, -6.274101],
+       ['Howth', 53.3776565, -6.200751],
+       ['Graystones', 53.1450113, -6.150619],
+       ['Sandymount Strand', 53.3305784, -6.2332952]
    ];
 
 
-function addExMarkers(latlong, color = "pink", attraction, type , icon){
+// Function to create explorer markers
+function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_content){
   //create a marker
+
     var marker = new google.maps.Marker({
         position: latlong,
         title: attraction,
@@ -112,27 +114,29 @@ function addExMarkers(latlong, color = "pink", attraction, type , icon){
         map: map,
         icon: icon
     });
-
+    // Keep track of the different groups of markers
     markerslists[type].push(marker);
 
     //Add the pop up box to marker for onclick
-   // google.maps.event.addListener(marker, 'click', function(content){
-   //     infowindow.setContent(infowindow_content);
-   //     infowindow.open(map, marker);
- //   });
+   google.maps.event.addListener(marker, 'click', function(content){
+       infowindow.setContent(infowindow_content);
+       infowindow.open(map, marker);
+   });
 
 }
 
+// Fucntion to show groups of destinations at a time
 function showDestinations(destinations, type, icon){
+    // Set up info window for each type
+    var infowindow = new google.maps.InfoWindow();
     for (var i = 0 ; i < destinations.length ; i++){
         var latlon = {lat: destinations[i][1], lng: destinations[i][2]};
-        addExMarkers(latlon,'blue', destinations[i][0], type, icon);
+        let infowindow_content = "<b>"+destinations[i][0]+"</b>";
+        //Create markers
+        addExMarkers(latlon, destinations[i][0], type, icon,infowindow, infowindow_content);
 
         }
     }
-
-
-//______________________________________________________________________________________________________________________
 
 
 
@@ -196,16 +200,6 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       //displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
       //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988});
     }
-
-    //------------------------------------------------------------------
-
-
-
-
-
-
-
-    //-----------------------------------------------------------------------
 
 
     function failedToGetPosition(error){
@@ -359,6 +353,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
 
+
     // Functions to add explorer icons based on checkboxes
     $( '#ShoppingCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/ms/micons/shopping.png';
@@ -372,7 +367,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#TravelLinksCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png'; //http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+        var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png';
 
         if (document.getElementById("TravelLinksCheck").checked) {
             showDestinations(travel_links, 0, icon);
@@ -381,6 +376,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[0]);
         }
         });
+
     $( '#ActivitiesCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon14.png';
 
@@ -391,6 +387,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[2]);
         }
         });
+
     $( '#SightsCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon2.png';
 
@@ -401,6 +398,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[3]);
         }
         });
+
      $( '#FamilyCheck' ).click(function(){
          var icon = 'http://maps.google.com/mapfiles/ms/micons/hiker.png';
 
@@ -411,6 +409,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[4]);
         }
         });
+
     $( '#OutdoorsCheck' ).click(function(){
         var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
 
@@ -421,10 +420,5 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             deleteMarkers(markerslists[5]);
         }
         });
-
-
-   // });
-
-
 
 });
