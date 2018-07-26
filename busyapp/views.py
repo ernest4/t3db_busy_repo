@@ -57,7 +57,7 @@ def directions(request):
                              'destination': params['destination'],
                              'mode': params['mode'],
                              'transit_mode': params['transit_mode'],
-                             'key': os.environ.get('directionsAPI')})
+                             'key': os.environ.get('DIRECTIONS_API')})
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
@@ -178,8 +178,8 @@ def plannerform(request):
         form = PlannerForm(request.GET)
 
         # Example of reading unvalidated form data. This may crash the app.
-        print(form['busnum_var'].value())
-        print(form.data['busnum_var'])
+        # print(form['busnum_var'].value())
+        # print(form.data['busnum_var'])
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
@@ -187,10 +187,11 @@ def plannerform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
             busDirect = form.cleaned_data['bus_direction']
-            timeVar = form.cleaned_data['time']
-            dateVar = form.cleaned_data['date']
+            timeVar = form.cleaned_data['time_var']
+            dateVar = form.cleaned_data['date_var']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+timeVar+"<br>"+"Date: "+dateVar) #FOR DEBUGGING
+            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+str(timeVar)+"<br>"+"Date: "+str(dateVar)) #FOR DEBUGGING
+
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
