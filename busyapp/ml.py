@@ -34,7 +34,7 @@ def getWeather():
         r = requests.get('http://api.openweathermap.org/data/2.5/weather',
                          params={'q': 'dublin', 'APPID': os.environ.get('APPID')})
         weatherData = r.json()
-        weatherCode = weatherData['weather'][0]['id']
+        weatherCode = weatherData['weather_id'][0]['id']
         return weatherCode
 
     #if app just started up...
