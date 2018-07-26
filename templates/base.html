@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>BUSy</title>
+  <title>BUSy</title>
 
   {% load static %}
 
-  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'CSS/global_style.css' %}" />
- 
-    <link rel="stylesheet" type="text/css" href="{% static 'CSS/response_style.css' %}" />
-    
-<link rel="stylesheet" type="text/css" href="{% static 'CSS/index_style.css' %}" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{% static 'CSS/global_style.css' %}" />
+
+  <link rel="stylesheet" type="text/css" href="{% static 'CSS/response_style.css' %}" />
+
+  <link rel="stylesheet" type="text/css" href="{% static 'CSS/index_style.css' %}" crossorigin="anonymous">
+  <meta charset="utf-8">
+
+  <!--DatePicker Stylesheet -->
+  <!-- Reference: http://api.jqueryui.com/datepicker/ -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+
+  <!-- ClockPicker Stylesheet -->
+  <!--Reference: https://www.jqueryscript.net/time-clock/Clock-Time-Input-Plugin-jQuery-clockInput.html-->
+  <link rel="stylesheet" href="{% static 'CSS/jquery.clockinput.css' %}" >
+
 </head>
 <body>
 
@@ -70,12 +80,21 @@
   </div>
 </footer>
 
-<!-- map scrips -->
+<!-- map scripts -->
 <script src="{% static 'JS/lodash.js '%}"></script>
 <script src="{% static 'JS/map.js' %}"></script>
 <script src="{% static 'JS/autocomplete.js' %}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcYnuEpcA6SjeLywisN1JO9AIpjRwYHMM&callback=initMap" type="text/javascript"></script>
+
+<!-- DatePicker scripts -->
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- ClockPicker scripts -->
+<script src="{% static 'JS/jquery.clockinput.js' %}"></script>
+
+
 </body>
 </html>
