@@ -34,9 +34,12 @@ def getWeather():
     def fetchRealTimeWeatherCode():
         r = requests.get('http://api.openweathermap.org/data/2.5/weather',
                          params={'q': 'dublin', 'APPID': os.environ.get('APPID')})
-        weatherData = r.json()
-        weatherCode = weatherData['weather_id'][0]['id']
-        return weatherCode
+        if r.status_code == requests.codes.ok:
+            weatherData = r.json()
+            weatherCode = weatherData['weather'][0]['id']
+            return weatherCode
+        else:
+            return None #Could not get weather
 
     #if app just started up...
     if hourSinceLastCall == 0:

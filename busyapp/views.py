@@ -11,6 +11,7 @@ from .ml import getDayOfYear
 from .ml import secondsSinceMidnight
 from .ml import getWeekDayBinaryArray
 from .ml import getWeather
+from .ml import getModelAndProgNum
 
 from busy.settings import STATIC_ROOT
 
@@ -114,12 +115,15 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
-            busDirect = 'Phoenix Park' #Hard coded for testing, will be retrieved from DB later...
+            busDirect = 'Dun Laoghaire' #Hard coded for testing, will be retrieved from DB later...
 
             time_of_day = secondsSinceMidnight()
             weather = getWeather()
             dayOfYear = getDayOfYear()
             weekDay = getWeekDayBinaryArray()
+
+            # Fetch the right model
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirect, fromVar, toVar, testing=False)
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
@@ -162,8 +166,10 @@ def onthegoform(request):
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime' : journeyTime,
-                                                    'cost' : cost,
-                                                    'bestStartTime' : bestStartTime})
+                                                    #'cost' : cost,
+                                                    #'bestStartTime' : bestStartTime})
+                                                    'cost': start_stop, #FOR DEBUGGING
+                                                    'bestStartTime': end_stop}) #FOR DBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
