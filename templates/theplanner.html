@@ -3,67 +3,64 @@
 
 {% block content %}
 <div class="jumbotron text-center">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <p>The Planner</p>
-        <br>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6" style="background-color:white;">
-        <div id="map" style="width:100%; height:400px;">
-          <!-- google maps go here -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <p>The Planner</p>
+                <br>
+            </div>
         </div>
-      </div>
-      <div class="col-sm-3">
-        <br>
-        <form action="/planner/formdata" method="get">
 
-          <!--Input box for route number with autocomplete RTPI query-->
-          <div class="form-group">
-            <label>Bus Number:</label>
-            <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
-            <datalist id="route_list"></datalist>
-          </div>
+        <div class="row">
+            <div class="col-sm-8" style="background-color:white;">
+                <div id="map" style="width:100%; height:400px;">
+                    <!-- google maps go here -->
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <br>
+                <form action="/planner/formdata" method="get">
+                    <!-- Input box for "from" with Google directions API -->
+                    <div class="form-group">
+                        <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="Origin" name="from_var" required>
+                        <datalist id="stop_list"></datalist>
+                    </div>
 
-          <!-- Input box for "from" with autocomplete RTPI query -->
-          <div class="form-group">
-            <label>From:</label>
-            <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 736" name="from_var" required>
-            <datalist id="stop_list"></datalist>
-          </div>
+                    <!-- Input box for "to" with Google directions API -->
+                    <div class="form-group">
+                        <!-- AUTOCOMPLETE USER INPUT -->
+                        <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="Destination" name="to_var" required>
+                        <datalist id="stop_list"></datalist>
+                    </div>
 
-          <!-- Input box for "to" with autocomplete RTPI query -->
-          <div class="form-group">
-            <label>To:</label>
-            <!-- AUTOCOMPLETE USER INPUT -->
-            <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="e.g. 840" name="to_var" required>
-            <datalist id="stop_list"></datalist>
-          </div>
+                    <!-- Input box for date -->
+                    <div class="form-group">
+                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var" required>
+                    </div>
 
-          <div class="form-group">
-            <label>Direction:</label>
-            <input id="direction" class="form-control" type="text" placeholder="0 or 1" name="bus_direction" required>
-          </div>
+                    <!-- Input box for time -->
+                    <div class="form-group">
+                        <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time" name="time_var" value="00:00" required>
+                    </div>
 
-          <div class="form-group">
-            <label>Time:</label>
-            <input id="time" class="form-control" type="text" placeholder="e.g. 13:30" name="time_var" required>
-          </div>
+                    <button class="btn btn-primary" type="submit">Submit</button>
 
-          <div class="form-group">
-            <label>Date:</label>
-            <input id="date" class="form-control" type="text" placeholder="e.g. 8/20/18" name="date_var" required>
-          </div>
+                </form>
 
-          <button class="btn btn-primary" type="submit">Submit</button>
+                <div id="datepicker"></div>
 
-        </form>
+                <!--Script to render clockpicker and datepicker-->
+                <script>
+                    $(document).ready(function() {
+                        $("input[type=time]").clockInput(false);
+                        $("#datepicker").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
+                    })
+                </script>
 
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 {% endblock %}

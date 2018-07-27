@@ -1,19 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import requests
+import numpy as np
 import os
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
-from .ml import predictor_svm
-from .ml import predictor_regression
-from .ml import predictor_ann
 from .ml import predictor_ann_improved
 from .ml import getWeather
-from .ml import getNormalizedDayOfYear
+from .ml import getDayOfYear
 from .ml import secondsSinceMidnight
 from .ml import getWeekDayBinaryArray
-from .ml import getNormalizedWeather
-from .ml import secondsNormalizedSinceMidnight
+from .ml import getWeather
+from .ml import getModelAndProgNum
 
 from busy.settings import STATIC_ROOT
 
@@ -120,21 +118,18 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
-            busDirect = 'Phoenix Park' #Hard coded for testing, will be retrieved from DB later...
-
-            #normalize the input data
-            busNum = busNum
-
-            time_of_day = secondsNormalizedSinceMidnight()
-            weather = getNormalizedWeather()
-            dayOfYear = getNormalizedDayOfYear()
+            time_of_day = secondsSinceMidnight()
+            weather = getWeather()
+            dayOfYear = getDayOfYear()
             weekDay = getWeekDayBinaryArray()
 
+            # Fetch the right model
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
+
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
-            journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
-                                                        busDirection=busDirect,
-                                                        start_stop=fromVar,
-                                                        end_stop=toVar,
+            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
+                                                        start_stop=start_stop,
+                                                        end_stop=end_stop,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
                                                         secondary_school=0,
@@ -144,7 +139,8 @@ def onthegoform(request):
                                                         bank_holiday=0,
                                                         event=0,
                                                         day_of_year=dayOfYear,
-                                                        weekday=weekDay)
+                                                        weekday=weekDay,
+                                                        delay=0) #0 FOR TESTING
 
             if journeyTimeSeconds == -1: #Model could not be retreived
                 # server side rendering - replace with AJAX for client side rendering in the future
@@ -170,10 +166,14 @@ def onthegoform(request):
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime' : journeyTime,
-                                                    'cost' : cost,
-                                                    'bestStartTime' : bestStartTime})
+                                                    #'cost' : cost,
+                                                    #'bestStartTime' : bestStartTime})
+                                                    'cost': start_stop, #FOR DEBUGGING
+                                                    'bestStartTime': end_stop}) #FOR DBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
+
+
 
 
 def plannerform(request):
@@ -199,28 +199,43 @@ def plannerform(request):
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
 
-def accessibilityform(request):
+def bestTime(request):
     if request.method == 'GET':
-        form = AccessibilityForm(request.GET)
+        form = PlannerForm(request.GET)
 
         # Example of reading unvalidated form data. This may crash the app.
-        print(form['busnum_var'].value())
-        print(form.data['busnum_var'])
+        # print(form['busnum_var'].value())
+        # print(form.data['busnum_var'])
 
-        #Prefered way of handling forms, validate first before using.
+        # Prefered way of handling forms, validate first before using.
         if form.is_valid():
             busVar = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
             busDirect = form.cleaned_data['bus_direction']
-            timeVar = form.cleaned_data['time']
-            dateVar = form.cleaned_data['date']
+            timeVar = form.cleaned_data['time_var']
+            dateVar = form.cleaned_data['date_var']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+timeVar+"<br>"+"Date: "+dateVar) #FOR DEBUGGING
+
+            #time_var = time_var.to_datetime...
+            time_var = 0 #ONLY FOR TESTING
+            rolling_time = time_var - 3600
+
+            min_time = np.inf
+            for i in range(13):
+                prediction = 0 #ONLY FOR TESTING
+                trip_time = prediction
+
+                if trip_time < min_time:
+                    min_time = trip_time
+
+                rolling_time += 600
+
+            return min_time
+
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
-        
-        
+
 def touristform(request):
     if request.method == 'GET':
         form = TouristForm(request.GET)
