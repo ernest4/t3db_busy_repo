@@ -124,7 +124,7 @@ def onthegoform(request):
             weekDay = getWeekDayBinaryArray()
 
             # Fetch the right model
-            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
+            ann_improved, start_stop, end_stop, query_result = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
@@ -168,7 +168,8 @@ def onthegoform(request):
                                                     'journeyTime' : journeyTime,
                                                     #'cost' : cost,
                                                     #'bestStartTime' : bestStartTime})
-                                                    'cost': start_stop, #FOR DEBUGGING
+                                                    # 'cost': start_stop, #FOR DEBUGGING
+                                                    'cost': query_result, # FOR DEBUGGING
                                                     'bestStartTime': end_stop}) #FOR DBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")

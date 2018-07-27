@@ -5,6 +5,7 @@ import os
 import datetime
 import json
 import time
+import psycopg2
 from pprint import pprint
 from sklearn.externals import joblib
 
@@ -74,17 +75,39 @@ def getWeekDayBinaryArray():
     weekDay[indexOfToday] = 1
     return weekDay
 
+def test_db_connect():
+    # Connect to db
+    conn = psycopg2.connect("dbname=dfb6d81u4nkjvn user=wjsijzcxzxlrjv")
+
+    # Open a cursor to perform db operation
+    cur = conn.cursor()
+
+    # Execute a command: this creates a new table
+    # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
+    cur.execute("SELECT * FROM stops WHERE id = 16680;")
+
+    # Obtain data as Python object
+    result = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    # Return result
+    return result
+
 
 def getModelAndProgNum(busNum, start_stop, end_stop, testing):
     # To uppercase
     busNum = busNum.upper()
+
+    result = test_db_connect()
 
     #DATABASE ACCES CODE HERE....
 
     #Get the model, start_prog_num (in DB), end_prog_num (in DB)
     # based on busNum, start_stop, end_stop & direction (in DB)
 
-    # DATABASE ACCES CODE HERE....
+    # DATABASE ACCESS CODE HERE....
     direction = '2' #FOR TESTING 2 = outbound [1 in database]
     start_prog_num = 1 #FOR TESTING
     end_prog_num = 28 #FOR TESTING
@@ -94,9 +117,9 @@ def getModelAndProgNum(busNum, start_stop, end_stop, testing):
     file = busNum + '_' + direction  # replace busDirection with direction when not testing
 
     if testing:
-        return joblib.load('static/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num
+        return joblib.load('static/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num, result
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num
+        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num, result
 
 
 def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):

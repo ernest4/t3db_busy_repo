@@ -16,5 +16,6 @@ pandas = "*"
 scikit-learn = "*"
 scipy = "*"
 requests = "*"
+dj-database-url = "*"
 
 [dev-packages]
