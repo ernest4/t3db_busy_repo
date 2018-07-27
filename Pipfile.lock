@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "00a85488742f3d47e0a0536afdceb00a1685dd10a68c13f8623b536980436ef6"
+            "sha256": "d3367567756943d25cfe79879bd26392b43ca50f8020b28f7ad509d3b35cb54e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -45,21 +45,6 @@
             "index": "pypi",
             "version": "==2.0.7"
         },
-        "django-bootstrap-datepicker-plus": {
-            "hashes": [
-                "sha256:042248ccd500538b368f848dfc8361f50a8453087e9df9e1e6408efd4947f323",
-                "sha256:c511359a99115be32c55c0103906ef88ef2278961ee46c3a0fc2af022fa29542"
-            ],
-            "index": "pypi",
-            "version": "==3.0.4"
-        },
-        "django-bootstrap3": {
-            "hashes": [
-                "sha256:1a5cc3583a208f423b8a081d3fb432957a3e82416512cbafc4a3b10f27cc884a"
-            ],
-            "index": "pypi",
-            "version": "==10.0.1"
-        },
         "django-heroku": {
             "hashes": [
                 "sha256:2bc690aab89eedbe01311752320a9a12e7548e3b0ed102681acc5736a41a4762",
@@ -67,14 +52,6 @@
             ],
             "index": "pypi",
             "version": "==0.3.1"
-        },
-        "django-jquery": {
-            "hashes": [
-                "sha256:414ac1083708ac71cc771612e7287702c939d06cd357fd53bb1271a4f6255115",
-                "sha256:e7e2ac14234bac26be937e448d94efd6d37ee2f3cdbaa2def3c8e74c2afb2b9a"
-            ],
-            "index": "pypi",
-            "version": "==3.1.0"
         },
         "gunicorn": {
             "hashes": [

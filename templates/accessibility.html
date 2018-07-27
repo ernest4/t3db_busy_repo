@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="jumbotron text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Accessibility Mode</h2>
+          <br>
+      </div>
+    </div>
+     
+      <div class="col-sm-12">
+        <br>
+        <form action="/planner/formdata" method="get">
+
+          <!--Input box for route number with autocomplete RTPI query-->
+          <div class="form-group">
+              <span class="sr-only">Bus Route Number</span> 
+            <label>Bus Number:</label>
+            <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" name="busnum_var" required>
+            <datalist id="route_list"></datalist>
+          </div>
+
+          <!-- Input box for "from" with autocomplete RTPI query -->
+          <div class="form-group">
+              <span class="sr-only">Start Location</span> 
+            <label>From:</label>
+            <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text" name="from_var" required>
+            <datalist id="stop_list"></datalist>
+          </div>
+
+          <!-- Input box for "to" with autocomplete RTPI query -->
+          <div class="form-group">
+               <span class="sr-only">End Location</span> 
+            <label>To:</label>
+            <!-- AUTOCOMPLETE USER INPUT -->
+            <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text" name="to_var" required>
+            <datalist id="stop_list"></datalist>
+          </div>
+
+          <div class="form-group">
+               <span class="sr-only">Time, For Example 22:30 </span> 
+            <label>Time:</label>
+            <input id="time" class="form-control" type="text" name="time" required>
+          </div>
+
+          <div class="form-group">
+               <span class="sr-only">Date, for example, 23/07/2018</span> 
+            <label>Date:</label>
+            <input id="date" class="form-control" type="text" name="date" required>
+          </div>
+            
+         <span class="sr-only">Please Click Submit</span>     
+          <button class="btn btn-primary" type="submit">Submit</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

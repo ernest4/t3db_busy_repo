@@ -5,16 +5,13 @@ import numpy as np
 import os
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
-from .ml import predictor_svm
-from .ml import predictor_regression
-from .ml import predictor_ann
 from .ml import predictor_ann_improved
 from .ml import getWeather
-from .ml import getNormalizedDayOfYear
+from .ml import getDayOfYear
 from .ml import secondsSinceMidnight
 from .ml import getWeekDayBinaryArray
-from .ml import getNormalizedWeather
-from .ml import secondsNormalizedSinceMidnight
+from .ml import getWeather
+from .ml import getModelAndProgNum
 
 from busy.settings import STATIC_ROOT
 
@@ -36,6 +33,9 @@ def theplanner(request):
 
 def tourist(request):
     return render(request, 'tourist.html')
+
+def accessibility(request):
+    return render(request, 'accessibility.html')
 
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
@@ -118,21 +118,18 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
-            busDirect = 'Phoenix Park' #Hard coded for testing, will be retrieved from DB later...
-
-            #normalize the input data
-            busNum = busNum
-
-            time_of_day = secondsNormalizedSinceMidnight()
-            weather = getNormalizedWeather()
-            dayOfYear = getNormalizedDayOfYear()
+            time_of_day = secondsSinceMidnight()
+            weather = getWeather()
+            dayOfYear = getDayOfYear()
             weekDay = getWeekDayBinaryArray()
 
+            # Fetch the right model
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
+
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
-            journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
-                                                        busDirection=busDirect,
-                                                        start_stop=fromVar,
-                                                        end_stop=toVar,
+            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
+                                                        start_stop=start_stop,
+                                                        end_stop=end_stop,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
                                                         secondary_school=0,
@@ -142,7 +139,8 @@ def onthegoform(request):
                                                         bank_holiday=0,
                                                         event=0,
                                                         day_of_year=dayOfYear,
-                                                        weekday=weekDay)
+                                                        weekday=weekDay,
+                                                        delay=0) #0 FOR TESTING
 
             if journeyTimeSeconds == -1: #Model could not be retreived
                 # server side rendering - replace with AJAX for client side rendering in the future
@@ -168,8 +166,10 @@ def onthegoform(request):
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime' : journeyTime,
-                                                    'cost' : cost,
-                                                    'bestStartTime' : bestStartTime})
+                                                    #'cost' : cost,
+                                                    #'bestStartTime' : bestStartTime})
+                                                    'cost': start_stop, #FOR DEBUGGING
+                                                    'bestStartTime': end_stop}) #FOR DBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
@@ -218,11 +218,12 @@ def bestTime(request):
 
 
             #time_var = time_var.to_datetime...
+            time_var = 0 #ONLY FOR TESTING
             rolling_time = time_var - 3600
 
             min_time = np.inf
             for i in range(13):
-
+                prediction = 0 #ONLY FOR TESTING
                 trip_time = prediction
 
                 if trip_time < min_time:
@@ -230,13 +231,10 @@ def bestTime(request):
 
                 rolling_time += 600
 
-
-
             return min_time
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
-
 
 def touristform(request):
     if request.method == 'GET':
