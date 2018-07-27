@@ -5,7 +5,21 @@
         
 }
 
-.glyphicon {
+.erb-image-wrapper{
+    max-width:90%;
+    height:auto;
+    position: relative;
+    display:block;
+    margin:0 auto;
+}
+
+.erb-image-wrapper img{
+    max-width:100% !important;
+    height:auto;
+    display:block;
+}
+
+glyphicon {
     color:black;
   position:relative;
   top:10px;
