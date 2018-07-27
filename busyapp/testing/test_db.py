@@ -4,6 +4,7 @@ from sklearn.externals import joblib
 import datetime
 import json
 import psycopg2
+import os
 
 
 class ModelTest(TestCase):

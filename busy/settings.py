@@ -142,6 +142,5 @@ django_heroku.settings(locals())
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 # This needs to be at the bottom of the file
-DATABASES = { 'default': dj_database_url.config(conn_max_age=600, ssl_require=True),
-              'TEST': {'NAME': 'testdb',},}
+DATABASES = { 'default': dj_database_url.config(conn_max_age=600, ssl_require=True) }
 

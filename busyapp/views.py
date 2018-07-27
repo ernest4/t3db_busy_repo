@@ -169,7 +169,7 @@ def onthegoform(request):
                                                     #'cost' : cost,
                                                     #'bestStartTime' : bestStartTime})
                                                     # 'cost': start_stop, #FOR DEBUGGING
-                                                    'cost': query_result, # FOR DEBUGGING
+                                                    'cost': query_result, #FOR DEBUGGING
                                                     'bestStartTime': end_stop}) #FOR DBUGGING
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
