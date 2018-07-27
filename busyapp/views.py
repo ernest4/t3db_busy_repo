@@ -34,6 +34,9 @@ def theplanner(request):
 def tourist(request):
     return render(request, 'tourist.html')
 
+def accessibility(request):
+    return render(request, 'accessibility.html')
+
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
     if r.status_code == requests.codes.ok:
@@ -115,19 +118,16 @@ def onthegoform(request):
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
 
-            busDirect = 'Dun Laoghaire' #Hard coded for testing, will be retrieved from DB later...
-
             time_of_day = secondsSinceMidnight()
             weather = getWeather()
             dayOfYear = getDayOfYear()
             weekDay = getWeekDayBinaryArray()
 
             # Fetch the right model
-            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirect, fromVar, toVar, testing=False)
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
-            journeyTimeSeconds = predictor_ann_improved(busNum=busNum,
-                                                        busDirection=busDirect,
+            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
                                                         start_stop=fromVar,
                                                         end_stop=toVar,
                                                         time_of_day=time_of_day,
@@ -218,11 +218,12 @@ def bestTime(request):
 
 
             #time_var = time_var.to_datetime...
+            time_var = 0 #ONLY FOR TESTING
             rolling_time = time_var - 3600
 
             min_time = np.inf
             for i in range(13):
-
+                prediction = 0 #ONLY FOR TESTING
                 trip_time = prediction
 
                 if trip_time < min_time:
@@ -230,13 +231,10 @@ def bestTime(request):
 
                 rolling_time += 600
 
-
-
             return min_time
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
-
 
 def touristform(request):
     if request.method == 'GET':

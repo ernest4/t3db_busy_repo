@@ -75,9 +75,11 @@ def getWeekDayBinaryArray():
     return weekDay
 
 
-def getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing):
+def getModelAndProgNum(busNum, start_stop, end_stop, testing):
     # To uppercase
     busNum = busNum.upper()
+
+    busDirection = 'Dun Laoghaire'
 
     if testing:
         routesFileString = 'static/bus_data/routes.json'
@@ -119,9 +121,7 @@ def getProgNum(data, busNum, direction, stop_id):
         return
 
 
-def predictor_ann_improved(busNum, busDirection, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):
-    #Fetch the right model
-    ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, busDirection, start_stop, end_stop, testing)
+def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):
 
     #Abort if model could not be found
     if ann_improved is None:

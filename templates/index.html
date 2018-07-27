@@ -24,20 +24,32 @@
     
     
 <!-- On The Go section to persona page -->    
-    <br>
 
+        
+      
     <div class="container">
+        <div class="row">    
+        <div class="col-sm-1"> 
+            <br>
+            
+         <span class="sr-only">Please select for Screen Reader Compatibility</span> 
+            
+             <a class="action" href="/accessibility"> 
+                <i class = "glyphicon glyphicon-search">
+                 </i> 
+            </a>
+        </div>
+            
        <form action="/onthego/formdata" method="get">
       <div class="col-sm-3">
-  
           <div class="form-group">
-            <p2>Bus Number:</p2>
+            <p2>Bus Number:</p2>   
             <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
             <div class="ui-widget"> <!-- jQuery autocomplete UI -->
               <input id="bus_number" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required>
               </div></div></div>
        
-      <div class="col-sm-4">
+      <div class="col-sm-3">
 
           <div class="form-group">
             <p2>From:</p2>
@@ -46,7 +58,6 @@
               <input id="location_from" class="form-control" type="text" placeholder="e.g. 736 or Parnell Square" name="from_var" required>
               </div></div></div>
       <div class="col-sm-4">
-
           <div class="form-group">
             <p2>To:</p2>
             <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
@@ -66,8 +77,10 @@
     
 <div class="jumbotron text-center">
   <div class="container">
+      </div>  
     <div class="row">
       <div class="col-sm-12">
+          
           <h2>Welcome to BUSy </h2> 
           <p> Click To Select Your Mood</p>
         <hr>
@@ -76,35 +89,33 @@
     </div>
     <div class="row">
       <div class="col-sm-4">
-        <a type="button" id="cardbutton" class="btn btn-lg btn-primary" href="/onthego"><img src="{% static 'images/runningman.PNG'%}" alt="runningman"> <hr>Go</a>
-           <p>Buses coming soon.</p> 
-     <a class="action" href="/onthego">
+        
+            <a type="button" id="cardbutton" class="btn btn-lg btn-primary" href="/onthego"><img src="{% static 'images/runningman.PNG'%}" alt="Buses Coming Now"> <hr>Go</a>
+                <p>Buses coming soon.</p> 
+          <!-- <a class="action" href="/onthego">
             <i class = "glyphicon glyphicon-circle-arrow-right"></i>
-          </a>
-
-        
-      </div>
-      <div class="col-sm-4">
-        <a type="button" class="btn btn-lg btn-primary" href="/theplanner"><img src="{% static 'images/planner.PNG'%}" alt="planner"> <hr>Plan</a>
+            </a> -->
+        </div>
+      
+        <div class="col-sm-4"> 
+            <a type="button" class="btn btn-lg btn-primary" href="/theplanner"><img src="{% static 'images/planner.PNG'%}" alt="Buses leaving in the future"> <hr>Plan</a>
           <p>Plan your trip ahead.</p>
-
-                <a class="action" href="/theplanner">
-               <i class = "glyphicon glyphicon-circle-arrow-right"></i> </a>
+            <!--    <a class="action" href="/theplanner">
+               <i class = "glyphicon glyphicon-circle-arrow-right"></i> </a> -->
 
         
       </div>
       <div class="col-sm-4">
-        <a type="button" class="btn btn-lg btn-primary" href="/tourist"><img src="{% static 'images/tourist.PNG'%}" alt="tourist"> <hr>Explore</a>
+            <a type="button" class="btn btn-lg btn-primary" href="/tourist"><img src="{% static 'images/tourist.PNG'%}" alt="Points of Interest In Dublin"> <hr>Explore</a>
           <p>Find your way around the city.</p>
- 
-                <a class="action" href="/tourist">
-                <i class = "glyphicon glyphicon-circle-arrow-right"></i> </a>
+             <!--   <a class="action" href="/tourist">
+                <i class = "glyphicon glyphicon-circle-arrow-right"></i> </a> -->
 
         
       </div>
     </div>
   </div>
 </div>
-
+    
 </body>
 </html>
