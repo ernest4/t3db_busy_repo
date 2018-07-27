@@ -51,6 +51,24 @@ def getWeather():
 
     return weatherCode
 
+def getLiveBusInfo(stop_id, route_id):
+    times=[]
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?"
+                     "stopid="+stop_id+"&routeid="+route_id+"&maxresults&operator&format=json")
+    if r.status_code == requests.codes.ok:
+        data = json.loads(r.content.decode('utf-8'))
+        if len(data['results']) > 0:
+            i = 0
+            while i < 3 and i<len(data['results']):
+                delay = 
+                times+=(data['results'][i]['arrivaldatetime'],
+                i+=1
+            return times
+        else:
+            return 'No upcoming buses'
+
+
+
 def getNormalizedWeather():
     return getWeather()/804 #Max weather code value is 804
 
