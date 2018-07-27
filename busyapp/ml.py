@@ -79,46 +79,24 @@ def getModelAndProgNum(busNum, start_stop, end_stop, testing):
     # To uppercase
     busNum = busNum.upper()
 
-    busDirection = 'Dun Laoghaire'
+    #DATABASE ACCES CODE HERE....
+
+    #Get the model, start_prog_num (in DB), end_prog_num (in DB)
+    # based on busNum, start_stop, end_stop & direction (in DB)
+
+    # DATABASE ACCES CODE HERE....
+    direction = '2' #FOR TESTING 2 = outbound [1 in database]
+    start_prog_num = 1 #FOR TESTING
+    end_prog_num = 28 #FOR TESTING
+
+    # DATABASE ACCES CODE HERE....
+
+    file = busNum + '_' + direction  # replace busDirection with direction when not testing
 
     if testing:
-        routesFileString = 'static/bus_data/routes.json'
+        return joblib.load('static/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num
     else:
-        routesFileString = STATIC_ROOT+'/bus_data/routes.json'
-
-    with open(routesFileString) as f:
-        data = json.load(f)
-
-        try:
-            # Match bus direction 'I' / 1 inbound, 'O' / 2 outbound
-            if busDirection in data[busNum]['I'][1]:
-                direction = '2'
-                start_prog_num = getProgNum(data, busNum, 'I', start_stop)
-                end_prog_num = getProgNum(data, busNum, 'I', end_stop)
-
-            elif busDirection in data[busNum]['O'][1]:
-                direction = '1'
-                start_prog_num = getProgNum(data, busNum, 'O', start_stop)
-                end_prog_num = getProgNum(data, busNum, 'O', end_stop)
-
-            file = busNum + '_' + direction  # replace busDirection with direction when not testing
-
-        except:
-            return
-
-    if testing:
-        return joblib.load('static/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
-    else:
-        return joblib.load(STATIC_ROOT+'/ml_models/' + file + '.pkl'), start_prog_num, end_prog_num
-
-
-def getProgNum(data, busNum, direction, stop_id):
-    # Return program number + 1 as index in model file names starts with 1
-    try:
-        return data[busNum][direction][0]['stop' + str(stop_id)][0] + 1
-
-    except:
-        return
+        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num
 
 
 def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):

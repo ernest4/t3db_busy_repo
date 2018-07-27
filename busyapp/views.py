@@ -128,8 +128,8 @@ def onthegoform(request):
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
-                                                        start_stop=fromVar,
-                                                        end_stop=toVar,
+                                                        start_stop=start_stop,
+                                                        end_stop=end_stop,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
                                                         secondary_school=0,
