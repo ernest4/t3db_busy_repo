@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.extras
 import os
 
 
@@ -8,18 +9,25 @@ def test_db_connect():
 
     conn = psycopg2.connect(DATABASE_URL)
 
-    # Open a cursor to perform db operation
-    cur = conn.cursor()
+    # Open a (dictionary) cursor to perform db operation
+    # For documentation: http://initd.org/psycopg/docs/extras.html
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     # Execute a command: this creates a new table
     # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
     cur.execute("SELECT * FROM stops WHERE route_id = '{0}';".format('46A'))
 
     # Obtain data as Python object
-    result = cur.fetchone()
+    result = cur.fetchone() #one line only, even if the query returns multiple records.
+    #result = cur.fetchone() #multiple results, returns all the records from the query.
 
-    # Print result
+    # Print result in various ways...
     print(result)
+    print(result['id'])
+    print(result['route_id'])
+
+    for index, value in enumerate(result):
+        print('index: ',index,' value: ',value,' program number: ',index-5)
 
     cur.close()
     conn.close()
