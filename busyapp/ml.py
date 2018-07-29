@@ -143,6 +143,7 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
     #starting values
     startStopProgramNumber = 0
     endStopProgramNumber = 0
+    direction = ''
 
     indexOfToday = datetime.datetime.today().weekday()
     serviceIDs = {"y102p": [0, 0, 0, 0, 0, 1, 0],
@@ -203,9 +204,21 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
     file = busNum + '_' + direction + '.pkl' # replace busDirection with direction when not testing
 
     if testing:
-        return joblib.load('static/ml_models_final/' + file), startStopProgramNumber, endStopProgramNumber
+        #Running locally with command => python manage.py runserver localhost:8765
+        try:
+            modelPickle = joblib.load('static/ml_models_final/' + file)
+        except FileNotFoundError:
+            return None, None, None
+        # If everything OK, return the answers
+        return modelPickle, startStopProgramNumber, endStopProgramNumber
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file), startStopProgramNumber, endStopProgramNumber
+        #Runing on Heroku or locally with command => heroku local web -f Procfile.windows (for windows)
+        try:
+            modelPickle = joblib.load(STATIC_ROOT+'/ml_models_final/' + file)
+        except FileNotFoundError:
+            return None, None, None
+        # If everything OK, return the answers
+        return modelPickle, startStopProgramNumber, endStopProgramNumber
 
 
 def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):

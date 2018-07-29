@@ -126,6 +126,21 @@ def onthegoform(request):
             # Fetch the right model
             ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
 
+            if ann_improved is None:  # Model could not be retreived
+                # server side rendering - replace with AJAX for client side rendering in the future
+                errorMSG = "Oops something went wrong :/"
+                errorMSG2 = "The combination of route and stops you have entered may not be valid \
+                            and/or may not be in service on this particular weekday."
+                errorMSG3 = "Please check your inputs and try again."
+                return render(request, 'onthego.html', {'busNum': busNum,
+                                                        'from': fromVar,
+                                                        'to': toVar,
+                                                        'journeyTime': errorMSG,
+                                                        'cost': errorMSG2,
+                                                        'bestStartTime': errorMSG3,
+                                                        'error': 1}) #Error code > 0 means something bad happened...
+
+
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
                                                         start_stop=start_stop,
@@ -141,16 +156,6 @@ def onthegoform(request):
                                                         day_of_year=dayOfYear,
                                                         weekday=weekDay,
                                                         delay=0) #0 FOR TESTING
-
-            if journeyTimeSeconds == -1: #Model could not be retreived
-                # server side rendering - replace with AJAX for client side rendering in the future
-                errorMSG = "Oops something went wrong :/"
-                return render(request, 'onthego.html', {'busNum': busNum,
-                                                        'from': fromVar,
-                                                        'to': toVar,
-                                                        'journeyTime': errorMSG,
-                                                        'cost': errorMSG,
-                                                        'bestStartTime': errorMSG})
 
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
@@ -169,7 +174,8 @@ def onthegoform(request):
                                                     #'cost' : cost,
                                                     #'bestStartTime' : bestStartTime})
                                                     'cost': start_stop, #FOR DEBUGGING
-                                                    'bestStartTime': end_stop}) #FOR DBUGGING
+                                                    'bestStartTime': end_stop, #FOR DBUGGING
+                                                    'error': 0}) #0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 

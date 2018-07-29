@@ -86,6 +86,9 @@
           <li class="list-group-item">To: {{ to }}</li>
         </ul>
       </div>
+
+      {% if error == 0 %}
+
       <div class="col-sm-6">
         <ul class="list-group">
           <h2>Our Estimation</h2>
@@ -101,8 +104,25 @@
           <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
         </ul>
       </div>
+
+      {% else %}
+      <!-- there's an error, display error messages -->
+      <div class="col-sm-6">
+        <ul class="list-group">
+          <h2>Our Estimation</h2>
+          <li class="list-group-item">{{ journeyTime}}</li>
+
+          <li class="list-group-item">{{ cost }}</li>
+          <li class="list-group-item">{{ bestStartTime }}</li>
+        </ul>
+      </div>
+
+      {% endif %}
+
     </div>
   </div>
+
   {% endif %}
+
 </div>
 {% endblock %}
