@@ -144,6 +144,21 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
     startStopProgramNumber = 0
     endStopProgramNumber = 0
 
+    indexOfToday = datetime.datetime.today().weekday()
+    serviceIDs = {"y102p": [0, 0, 0, 0, 0, 1, 0],
+                  "y102q": [0, 0, 0, 0, 1, 0, 0],
+                  "y102f": [1, 1, 1, 1, 1, 0, 0],
+                  "y102g": [1, 0, 0, 0, 0, 0, 1],
+                  "y102e": [0, 0, 0, 0, 0, 1, 0]}
+
+    relevantServiceIDs = []
+
+    #Compile a list of service_ids that are valid for current day of week in order to filter out the correct rows in DB
+    # e.g. if today was Friday (indexOfToday == 4) then the relevantServiceIDs == ['y102q', 'y102f']
+    for serviceID in serviceIDs:
+        if serviceIDs[serviceID][indexOfToday] == 1:
+            relevantServiceIDs.append(serviceID)
+
     # Connect to db
     DATABASE_URL = os.environ.get('DATABASE_URL')  # Get the connection URI string
     conn = psycopg2.connect(DATABASE_URL)
@@ -162,12 +177,14 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
 
     allRouteInfoFound = False
     for index, result in enumerate(results):  # For every row in the returned query
+        startStopProgramNumber = 0
         if allRouteInfoFound:
             break  # Found all the info
-        startStopProgramNumber = 0
+        if result['service_id'] not in relevantServiceIDs: #The row is not valid as it does not contain information relevant to today's date
+            continue
 
         for index, value in enumerate(result):  # For every column in the row
-            if index > 6 and value is not None:
+            if index > 5 and value is not None:
                 if value.endswith(start_stop):
                     startStopProgramNumber = index - 5
                     continue
