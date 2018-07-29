@@ -117,29 +117,6 @@ def getWeekDayBinaryArray():
     return weekDay
 
 
-def test_db_connect():
-    DATABASE_URL = os.environ.get('DATABASE_URL') #Get the connection URI string
-    conn = psycopg2.connect(DATABASE_URL) # Connect to db
-
-    # Open a cursor to perform db operation
-    cur = conn.cursor()
-
-    # Execute a command: this creates a new table
-    # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
-    cur.execute("SELECT * FROM stops WHERE id = 16680;")
-
-    # Obtain data as Python object
-    result = cur.fetchone()
-
-    # Print result
-    print(result)
-
-    cur.close()
-    conn.close()
-
-    return result
-
-
 def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: bool) -> (object, int, int):
     '''
     Get the model, start_prog_num (in DB), end_prog_num (in DB)
