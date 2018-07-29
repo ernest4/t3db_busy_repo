@@ -26,8 +26,8 @@ from busy.settings import STATIC_ROOT
 #print(loaded_list)
 
 #get weather information
-hourSinceLastCall = 0
-weatherCode = 0
+hourSinceLastCall = 0 # type: float
+weatherCode = 0 # type: int
 def getWeather():
     global hourSinceLastCall
     global weatherCode
@@ -140,30 +140,78 @@ def test_db_connect():
     return result
 
 
-def getModelAndProgNum(busNum, start_stop, end_stop, testing):
+def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: bool) -> (object, int, int):
+    '''
+    Get the model, start_prog_num (in DB), end_prog_num (in DB)
+    based on busNum, start_stop, end_stop & direction (in DB)
+
+    Args:
+        busNum: The string identifying the bus number: e.g. 46A
+        start_stop: The code identifying the start stop e.g. 810
+        end_stop: The code identifying the end stop e.g. 2795
+        testing:
+
+    Returns:
+        object: the loaded pickle file of the model.
+        int: start stop program number
+        int: end stop program number
+
+    """
+    '''
+
     # To uppercase
     busNum = busNum.upper()
+    start_stop = str(start_stop) #Make sure it's a string if not already
+    end_stop = str(end_stop) #Make sure it's a string if not already
+    #starting values
+    startStopProgramNumber = 0
+    endStopProgramNumber = 0
 
-    result = test_db_connect()
+    # Connect to db
+    DATABASE_URL = os.environ.get('DATABASE_URL')  # Get the connection URI string
+    conn = psycopg2.connect(DATABASE_URL)
 
-    #DATABASE ACCES CODE HERE....
+    # Open a (dictionary) cursor to perform db operation
+    # For documentation: http://initd.org/psycopg/docs/extras.html
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    #Get the model, start_prog_num (in DB), end_prog_num (in DB)
-    # based on busNum, start_stop, end_stop & direction (in DB)
+    # Execute a command: this creates a new table
+    # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
+    cur.execute("SELECT * FROM stops WHERE route_id = '{0}';".format(busNum))
 
-    # DATABASE ACCESS CODE HERE....
-    direction = '2' #FOR TESTING 2 = outbound [1 in database]
-    start_prog_num = 1 #FOR TESTING
-    end_prog_num = 28 #FOR TESTING
+    # Obtain data as Python object
+    # result = cur.fetchone() #one line only, even if the query returns multiple records.
+    results = cur.fetchall()  # multiple results, returns all the records from the query.
 
-    # DATABASE ACCES CODE HERE....
+    allRouteInfoFound = False
+    for index, result in enumerate(results):  # For every row in the returned query
+        if allRouteInfoFound:
+            break  # Found all the info
+        startStopProgramNumber = 0
 
-    file = busNum + '_' + direction  # replace busDirection with direction when not testing
+        for index, value in enumerate(result):  # For every column in the row
+            if index > 6 and value is not None:
+                if value.endswith(start_stop):
+                    startStopProgramNumber = index - 5
+                    continue
+                if startStopProgramNumber > 0 and value.endswith(end_stop):
+                    endStopProgramNumber = index - 5
+                    # Found all the info
+                    allRouteInfoFound = True
+                    direction = str(result['direction_id'] + 1)  # DB -> APP,    0+1 -> 1,     1+1 -> 2
+                    break
+
+    #Clean up
+    cur.close()
+    conn.close()
+
+    #Get the pickle and return the values
+    file = busNum + '_' + direction + '.pkl' # replace busDirection with direction when not testing
 
     if testing:
-        return joblib.load('static/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num, result
+        return joblib.load('static/ml_models_final/' + file), startStopProgramNumber, endStopProgramNumber
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num, result
+        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file), startStopProgramNumber, endStopProgramNumber
 
 
 def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):

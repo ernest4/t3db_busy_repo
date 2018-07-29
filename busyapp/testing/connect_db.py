@@ -13,23 +13,51 @@ def test_db_connect():
     # For documentation: http://initd.org/psycopg/docs/extras.html
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    #TEST INPUTS
+    bus = '46A' #expected direction inbound i.e. model 46A_1.pkl
+    startStop = '810' #expected program number 4
+    startStopProgramNumber = 0
+    endStop = 2795  #expected program number 23
+    endStopProgramNumber = 0
+
     # Execute a command: this creates a new table
     # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
-    cur.execute("SELECT * FROM stops WHERE route_id = '{0}';".format('46A'))
+    cur.execute("SELECT * FROM stops WHERE route_id = '{0}';".format(bus))
 
     # Obtain data as Python object
-    result = cur.fetchone() #one line only, even if the query returns multiple records.
-    #result = cur.fetchone() #multiple results, returns all the records from the query.
+    #result = cur.fetchone() #one line only, even if the query returns multiple records.
+    results = cur.fetchall() #multiple results, returns all the records from the query.
 
     # Print result in various ways...
-    print(result)
-    print(result['id'])
-    print(result['route_id'])
+    print(results)
+    #print(results['id'])
+    #print(results['route_id'])
 
-    for index, value in enumerate(result):
-        print('index: ',index,' value: ',value,' program number: ',index-5)
+    allRouteInfoFound = False
+    for index, result in enumerate(results): #For every row in the returned query
+        if allRouteInfoFound:
+            break #Found all the info
+        startStopProgramNumber = 0
+        print('\n\nParsing line with id: ', result['id'],'\n')
+
+        for index, value in enumerate(result): #For every column in the row
+            print('index: ', index, ' value: ', value, ' program number: ', index - 5)
+            if index > 6 and value is not None:
+                if value.endswith(str(startStop)):
+                    startStopProgramNumber = index-5
+                    continue
+                if startStopProgramNumber > 0 and value.endswith(str(endStop)):
+                    endStopProgramNumber = index-5
+                    # Found all the info
+                    allRouteInfoFound = True
+                    direction = result['direction_id']+1 #DB -> APP,    0+1 -> 1,     1+1 -> 2
+                    break
+
+    print('\nBus: ',bus,' Pickle: ',bus+'_'+str(direction)+'.pkl')
+    print('Start Stop: ',startStop,', Program number: ',startStopProgramNumber)
+    print('End Stop: ',endStop, ', Program number: ', endStopProgramNumber)
 
     cur.close()
     conn.close()
 
-test_db_connect() #TESTING
+#test_db_connect() #TESTING
