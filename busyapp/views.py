@@ -195,11 +195,10 @@ def plannerform(request):
             busVar = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
-            busDirect = form.cleaned_data['bus_direction']
-            timeVar = form.cleaned_data['time_var']
             dateVar = form.cleaned_data['date_var']
+            timeVar = form.cleaned_data['time_var']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Direction: "+busDirect+"<br>"+"Time: "+str(timeVar)+"<br>"+"Date: "+str(dateVar)) #FOR DEBUGGING
+            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Time: "+str(timeVar)+"<br>"+"Date: "+str(dateVar)) #FOR DEBUGGING
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")

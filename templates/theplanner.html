@@ -20,28 +20,51 @@
             </div>
             <div class="col-sm-4">
                 <br>
-                <form action="/planner/formdata" method="get">
-                    <!-- Input box for "from" with Google directions API -->
-                    <div class="form-group">
-                        <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="Start Location" name="from_var" required>
-                        <datalist id="stop_list"></datalist>
-                    </div>
 
-                    <!-- Input box for "to" with Google directions API -->
+                <form action="/planner/formdata" method="get">
                     <div class="form-group">
-                        <!-- AUTOCOMPLETE USER INPUT -->
-                        <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text" placeholder="Destination" name="to_var" required>
-                        <datalist id="stop_list"></datalist>
+                        <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
+                        <div class="ui-widget"> <!-- jQuery autocomplete UI -->
+
+                            <input id="bus_number" class="form-control" type="text" placeholder="Bus number"
+                                   name="busnum_var" required>
+                        </div>
                     </div>
+                    <br>
+
+                    <!-- Input box for "from" with autocomplete RTPI query -->
+                    <div class="form-group">
+                        <div class="ui-widget"> <!-- jQuery autocomplete UI -->
+
+
+                            <input id="location_from" class="form-control" type="text" placeholder="Start stop"
+                                   name="from_var" required>
+
+                        </div>
+                    </div>
+                    <br>
+
+                    <!-- Input box for "to" with autocomplete RTPI query -->
+                    <div class="form-group">
+                        <div class="ui-widget"> <!-- jQuery autocomplete UI -->
+
+                            <input id="location_to" class="form-control" type="text" placeholder="End stop"
+                                   name="to_var" required>
+
+                        </div>
+                    </div>
+                    <br>
 
                     <!-- Input box for date -->
                     <div class="form-group">
-                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var" required>
+                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var"
+                               required>
                     </div>
 
                     <!-- Input box for time -->
                     <div class="form-group">
-                        <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time" name="time_var" value="00:00" required>
+                        <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
+                               name="time_var" value="00:00" required>
                     </div>
 
                     <button class="btn btn-primary" type="submit">Submit</button>
@@ -56,11 +79,68 @@
                         $("input[type=time]").clockInput(false);
                         $("#datepicker").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
                     })
+
                 </script>
 
             </div>
         </div>
+
+        <!-- server side rendering of the response to the form submission -->
+        <!-- in next iteration of the product, replace with AJAX call for client side rendering -->
+        {% if busNum %}
+        <!-- if bus number variable is not null...simple check to see if data is returned, before rendering anything below. -->
+        <br/>
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Your Input</h2>
+                <ul class="list-group">
+                    <li class="list-group-item">Bus number: {{ busNum }}</li>
+                    <li class="list-group-item">From: {{ from }}</li>
+                    <li class="list-group-item">To: {{ to }}</li>
+                </ul>
+            </div>
+
+            {% if error == 0 %}
+
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <h2>Our Estimation</h2>
+                    {% if journeyTime.h %}
+                    <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes, {{
+                        journeyTime.s }} seconds
+                    </li>
+                    {% elif journeyTime.m %}
+                    <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds
+                    </li>
+                    {% else %} <!-- have hours, minute & seconds -->
+                    <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
+                    {% endif %}
+
+                    <li class="list-group-item">Journey cost: € {{ cost }}</li>
+                    <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
+                </ul>
+            </div>
+
+            {% else %}
+            <!-- there's an error, display error messages -->
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <h2>Our Estimation</h2>
+                    <li class="list-group-item">{{ journeyTime}}</li>
+
+                    <li class="list-group-item">{{ cost }}</li>
+                    <li class="list-group-item">{{ bestStartTime }}</li>
+                </ul>
+            </div>
+
+            {% endif %}
+
+        </div>
     </div>
+
+    {% endif %}
+
+</div>
 </div>
 
 {% endblock %}
