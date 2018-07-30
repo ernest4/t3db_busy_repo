@@ -30,12 +30,18 @@ def onthego(request):
 def theplanner(request):
     return render(request, 'theplanner.html')
 
-
 def tourist(request):
     return render(request, 'tourist.html')
 
 def accessibility(request):
     return render(request, 'accessibility.html')
+
+def terms(request):
+    return render(request, 'terms.html')
+
+def privacy(request):
+    return render(request, 'privacy.html')
+
 
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
