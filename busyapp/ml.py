@@ -26,8 +26,8 @@ from busy.settings import STATIC_ROOT
 #print(loaded_list)
 
 #get weather information
-hourSinceLastCall = 0
-weatherCode = 0
+hourSinceLastCall = 0 # type: float
+weatherCode = 0 # type: int
 def getWeather():
     global hourSinceLastCall
     global weatherCode
@@ -97,9 +97,6 @@ def getEvents(date):
     pass
 #"""
 
-def getNormalizedWeather():
-    return getWeather()/804 #Max weather code value is 804
-
 
 def getDayOfYear():
     year2018inSeconds = 1514764800 #seconds since epoch till January 1st 2018
@@ -113,57 +110,121 @@ def secondsSinceMidnight():
     return time_of_day
 
 
-def getWeekDayBinaryArray():
+def getWeekDayBinaryArray(weekdayNumber: int = None) -> [int, ...]:
     weekDay = [0, 0, 0, 0, 0, 0, 0]  # Binary representation of the 7 days of the week
-    indexOfToday = datetime.datetime.today().weekday()
-    weekDay[indexOfToday] = 1
+
+    if weekdayNumber is None:
+        indexOfToday = datetime.datetime.today().weekday()
+        weekDay[indexOfToday] = 1
+    else:
+        weekDay[weekdayNumber] = 1
+
     return weekDay
 
-def test_db_connect():
-    # Connect to db
-    conn = psycopg2.connect("dbname=dfb6d81u4nkjvn user=wjsijzcxzxlrjv")
 
-    # Open a cursor to perform db operation
-    cur = conn.cursor()
+def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex: int = None, testing: bool = False) -> (object, int, int):
+    '''
+    Get the model, start_prog_num (in DB), end_prog_num (in DB)
+    based on busNum, start_stop, end_stop & direction (in DB)
+
+    Args:
+        busNum: The string identifying the bus number: e.g. 46A
+        start_stop: The code identifying the start stop e.g. 810
+        end_stop: The code identifying the end stop e.g. 2795
+        testing:
+
+    Returns:
+        object: the loaded pickle file of the model.
+        int: start stop program number
+        int: end stop program number
+
+    """
+    '''
+
+    # To uppercase
+    busNum = busNum.upper()
+    start_stop = str(start_stop) #Make sure it's a string if not already
+    end_stop = str(end_stop) #Make sure it's a string if not already
+    #starting values
+    startStopProgramNumber = 0
+    endStopProgramNumber = 0
+    direction = ''
+
+    if weekdayIndex is None: #No weekday supplied, default to current weekday
+        weekdayIndex = datetime.datetime.today().weekday()
+    serviceIDs = {"y102p": [0, 0, 0, 0, 0, 1, 0],
+                  "y102q": [0, 0, 0, 0, 1, 0, 0],
+                  "y102f": [1, 1, 1, 1, 1, 0, 0],
+                  "y102g": [1, 0, 0, 0, 0, 0, 1],
+                  "y102e": [0, 0, 0, 0, 0, 1, 0]}
+
+    relevantServiceIDs = []
+
+    #Compile a list of service_ids that are valid for current day of week in order to filter out the correct rows in DB
+    # e.g. if today was Friday (indexOfToday == 4) then the relevantServiceIDs == ['y102q', 'y102f']
+    for serviceID in serviceIDs:
+        if serviceIDs[serviceID][weekdayIndex] == 1:
+            relevantServiceIDs.append(serviceID)
+
+    # Connect to db
+    DATABASE_URL = os.environ.get('DATABASE_URL')  # Get the connection URI string
+    conn = psycopg2.connect(DATABASE_URL)
+
+    # Open a (dictionary) cursor to perform db operation
+    # For documentation: http://initd.org/psycopg/docs/extras.html
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     # Execute a command: this creates a new table
     # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
-    cur.execute("SELECT * FROM stops WHERE id = 16680;")
+    cur.execute("SELECT * FROM stops WHERE route_id = '{0}';".format(busNum))
 
     # Obtain data as Python object
-    result = cur.fetchone()
+    # result = cur.fetchone() #one line only, even if the query returns multiple records.
+    results = cur.fetchall()  # multiple results, returns all the records from the query.
 
+    allRouteInfoFound = False
+    for index, result in enumerate(results):  # For every row in the returned query
+        if allRouteInfoFound:
+            break  # Found all the info
+        if result['service_id'] not in relevantServiceIDs: #The row is not valid as it does not contain information relevant to today's date
+            continue
+
+        startStopProgramNumber = 0
+        for index, value in enumerate(result):  # For every column in the row
+            if index > 5 and value is not None:
+                if value.endswith(start_stop):
+                    startStopProgramNumber = index - 5
+                    continue
+                if startStopProgramNumber > 0 and value.endswith(end_stop):
+                    endStopProgramNumber = index - 5
+                    # Found all the info
+                    allRouteInfoFound = True
+                    direction = str(result['direction_id'] + 1)  # DB -> APP,    0+1 -> 1,     1+1 -> 2
+                    break
+
+    #Clean up
     cur.close()
     conn.close()
 
-    # Return result
-    return result
-
-
-def getModelAndProgNum(busNum, start_stop, end_stop, testing):
-    # To uppercase
-    busNum = busNum.upper()
-
-    result = test_db_connect()
-
-    #DATABASE ACCES CODE HERE....
-
-    #Get the model, start_prog_num (in DB), end_prog_num (in DB)
-    # based on busNum, start_stop, end_stop & direction (in DB)
-
-    # DATABASE ACCESS CODE HERE....
-    direction = '2' #FOR TESTING 2 = outbound [1 in database]
-    start_prog_num = 1 #FOR TESTING
-    end_prog_num = 28 #FOR TESTING
-
-    # DATABASE ACCES CODE HERE....
-
-    file = busNum + '_' + direction  # replace busDirection with direction when not testing
+    #Get the pickle and return the values
+    file = busNum + '_' + direction + '.pkl' # replace busDirection with direction when not testing
 
     if testing:
-        return joblib.load('static/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num, result
+        #Running locally with command => python manage.py runserver localhost:8765
+        try:
+            modelPickle = joblib.load('static/ml_models_final/' + file)
+        except FileNotFoundError:
+            return None, None, None
+        # If everything OK, return the answers
+        return modelPickle, startStopProgramNumber, endStopProgramNumber
     else:
-        return joblib.load(STATIC_ROOT+'/ml_models_final/' + file + '.pkl'), start_prog_num, end_prog_num, result
+        #Runing on Heroku or locally with command => heroku local web -f Procfile.windows (for windows)
+        try:
+            modelPickle = joblib.load(STATIC_ROOT+'/ml_models_final/' + file)
+        except FileNotFoundError:
+            return None, None, None
+        # If everything OK, return the answers
+        return modelPickle, startStopProgramNumber, endStopProgramNumber
 
 
 def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weatherCode, secondary_school, primary_school, trinity, ucd, bank_holiday, event, day_of_year, weekday, delay, testing=False):

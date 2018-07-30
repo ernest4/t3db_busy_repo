@@ -21,7 +21,7 @@ class ModelTest(TestCase):
     # Test findModel to return file name
     def test_getModelAndProgNum(self):
         # Assert return pkl reference
-        model, start, stop = ml.getModelAndProgNum('46a', 'Dun Laoghaire', 810, 2795, True)
+        model, start, stop = ml.getModelAndProgNum('46a', 810, 2795, True)
         print("start program number: ",start,",  stop program number: ",stop)
         self.assertTrue(start == 4 and stop == 23)
 
