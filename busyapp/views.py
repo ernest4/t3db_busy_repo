@@ -219,6 +219,8 @@ def plannerform(request):
                                                             'journeyTime': errorMSG,
                                                             'cost': errorMSG2,
                                                             'bestStartTime': errorMSG3,
+                                                           'date': dateVar,
+                                                           'time': timeVar,
                                                             'error': 1}) #Error code > 0 means something bad happened...
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
@@ -256,6 +258,8 @@ def plannerform(request):
                                                     # 'bestStartTime' : bestStartTime})
                                                     'cost': start_stop,  # FOR DEBUGGING
                                                     'bestStartTime': end_stop,  # FOR DBUGGING
+                                                   'date': dateVar,
+                                                   'time': timeVar,
                                                     'error': 0})  # 0 means everything good
 
 
