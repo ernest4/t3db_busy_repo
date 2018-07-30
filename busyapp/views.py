@@ -283,10 +283,10 @@ def getTimetableInfo(stop_id, route_id, day_time):
         if day>=0 and day<=4:
             timetable = data['results'][1]['departures']
         # Saturday
-        elif day = 5:
+        elif day == 5:
             timetable = data['results'][1]['departures']
         # Sunday
-        elif day = 6:
+        elif day == 6:
             timetable = data['results'][1]['departures']
 
         # Convert input time to seconds
