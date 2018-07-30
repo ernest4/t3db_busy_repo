@@ -110,14 +110,19 @@ def secondsSinceMidnight():
     return time_of_day
 
 
-def getWeekDayBinaryArray():
+def getWeekDayBinaryArray(weekdayNumber: int = None) -> [int, ...]:
     weekDay = [0, 0, 0, 0, 0, 0, 0]  # Binary representation of the 7 days of the week
-    indexOfToday = datetime.datetime.today().weekday()
-    weekDay[indexOfToday] = 1
+
+    if weekdayNumber is None:
+        indexOfToday = datetime.datetime.today().weekday()
+        weekDay[indexOfToday] = 1
+    else:
+        weekDay[weekdayNumber] = 1
+
     return weekDay
 
 
-def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: bool) -> (object, int, int):
+def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex: int = None, testing: bool = False) -> (object, int, int):
     '''
     Get the model, start_prog_num (in DB), end_prog_num (in DB)
     based on busNum, start_stop, end_stop & direction (in DB)
@@ -145,7 +150,8 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
     endStopProgramNumber = 0
     direction = ''
 
-    indexOfToday = datetime.datetime.today().weekday()
+    if weekdayIndex is None: #No weekday supplied, default to current weekday
+        weekdayIndex = datetime.datetime.today().weekday()
     serviceIDs = {"y102p": [0, 0, 0, 0, 0, 1, 0],
                   "y102q": [0, 0, 0, 0, 1, 0, 0],
                   "y102f": [1, 1, 1, 1, 1, 0, 0],
@@ -157,7 +163,7 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
     #Compile a list of service_ids that are valid for current day of week in order to filter out the correct rows in DB
     # e.g. if today was Friday (indexOfToday == 4) then the relevantServiceIDs == ['y102q', 'y102f']
     for serviceID in serviceIDs:
-        if serviceIDs[serviceID][indexOfToday] == 1:
+        if serviceIDs[serviceID][weekdayIndex] == 1:
             relevantServiceIDs.append(serviceID)
 
     # Connect to db
@@ -178,12 +184,12 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, testing: boo
 
     allRouteInfoFound = False
     for index, result in enumerate(results):  # For every row in the returned query
-        startStopProgramNumber = 0
         if allRouteInfoFound:
             break  # Found all the info
         if result['service_id'] not in relevantServiceIDs: #The row is not valid as it does not contain information relevant to today's date
             continue
 
+        startStopProgramNumber = 0
         for index, value in enumerate(result):  # For every column in the row
             if index > 5 and value is not None:
                 if value.endswith(start_stop):

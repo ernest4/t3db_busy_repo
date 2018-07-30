@@ -123,7 +123,7 @@ def onthegoform(request):
             weekDay = getWeekDayBinaryArray()
 
             # Fetch the right model
-            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, testing=False)
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar)
 
             if ann_improved is None:  # Model could not be retreived
                 # server side rendering - replace with AJAX for client side rendering in the future
@@ -191,23 +191,75 @@ def plannerform(request):
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
-            busVar = form.cleaned_data['busnum_var']
+            busNum = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
             dateVar = form.cleaned_data['date_var']
             timeVar = form.cleaned_data['time_var']
 
-            #Seconds since the epoch till the input date
-            #dateVar = datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc).timestamp()
-
-            # Seconds since the start of the year to the input date
-            dateVar = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc)
+            time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
+            weather = getWeather() #TESTING, CREATE getFutureWeather() FUNCTION IN THE FUTURE....
+            dayOfYear = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc)
                        - datetime.datetime(2018, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)).total_seconds()
+            weekDay = getWeekDayBinaryArray(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc).weekday())
 
-            #convert input time to seconds since midnight
-            timeVar = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Date: "+str(dateVar)+"<br>"+"Time: "+str(timeVar)) #FOR DEBUGGING
+            # Fetch the right model
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, weekdayIndex=datetime.datetime.today().weekday())
+
+            if ann_improved is None:  # Model could not be retreived
+                # server side rendering - replace with AJAX for client side rendering in the future
+                errorMSG = "Oops something went wrong :/"
+                errorMSG2 = "The combination of route and stops you have entered may not be valid \
+                            and/or may not be in service on this particular weekday."
+                errorMSG3 = "Please check your inputs and try again."
+                return render(request, 'theplanner.html', {'busNum': busNum,
+                                                            'from': fromVar,
+                                                            'to': toVar,
+                                                            'journeyTime': errorMSG,
+                                                            'cost': errorMSG2,
+                                                            'bestStartTime': errorMSG3,
+                                                            'error': 1}) #Error code > 0 means something bad happened...
+
+            # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
+            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
+                                                        start_stop=start_stop,
+                                                        end_stop=end_stop,
+                                                        time_of_day=time_of_day,
+                                                        weatherCode=weather,
+                                                        secondary_school=0,
+                                                        primary_school=0,
+                                                        trinity=0,
+                                                        ucd=0,
+                                                        bank_holiday=0,
+                                                        event=0,
+                                                        day_of_year=dayOfYear,
+                                                        weekday=weekDay,
+                                                        delay=0)  # 0 FOR TESTING
+
+            journeyTime = {'h': 0, 'm': 0, 's': 0}
+            journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
+            journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
+            journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
+
+            # some random numbers for TESTING
+            cost = 2.85  # TESTING for now...
+            bestStartTime = datetime.datetime.now() + datetime.timedelta(
+                minutes=60)  # note 1h addition for linux servers
+
+            # server side rendering - replace with AJAX for client side rendering in the future
+            return render(request, 'theplanner.html', {'busNum': busNum,
+                                                    'from': fromVar,
+                                                    'to': toVar,
+                                                    'journeyTime': journeyTime,
+                                                    # 'cost' : cost,
+                                                    # 'bestStartTime' : bestStartTime})
+                                                    'cost': start_stop,  # FOR DEBUGGING
+                                                    'bestStartTime': end_stop,  # FOR DBUGGING
+                                                    'error': 0})  # 0 means everything good
+
+
+            #return HttpResponse("Bus Num: "+busNum+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Date: "+str(dateVar)+"<br>"+"Time: "+str(timeVar)) #FOR DEBUGGING
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
