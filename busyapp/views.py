@@ -3,6 +3,8 @@ from django.http import HttpResponse
 import requests
 import numpy as np
 import os
+import datetime
+import pytz
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -14,9 +16,6 @@ from .ml import getWeather
 from .ml import getModelAndProgNum
 
 from busy.settings import STATIC_ROOT
-
-import random
-import datetime
 
 # Create your views here.
 def index(request):
@@ -198,7 +197,17 @@ def plannerform(request):
             dateVar = form.cleaned_data['date_var']
             timeVar = form.cleaned_data['time_var']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Time: "+str(timeVar)+"<br>"+"Date: "+str(dateVar)) #FOR DEBUGGING
+            #Seconds since the epoch till the input date
+            #dateVar = datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc).timestamp()
+
+            # Seconds since the start of the year to the input date
+            dateVar = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc)
+                       - datetime.datetime(2018, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)).total_seconds()
+
+            #convert input time to seconds since midnight
+            timeVar = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
+
+            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Date: "+str(dateVar)+"<br>"+"Time: "+str(timeVar)) #FOR DEBUGGING
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
