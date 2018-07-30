@@ -268,6 +268,41 @@ def plannerform(request):
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
+# Function to get timetable information in the future
+def getTimetableInfo(stop_id, route_id, day_time):
+
+    # # NOTE date time for URL must be in the format 'YYYY-MM-DDTHH:mm:ss' ISO format.
+    # datetime = datetime.isoformat()
+    #
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/timetableinformation?operator=bac&type=week&"
+                     "stopid="+stop_id+"&routeid="+route_id+"&format=json")
+    if r.status_code == requests.codes.ok:
+        data = json.loads(r.content)
+        day = day_time.weekday()
+        # Find timetable for Monday to Friday
+        if day>=0 and day<=4:
+            timetable = data['results'][1]['departures']
+        # Saturday
+        elif day = 5:
+            timetable = data['results'][1]['departures']
+        # Sunday
+        elif day = 6:
+            timetable = data['results'][1]['departures']
+
+        # Convert input time to seconds
+        input_time = day_time.hour*3600 + day_time.minute*60
+
+        # Convert timetable times to seconds
+        timetable_seconds = [(int(x.split(':')[0])*3600 + int(x.split(':')[1])*60) for x in timetable]
+
+        # Find index of closest time
+        i_time = min(range(len(timetable_seconds)), key=lambda i: abs(timetable_seconds[i] - input_time))
+
+        return timetable[i_time]
+
+    else:
+        return null
+
 
 def bestTime(request):
     if request.method == 'GET':
