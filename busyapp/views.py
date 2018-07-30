@@ -4,6 +4,7 @@ import requests
 import numpy as np
 import os
 import datetime
+import json
 import pytz
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
@@ -301,7 +302,7 @@ def getTimetableInfo(stop_id, route_id, day_time):
         return timetable[i_time]
 
     else:
-        return null
+        return None
 
 
 def bestTime(request):
