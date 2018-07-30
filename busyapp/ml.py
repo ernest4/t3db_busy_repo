@@ -56,37 +56,6 @@ def getWeather():
 
     return weatherCode
 
-"""
-# RTPI request based on route and stop_id
-# If there are buses coming, returns list of tuples with arrival time and the delay
-def getLiveBusInfo(stop_id, route_id):
-    times=[]
-    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?"
-                     "stopid="+stop_id+"&routeid="+route_id+"&maxresults&operator&format=json")
-    if r.status_code == requests.codes.ok:
-        data = json.loads(r.content.decode('utf-8'))
-        if len(data['results']) > 0:
-            i = 0
-            while i < 3 and i<len(data['results']):
-                timeArr = data['results'][i]['arrivaldatetime']
-                timeSch = data['results'][i]['scheduledarrivaldatetime']
-
-                timeArr = timeArr.split(" ")[1]
-                timeSch = timeSch.split(" ")[1]
-                FMT = "%H:%M:%S"
-                delay = (datetime.strptime(timeSch, FMT) - datetime.strptime(timeArr, FMT)).total_seconds()
-
-                times+=(timeArr, delay)
-                i+=1
-            return times
-        else:
-            return null
-"""
-
-# Function to get the events of a certain day
-def getEvents(date):
-    pass
-#"""
 
 
 def getDayOfYear():

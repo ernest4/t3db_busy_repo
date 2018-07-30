@@ -5,6 +5,7 @@ import numpy as np
 import os
 import datetime
 import pytz
+import csv
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -16,6 +17,12 @@ from .ml import getWeather
 from .ml import getModelAndProgNum
 
 from busy.settings import STATIC_ROOT
+
+# Create dictionary object for events from csv file
+
+with open(STATIC_ROOT+'/model_info/events18.csv', mode='r') as infile:
+    reader = csv.reader(infile)
+    events = {rows[0]:[rows[1],rows[2],rows[3],rows[4],rows[5],rows[6]] for rows in reader}
 
 # Create your views here.
 def index(request):
@@ -103,6 +110,39 @@ def testView(request):
 def personas(request):
     return render(request, "personas.html")
 
+# Function to get the events of a certain day
+def getEvents(date):
+    pass
+#"""
+
+# RTPI request based on route and stop_id
+# If there are buses coming, returns list of tuples with arrival time and the delay
+def getLiveBusInfo(stop_id, route_id):
+    times=[]
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?"
+                     "stopid="+stop_id+"&routeid="+route_id+"&maxresults&operator&format=json")
+    if r.status_code == requests.codes.ok:
+        data = json.loads(r.content.decode('utf-8'))
+        if len(data['results']) > 0:
+            i = 0
+            while i < 3 and i<len(data['results']):
+                timeArr = data['results'][i]['arrivaldatetime']
+                timeSch = data['results'][i]['scheduledarrivaldatetime']
+
+                timeArr = timeArr.split(" ")[1]
+                timeSch = timeSch.split(" ")[1]
+                FMT = "%H:%M:%S"
+
+                delay = (datetime.strptime(timeSch, FMT) - datetime.strptime(timeArr, FMT)).total_seconds()
+
+                times+=[timeArr, delay]
+                i+=1
+            return times
+        else:
+            return None
+    else:
+        return None
+
 def onthegoform(request):
     if request.method == 'GET':
         form = OnTheGoForm(request.GET)
@@ -139,6 +179,20 @@ def onthegoform(request):
                                                         'bestStartTime': errorMSG3,
                                                         'error': 1}) #Error code > 0 means something bad happened...
 
+            # Call live info from RTPI API
+            live_info = getLiveBusInfo(fromVar, busnum_var)
+            next_arrivals = []
+            if live_info is not None:
+                for x in live_info:
+                    next_arrivals.append(liveinfo[0])
+                delay = live_info[0][1]
+            else:
+                delay = 0
+
+            # Retrieve events
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            dayEvents = events[date]
+            secondary_term, primary_term, trinity, ucd, bank_holiday, event = dayEvents[0], dayEvents[1], dayEvents[2], dayEvents[3], dayEvents[4], dayEvents[5]
 
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
@@ -146,24 +200,21 @@ def onthegoform(request):
                                                         end_stop=end_stop,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
-                                                        secondary_school=0,
-                                                        primary_school=0,
-                                                        trinity=0,
-                                                        ucd=0,
-                                                        bank_holiday=0,
-                                                        event=0,
+                                                        secondary_school=secondary_term,
+                                                        primary_school=primary_term,
+                                                        trinity=trinity,
+                                                        ucd=ucd,
+                                                        bank_holiday=bank_holiday,
+                                                        event=event,
                                                         day_of_year=dayOfYear,
                                                         weekday=weekDay,
-                                                        delay=0) #0 FOR TESTING
+                                                        delay=delay)
 
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
-            journeyTime['s'] = round(journeyTime['s']) #get rid of trailing floating point for seconds.
+            journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
 
-            # some random numbers for TESTING
-            cost = 2.85 #TESTING for now...
-            bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60) #note 1h addition for linux servers
 
             # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'onthego.html', {'busNum' : busNum,
