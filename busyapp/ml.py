@@ -84,21 +84,12 @@ def getLiveBusInfo(stop_id, route_id):
             return times
         else:
             return null
-
-# Function to get timetable information in the future
-def getTimetableInfo(stop_id, route_id, datetime):
-
-    # NOTE date time for URL must be in the format 'YYYY-MM-DDTHH:mm:ss'
-
-    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/timetableinformation?operator=bac&type=week&stopid=768&routeid=46a&format=json")
-    if r.status_code == requests.codes.ok:
-        data = json.loads(r.content.decode('utf-8'))
-
+"""
 
 # Function to get the events of a certain day
 def getEvents(date):
     pass
-"""
+#"""
 
 
 def getDayOfYear():
