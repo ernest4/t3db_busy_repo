@@ -256,7 +256,7 @@ def plannerform(request):
                                                     'journeyTime': journeyTime,
                                                     # 'cost' : cost,
                                                     # 'bestStartTime' : bestStartTime})
-                                                    'cost': start_stop,  # FOR DEBUGGING
+                                                    'cost': weather,  # FOR DEBUGGING
                                                     'bestStartTime': end_stop,  # FOR DBUGGING
                                                    'date': dateVar,
                                                    'time': timeVar,

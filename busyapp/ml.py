@@ -28,10 +28,11 @@ from busy.settings import STATIC_ROOT
 #get weather information
 hourSinceLastCall = 0 # type: float
 weatherCode = 0 # type: int
-def getWeather():
+def getWeather(weekdayNumber: int = None):
     global hourSinceLastCall
     global weatherCode
 
+    #Dublin id for open weather: 7778677
     def fetchRealTimeWeatherCode():
         r = requests.get('http://api.openweathermap.org/data/2.5/weather',
                          params={'q': 'dublin', 'APPID': os.environ.get('APPID')})
@@ -40,7 +41,9 @@ def getWeather():
             weatherCode = weatherData['weather'][0]['id']
             return weatherCode
         else:
-            return None #Could not get weather
+            #Could not get weather
+            #Use 'typical' Irish weather, i.e. '801, few clouds'
+            return 801
 
     #if app just started up...
     if hourSinceLastCall == 0:
