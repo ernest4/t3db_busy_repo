@@ -104,6 +104,7 @@ def testView(request):
 def personas(request):
     return render(request, "personas.html")
 
+
 def onthegoform(request):
     if request.method == 'GET':
         form = OnTheGoForm(request.GET)
@@ -198,10 +199,16 @@ def plannerform(request):
             dateVar = form.cleaned_data['date_var']
             timeVar = form.cleaned_data['time_var']
 
+
             time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
-            weather = getWeather() #TESTING, CREATE getFutureWeather() FUNCTION IN THE FUTURE....
+
+            # Seconds since the epoch till the input date
+            inputDateTimeStamp = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp())
+            weather = getWeather(inputDateTimeStamp) #TESTING, CREATE getFutureWeather() FUNCTION IN THE FUTURE....
+
             dayOfYear = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc)
                        - datetime.datetime(2018, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)).total_seconds()
+
             weekDay = getWeekDayBinaryArray(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc).weekday())
 
 
@@ -262,9 +269,6 @@ def plannerform(request):
                                                    'date': dateVar,
                                                    'time': timeVar,
                                                     'error': 0})  # 0 means everything good
-
-
-            #return HttpResponse("Bus Num: "+busNum+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"Date: "+str(dateVar)+"<br>"+"Time: "+str(timeVar)) #FOR DEBUGGING
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
