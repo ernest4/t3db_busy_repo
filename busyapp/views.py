@@ -111,10 +111,6 @@ def testView(request):
 def personas(request):
     return render(request, "personas.html")
 
-# Function to get the events of a certain day
-def getEvents(date):
-    pass
-#"""
 
 # RTPI request based on route and stop_id
 # If there are buses coming, returns list of tuples with arrival time and the delay
@@ -285,7 +281,7 @@ def plannerform(request):
                                                             'error': 1}) #Error code > 0 means something bad happened...
 
             # Retrieve events
-            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            date = datetime.datetime.strftime(dateVar, "%Y-%m-%d")
             dayEvents = events[date]
             secondary_term, primary_term, trinity, ucd, bank_holiday, event = dayEvents[0], dayEvents[1], dayEvents[
                 2], dayEvents[3], dayEvents[4], dayEvents[5]
@@ -296,12 +292,12 @@ def plannerform(request):
                                                         end_stop=end_stop,
                                                         time_of_day=time_of_day,
                                                         weatherCode=weather,
-                                                        secondary_school=0,
-                                                        primary_school=0,
-                                                        trinity=0,
-                                                        ucd=0,
-                                                        bank_holiday=0,
-                                                        event=0,
+                                                        secondary_school=secondary_term,
+                                                        primary_school=primary_term,
+                                                        trinity=trinity,
+                                                        ucd=ucd,
+                                                        bank_holiday=bank_holiday,
+                                                        event=event,
                                                         day_of_year=dayOfYear,
                                                         weekday=weekDay,
                                                         delay=0)  # 0 for future dates
@@ -312,18 +308,58 @@ def plannerform(request):
             journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
 
 
-            bestStartTime = datetime.datetime.now() + datetime.timedelta(
-                minutes=60)  # note 1h addition for linux servers
+            bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
 
-            # server side rendering - replace with AJAX for client side rendering in the future
+            # Find best time to travel
+
+            timeStart = time_of_day - 3600
+            quickestTime = np.inf
+            for x in range(13):
+                # Add 10min (600s) every iteration
+                time = timeStart + 600*x
+                journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
+                                                            start_stop=start_stop,
+                                                            end_stop=end_stop,
+                                                            time_of_day=time,
+                                                            weatherCode=weather,
+                                                            secondary_school=secondary_term,
+                                                            primary_school=primary_term,
+                                                            trinity=trinity,
+                                                            ucd=ucd,
+                                                            bank_holiday=bank_holiday,
+                                                            event=event,
+                                                            day_of_year=dayOfYear,
+                                                            weekday=weekDay,
+                                                            delay=0)
+                if journeyTimeSecondsB < quickestTime:
+                    quickestTime = journeyTimeSecondsB
+                    bestTime = time
+
+            if bestTime == time_of_day:
+                msg = 'This is the quickest time'
+                timeNorm = "You have chosen the quickest time to travel in this period"
+                journeyTimeB = ''
+
+            else:
+                timeNorm = str(datetime.timedelta(seconds=bestTime))
+                journeyTimeB = {'h': 0, 'm': 0, 's': 0}
+                journeyTimeB['m'], journeyTimeB['s'] = divmod(quickestTime, 60)
+                journeyTimeB['h'], journeyTimeB['m'] = divmod(journeyTimeB['m'], 60)
+                journeyTimeB['s'] = round(journeyTimeB['s'])  # get rid of trailing floating point for seconds.
+
+            bus_timetable = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
+
+
+                # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'theplanner.html', {'busNum': busNum,
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime': journeyTime,
                                                     # 'cost' : cost,
                                                     # 'bestStartTime' : bestStartTime})
-                                                    'cost': start_stop,  # FOR DEBUGGING
-                                                    'bestStartTime': end_stop,  # FOR DBUGGING
+                                                    'leave_time': bus_timetable,
+                                                    'bestStartTime': timeNorm,
+                                                    'bestJourneyTime': journeyTimeB,
                                                    'date': dateVar,
                                                    'time': timeVar,
                                                     'error': 0})  # 0 means everything good
@@ -335,77 +371,42 @@ def plannerform(request):
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
 # Function to get timetable information in the future
-def getTimetableInfo(stop_id, route_id, day_time):
+def getTimetableInfo(stop_id, route_id, day_time, date):
 
-    # # NOTE date time for URL must be in the format 'YYYY-MM-DDTHH:mm:ss' ISO format.
-    # datetime = datetime.isoformat()
-    #
+    #day_time in seconds, date in datetime format
+
+
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/timetableinformation?operator=bac&type=week&"
                      "stopid="+stop_id+"&routeid="+route_id+"&format=json")
     if r.status_code == requests.codes.ok:
         data = json.loads(r.content)
-        day = day_time.weekday()
-        # Find timetable for Monday to Friday
+        day = date.weekday()
+
+        # Find timetable for Monday to Friday (This is a join of Monday-Sunday and Monday-Friday)
         if day>=0 and day<=4:
             timetable = data['results'][1]['departures']
+            timetable.extend(data['results'][0]['departures'])
         # Saturday
         elif day == 5:
-            timetable = data['results'][1]['departures']
+            timetable = data['results'][2]['departures']
         # Sunday
         elif day == 6:
-            timetable = data['results'][1]['departures']
+            timetable = data['results'][0]['departures']
 
         # Convert input time to seconds
-        input_time = day_time.hour*3600 + day_time.minute*60
+        #input_time = day_time.hour*3600 + day_time.minute*60
 
         # Convert timetable times to seconds
         timetable_seconds = [(int(x.split(':')[0])*3600 + int(x.split(':')[1])*60) for x in timetable]
 
         # Find index of closest time
-        i_time = min(range(len(timetable_seconds)), key=lambda i: abs(timetable_seconds[i] - input_time))
+        i_time = min(range(len(timetable_seconds)), key=lambda i: abs(timetable_seconds[i] - day_time))
 
         return timetable[i_time]
 
     else:
-        return null
+        return None
 
-
-def bestTime(request):
-    if request.method == 'GET':
-        form = PlannerForm(request.GET)
-
-        # Example of reading unvalidated form data. This may crash the app.
-        # print(form['busnum_var'].value())
-        # print(form.data['busnum_var'])
-
-        # Prefered way of handling forms, validate first before using.
-        if form.is_valid():
-            busVar = form.cleaned_data['busnum_var']
-            fromVar = form.cleaned_data['from_var']
-            toVar = form.cleaned_data['to_var']
-            busDirect = form.cleaned_data['bus_direction']
-            timeVar = form.cleaned_data['time_var']
-            dateVar = form.cleaned_data['date_var']
-
-
-            #time_var = time_var.to_datetime...
-            time_var = 0 #ONLY FOR TESTING
-            rolling_time = time_var - 3600
-
-            min_time = np.inf
-            for i in range(13):
-                prediction = 0 #ONLY FOR TESTING
-                trip_time = prediction
-
-                if trip_time < min_time:
-                    min_time = trip_time
-
-                rolling_time += 600
-
-            return min_time
-
-        else:
-            return HttpResponse("Oops! Form invalid :/ Try again?")
 
 def touristform(request):
     if request.method == 'GET':

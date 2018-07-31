@@ -101,8 +101,12 @@
           {% endif %}
 
           <li class="list-group-item">Next buses at this stop {{ bus1 }}</li>
+          {% if bus2 %}
           <li class="list-group-item"> {{ bus2 }}</li>
+          {% endif %}
+          {% if bus3 %}
           <li class="list-group-item"> {{ bus3 }}</li>
+          {% endif %}
         </ul>
       </div>
 

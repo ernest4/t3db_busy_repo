@@ -241,8 +241,6 @@ def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weat
     endPredicion = ann_improved.predict(end_df)
 
     # Estimated time
-    print(startPrediction)
-    print(endPredicion)
     time_est = endPredicion - startPrediction
 
     return time_est[0]
