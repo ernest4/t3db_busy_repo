@@ -16,6 +16,6 @@ urlpatterns = [
     path('busstops', views.busStops, name="busstops"),
     path('autocomp', views.busStopAutosuggest, name="autocomp_stops"),
     path('autocomp/routes', views.busRoutesAutosuggest, name="autocomp_routes"),
-    path('loaderio-e39f002a9fff5739d5e13b22d4f09b69.txt', views.loadTest, name="loaderio"),
+    path('loaderio-66417165d8f4c651a7a4a33b4dd4c867.txt', views.loadTest, name="loaderio"),
     path('directions', views.directions, name="directions"),
 ]
