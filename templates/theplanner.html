@@ -77,7 +77,13 @@
                 <script>
                     $(document).ready(function() {
                         $("input[type=time]").clockInput(false);
-                        $("#datepicker").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
+                        $("#datepicker").datepicker({
+                            maxDate: new Date(2018, 11, 31),
+                            minDate: new Date(),
+                            altField: "#selectDate",
+                            showAnim: "fold",
+                            showOptions: {direction: "up"}
+                        })
                     })
 
                 </script>
