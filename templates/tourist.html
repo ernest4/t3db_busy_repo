@@ -84,12 +84,12 @@
       <div class="col-sm-4">
         <div class="form-group">
           <div class="ui-widget"> <!-- jQuery autocomplete UI -->
-            <input id="destination" class="form-control" type="text" placeholder="Parnell Square" name="busnum_var" required>
+            <input id="exDestination" class="form-control" type="text" placeholder="Parnell Square" name="busnum_var" required>
           </div>
         </div>
       </div>
       <div class="col-sm-4">
-        <button class="btn btn-primary" id="directionsButton" style="border: 2px solid lightgrey; /* grey */">Get Directions</button>
+        <button class="btn btn-primary" id="exButton" style="border: 2px solid lightgrey; /* grey */">Get Directions</button>
       </div>
     </div>
 
@@ -106,16 +106,15 @@
                 <form action="/planner/formdata" method="get">
                     <!-- Input box for "from" with Google directions API -->
                     <div class="form-group">
-                        <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text"
-                               placeholder="Start Location" name="from_var" required>
+                        <input id="location_to"   class="form-control" type="text"
+                               placeholder="Start Location" name="start_loc" required>
                         <datalist id="stop_list"></datalist>
                     </div>
 
                     <!-- Input box for "to" with Google directions API -->
                     <div class="form-group">
                         <!-- AUTOCOMPLETE USER INPUT -->
-                        <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text"
-                               placeholder="Destination" name="to_var" required>
+                        <input id="location_from" class="form-control" type="text" placeholder="Destination" name="to_var" required>
                         <datalist id="stop_list"></datalist>
                     </div>
 

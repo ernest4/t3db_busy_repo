@@ -4,7 +4,11 @@
 $( window ).on ("load", function () {
 
     //set the autocomplete callback for destination autosuggest powere by directions api
-    $( "#destination" ).autocomplete({
+
+
+    //==================================================================================================================
+$("#location_from,#location_to, #destination").each(function(){
+    $(this).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
@@ -31,6 +35,9 @@ $( window ).on ("load", function () {
         },
         minLength: 3 //Number of characters after which the autosuggest should start...
     });
+});
+
+    //==================================================================================================================
 
     //set the autocomplete for bus routes
     $( "#bus_number" ).autocomplete({

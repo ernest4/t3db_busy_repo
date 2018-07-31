@@ -176,21 +176,7 @@ function toButton(element){
 //________________________________________________________________________________________________
 
 
-const calculateDirections = (origin, destination) => {
-    let directionService = new google.maps.DirectionsService(),
-        directionDisplay = new google.maps.DirectionsRenderer(),
-        request = { origin: origin,
-                    destination: destination,
-                    travelMode: 'BUS'
-                }
 
-    directionsDisplay.setMap(map);
-    directionsService.route(request, (result, status)) +> {
-        if (status == 'OK') {
-            directionsDisplay.setDirections(result);
-    }
-    }
-}
 
 
 
@@ -234,6 +220,42 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
+
+    //==================================================================================
+    function calculateDirections(origin, destination) {
+
+        console.log("Directions function ");
+
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+
+        var request = {
+            origin: origin,
+            destination: destination,
+            travelMode: 'TRANSIT',
+            transitOptions: {
+                modes: ['BUS']
+            }
+        }
+
+        directionsDisplay.setMap(map);
+        directionsService.route(request, function (result, status) {
+            console.log(status);
+            console.log(result);
+            console.log(origin);
+            console.log(destination);
+
+            if (status == 'OK') {
+                directionsDisplay.setDirections(result);
+                console.log(result);
+
+            }
+            else {
+                // Display cannot find route
+            }
+        });
+    }
+//======================================================================
 
 
     function showUserPosition(position){
@@ -312,7 +334,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
                 +"&mode="+"transit"
                 +"&transit_mode="+"bus", function(directionsData){
 
-        //console.log(directionsData.routes[0].legs[0].steps); //DEBUGGING
+        console.log(directionsData.routes[0].legs[0].steps); //DEBUGGING
 
         let index = 0; //keep track of which step along the route we are on...
         let markerColor = "blue"; //Blue is bus, Yellow is walking, Red is the user starting location.
@@ -369,6 +391,21 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       });
     }
 
+    //set the directions button callback...
+    $( '#exButton' ).click(function(){
+      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
+      //console.log(typeof $('#destination').val());
+      //deleteMarkers(markers); //clear current direction markers
+
+       var originex = {lat: 53.3435162, lng:-6.2732542};
+       var destination = {lat: 53.3369012, lng:-6.2619592};
+        console.log("Ex button ");
+      //let destination = $('#exDestination').val();
+      calculateDirections(originex, destination); //show the new direction marker//
+        // displayDirectionMarkers(originex, destination); //show the new direction markers
+    });
+
+
 
     //set the directions button callback...
     $( '#directionsButton' ).click(function(){
@@ -376,7 +413,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       //console.log(typeof $('#destination').val());
       deleteMarkers(markers); //clear current direction markers
 
-      let destination = $('#destination').val();
+      let destination = $('#Destination').val();
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
 
