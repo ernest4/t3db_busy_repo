@@ -40,6 +40,19 @@
 
 }
 
+.glyphicons .glyphicons-ear {  
+    color:black;
+  position:relative;
+  top:1px;
+  display:inline-block;
+    font-size:20px;
+  font-family:'Glyphicons Halflings';
+  font-style:normal;
+  font-weight:400;
+  line-height:1;}
+
+
+
 .access {
     
     background-color: aqua;
