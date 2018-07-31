@@ -173,6 +173,33 @@ function toButton(element){
 }
 
 
+//________________________________________________________________________________________________
+
+
+const calculateDirections = (origin, destination) => {
+    let directionService = new google.maps.DirectionsService(),
+        directionDisplay = new google.maps.DirectionsRenderer(),
+        request = { origin: origin,
+                    destination: destination,
+                    travelMode: 'BUS'
+                }
+
+    directionsDisplay.setMap(map);
+    directionsService.route(request, (result, status)) +> {
+        if (status == 'OK') {
+            directionsDisplay.setDirections(result);
+    }
+    }
+}
+
+
+
+
+
+
+//================================================================================================
+
+
 //Populate the map with information & markers
 $( window ).on( "load", function() { //When DOM & other resourses all loaded and ready...
     console.log( "Page ready!!" ); //FOR DEBUGGING
