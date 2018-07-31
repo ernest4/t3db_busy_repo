@@ -6,6 +6,7 @@ import os
 import datetime
 import pytz
 import csv
+import json
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -133,10 +134,11 @@ def getLiveBusInfo(stop_id, route_id):
                 timeSch = timeSch.split(" ")[1]
                 FMT = "%H:%M:%S"
 
-                delay = (datetime.strptime(timeSch, FMT) - datetime.strptime(timeArr, FMT)).total_seconds()
+                delay = (datetime.datetime.strptime(timeSch, FMT) - datetime.datetime.strptime(timeArr, FMT)).total_seconds()
 
-                times+=[timeArr, delay]
+                times.append([timeArr, delay])
                 i+=1
+
             return times
         else:
             return None
@@ -180,14 +182,21 @@ def onthegoform(request):
                                                         'error': 1}) #Error code > 0 means something bad happened...
 
             # Call live info from RTPI API
-            live_info = getLiveBusInfo(fromVar, busnum_var)
+            # Returns list of lists with 2 items each. [[bustime, delay],..]
+            live_info = getLiveBusInfo(fromVar, busNum)
             next_arrivals = []
             if live_info is not None:
                 for x in live_info:
-                    next_arrivals.append(liveinfo[0])
+                    next_arrivals.append(live_info[0])
                 delay = live_info[0][1]
+                bus1 = live_info[0][0]
+                if len(live_info)>1:  bus2 = live_info[1][0]
+                else: bus2 = ''
+                if len(live_info) > 2:  bus3 = live_info[2][0]
+                else: bus3 = ''
             else:
                 delay = 0
+                bus1,bus2,bus3 = 'No upcoming buses', '', ''
 
             # Retrieve events
             date = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -223,8 +232,9 @@ def onthegoform(request):
                                                     'journeyTime' : journeyTime,
                                                     #'cost' : cost,
                                                     #'bestStartTime' : bestStartTime})
-                                                    'cost': start_stop, #FOR DEBUGGING
-                                                    'bestStartTime': end_stop, #FOR DBUGGING
+                                                    'bus1': bus1,
+                                                    'bus2': bus2,
+                                                    'bus3': bus3,
                                                     'error': 0}) #0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
@@ -274,6 +284,12 @@ def plannerform(request):
                                                            'time': timeVar,
                                                             'error': 1}) #Error code > 0 means something bad happened...
 
+            # Retrieve events
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            dayEvents = events[date]
+            secondary_term, primary_term, trinity, ucd, bank_holiday, event = dayEvents[0], dayEvents[1], dayEvents[
+                2], dayEvents[3], dayEvents[4], dayEvents[5]
+
             # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
             journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
                                                         start_stop=start_stop,
@@ -288,15 +304,14 @@ def plannerform(request):
                                                         event=0,
                                                         day_of_year=dayOfYear,
                                                         weekday=weekDay,
-                                                        delay=0)  # 0 FOR TESTING
+                                                        delay=0)  # 0 for future dates
 
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
 
-            # some random numbers for TESTING
-            cost = 2.85  # TESTING for now...
+
             bestStartTime = datetime.datetime.now() + datetime.timedelta(
                 minutes=60)  # note 1h addition for linux servers
 
