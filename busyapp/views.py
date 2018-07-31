@@ -438,7 +438,8 @@ def touristform(request):
             busVar = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
             toVar = form.cleaned_data['to_var']
-            whenVar = form.cleaned_data['when_var']
+            dateVar = form.cleaned_data['date_var']
+            timeVar = form.cleaned_data['time_var']
 
             return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
         else:

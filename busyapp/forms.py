@@ -20,4 +20,5 @@ class TouristForm(forms.Form):
     busnum_var = forms.CharField()
     from_var = forms.CharField()
     to_var = forms.CharField()
-    when_var = forms.CharField()
+    date_var = forms.DateField(widget=SelectDateWidget())  # Default formats '%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'
+    time_var = forms.TimeField()

@@ -23,7 +23,33 @@ function initMap(){
 
     map = new google.maps.Map(mapDiv, mapOptions);
 
+    // var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from'));
+    // var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to'));
+    //
+    // autocompleteFrom.bindTo('bounds', map);
+    // autocompleteTo.bindTo('bounds', map);
+    //
+    // autocompleteFrom.addListener('place_changed', function() {
+    //     var place = autocompleteFrom.getPlace();
+    //     console.log(place);
+    // });
+    // autocompleteTo.addListener('place_changed', function() {
+    //     var place = autocompleteTo.getPlace();
+    //     console.log(place);
+    // });
+
 }
+
+
+
+// From the picture you posted, it say it's disabled...
+//
+// Go to Developer Console -> APIs & auth -> APIs
+//
+// Search for Geocoding and click on Google Maps Geocoding API -> Enable API. Do the same thing for Geolocating
+//
+
+
 
 
 //Makes a marker for busstops and add onlick functionality
@@ -222,7 +248,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     }
 
     //==================================================================================
-    function calculateDirections(origin, destination) {
+    function calculateDirections(origin, destination, date_time) {
 
         console.log("Directions function ");
 
@@ -233,7 +259,9 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             origin: origin,
             destination: destination,
             travelMode: 'TRANSIT',
+
             transitOptions: {
+                departureTime: date_time,
                 modes: ['BUS']
             }
         }
@@ -397,11 +425,23 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       //console.log(typeof $('#destination').val());
       //deleteMarkers(markers); //clear current direction markers
 
-       var originex = {lat: 53.3435162, lng:-6.2732542};
-       var destination = {lat: 53.3369012, lng:-6.2619592};
-        console.log("Ex button ");
-      //let destination = $('#exDestination').val();
-      calculateDirections(originex, destination); //show the new direction marker//
+       //var originex = {lat: 53.3435162, lng:-6.2732542};
+       //var destination = {lat: 53.3369012, lng:-6.2619592};
+
+
+        let origin = $('#location_from').val();
+        let destination = $('#location_to').val();
+
+        let date = $('#datepicker').val();
+        let time = $('#clockpicker').val();
+        // Convert time to seconds
+        console.log(date);
+        var a = time.split(':');
+        var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+
+        //date = date.getTime()/1000;
+        var date_time = date + seconds;
+        calculateDirections(origin, destination, date_time); //show the new direction marker//
         // displayDirectionMarkers(originex, destination); //show the new direction markers
     });
 
@@ -413,7 +453,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       //console.log(typeof $('#destination').val());
       deleteMarkers(markers); //clear current direction markers
 
-      let destination = $('#Destination').val();
+      let destination = $('#destination').val();
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
 

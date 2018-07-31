@@ -71,7 +71,7 @@ $("#location_from,#location_to, #destination").each(function(){
     });
 
     //set the autocomplete for start location form input
-    $( "#location_from" ).autocomplete({
+    $( "#pl_location_from" ).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
@@ -100,7 +100,7 @@ $("#location_from,#location_to, #destination").each(function(){
     });
 
     //set the autocomplete for destination location form input
-    $( "#location_to" ).autocomplete({
+    $( "#pl_location_to" ).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
