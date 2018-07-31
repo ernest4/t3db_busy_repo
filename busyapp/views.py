@@ -26,9 +26,14 @@ def index(request):
 def onthego(request):
     return render(request, 'onthego.html')
 
-
 def theplanner(request):
     return render(request, 'theplanner.html')
+
+def about(request):
+    return render(request, 'about.html') 
+
+def faq(request):
+    return render(request, 'faq.html') 
 
 def tourist(request):
     return render(request, 'tourist.html')
