@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import JsonResponse
 import requests
 import numpy as np
 import os
@@ -233,18 +234,19 @@ def onthegoform(request):
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
 
+            return JsonResponse({'foo': 'bar'}) #TESTING
 
             # server side rendering - replace with AJAX for client side rendering in the future
-            return render(request, 'onthego.html', {'busNum' : busNum,
-                                                    'from': fromVar,
-                                                    'to': toVar,
-                                                    'journeyTime' : journeyTime,
-                                                    #'cost' : cost,
-                                                    #'bestStartTime' : bestStartTime})
-                                                    'bus1': bus1,
-                                                    'bus2': bus2,
-                                                    'bus3': bus3,
-                                                    'error': 0}) #0 means everything good
+            #return render(request, 'onthego.html', {'busNum' : busNum,
+            #                                        'from': fromVar,
+            #                                        'to': toVar,
+            #                                        'journeyTime' : journeyTime,
+            #                                        #'cost' : cost,
+            #                                        #'bestStartTime' : bestStartTime})
+            #                                        'bus1': bus1,
+            #                                        'bus2': bus2,
+            #                                        'bus3': bus3,
+            #                                        'error': 0}) #0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
