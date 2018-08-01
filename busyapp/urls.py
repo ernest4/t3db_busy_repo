@@ -13,6 +13,7 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('accessibility/', views.accessibility, name='accessibility'),
     path('test/', views.testView, name='testView'),
+    path('test2/', views.testView2, name='testView2'),
     path('onthego/formdata', views.onthegoform, name="onthegoform"),
     path('planner/formdata', views.plannerform, name="plannerform"),
     path('tourist/formdata', views.touristform, name="onthegoform"),
