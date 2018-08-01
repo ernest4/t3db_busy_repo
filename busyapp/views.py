@@ -186,13 +186,13 @@ def onthegoform(request):
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
                 errorMSG3 = "Please check your inputs and try again."
-                return render(request, 'onthego_response.html', {'busNum': busNum,
-                                                                'from': fromVar,
-                                                                'to': toVar,
-                                                                'error_1': errorMSG,
-                                                                'error_2': errorMSG2,
-                                                                'error_3': errorMSG3,
-                                                                'error': 1}) #Error code > 0 means something bad happened...
+                return render(request, 'response.html', {'busNum': busNum,
+                                                        'from': fromVar,
+                                                        'to': toVar,
+                                                        'error_1': errorMSG,
+                                                        'error_2': errorMSG2,
+                                                        'error_3': errorMSG3,
+                                                        'error': 1}) #Error code > 0 means something bad happened...
 
             # Call live info from RTPI API
             # Returns list of lists with 2 items each. [[bustime, delay],..]
@@ -238,16 +238,14 @@ def onthegoform(request):
             journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
 
             # server side rendering of the response html
-            return render(request, 'onthego_response.html', {'busNum' : busNum,
-                                                            'from': fromVar,
-                                                            'to': toVar,
-                                                            'journeyTime' : journeyTime,
-                                                            #'cost' : cost,
-                                                            #'bestStartTime' : bestStartTime})
-                                                            'bus1': bus1,
-                                                            'bus2': bus2,
-                                                            'bus3': bus3,
-                                                            'error': 0}) #0 means everything good
+            return render(request, 'response.html', {'busNum' : busNum,
+                                                    'from': fromVar,
+                                                    'to': toVar,
+                                                    'journeyTime' : journeyTime,
+                                                    'bus1': bus1,
+                                                    'bus2': bus2,
+                                                    'bus3': bus3,
+                                                    'error': 0}) #0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
