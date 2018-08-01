@@ -77,22 +77,6 @@
 
         </div>
 
-        <!--<div class="row" style="background-color: white">-->
-      <!--<div class="col-sm-4">-->
-        <!--<p2 for="destination">What is your destination stop? </p2>-->
-      <!--</div>-->
-      <!--<div class="col-sm-4">-->
-        <!--<div class="form-group">-->
-          <!--<div class="ui-widget"> &lt;!&ndash; jQuery autocomplete UI &ndash;&gt;-->
-            <!--<input id="exDestination" class="form-control" type="text" placeholder="Parnell Square" name="busnum_var" required>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="col-sm-4">-->
-        <!--<button class="btn btn-primary" id="exButton" style="border: 2px solid lightgrey; /* grey */">Get Directions</button>-->
-      <!--</div>-->
-    <!--</div>-->
-
 
         <div class="row">
 
@@ -107,27 +91,27 @@
                     <!-- Input box for "from" with Google directions API -->
                     <div class="form-group">
                         <input id="location_from"   class="form-control" type="text"
-                               placeholder="Start Location" name="start_loc" required>
+                               placeholder="Start Location" name="from_var_ex">
                         <datalist id="stop_list"></datalist>
                     </div>
 
                     <!-- Input box for "to" with Google directions API -->
                     <div class="form-group">
                         <!-- AUTOCOMPLETE USER INPUT -->
-                        <input id="location_to" class="form-control" type="text" placeholder="Destination" name="to_var" required>
-                        <datalist id="stop_list"></datalist>
+                        <input id="location_to" class="form-control" type="text" placeholder="Destination" name="to_var_ex">
+                        <datalist id="stop_list_ex"></datalist>
                     </div>
 
                     <!-- Input box for date -->
                     <div class="form-group">
-                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var"
+                        <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
                                required>
                     </div>
 
                     <!-- Input box for time -->
                     <div class="form-group">
                         <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var" value="00:00" required>
+                               name="time_var_ex" value="00:00" required>
                     </div>
 
                     <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
@@ -140,14 +124,49 @@
                 <script>
                     $(document).ready(function() {
                         $("input[type=time]").clockInput(false);
-                        $("#datepicker").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
+                        $("#datepicker_ex").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
                     })
 
                 </script>
 
             </div>
         </div>
+
+         {% if error == 0 %}
+
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <h2>Our Estimation</h2>
+                    {% if from %}
+                    <li class="list-group-item">From: {{ from }}
+                    </li>
+                    {% endif %}
+                    {% if to %}
+                    <li class="list-group-item">To: {{ to }}
+                    </li>
+                    {% endif %}
+                    {% if date %}
+                    <li class="list-group-item">Date: {{ date }}</li>
+                    {% endif %}
+                    {% if time %}
+                    <li class="list-group-item">Time {{ time }}</li>
+
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% else %}
+            <!-- there's an error, display error messages -->
+            <div class="col-sm-6">
+
+                    <h2>Diddn't work</h2>
+
+            </div>
+
+            {% endif %}
     </div>
+
+
 </div>
 
 {% endblock %}

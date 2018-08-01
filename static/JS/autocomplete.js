@@ -7,7 +7,7 @@ $( window ).on ("load", function () {
 
 
     //==================================================================================================================
-$("#location_from,#location_to, #destination").each(function(){
+$("#destination").each(function(){     //#location_from,#location_to,
     $(this).autocomplete({
         source: function(request, response){
             var availableTags = [];

@@ -23,20 +23,20 @@ function initMap(){
 
     map = new google.maps.Map(mapDiv, mapOptions);
 
-    // var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from'));
-    // var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to'));
-    //
-    // autocompleteFrom.bindTo('bounds', map);
-    // autocompleteTo.bindTo('bounds', map);
-    //
-    // autocompleteFrom.addListener('place_changed', function() {
-    //     var place = autocompleteFrom.getPlace();
-    //     console.log(place);
-    // });
-    // autocompleteTo.addListener('place_changed', function() {
-    //     var place = autocompleteTo.getPlace();
-    //     console.log(place);
-    // });
+    var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from'));
+    var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to'));
+
+    autocompleteFrom.bindTo('bounds', map);
+    autocompleteTo.bindTo('bounds', map);
+
+    autocompleteFrom.addListener('place_changed', function() {
+        var place = autocompleteFrom.getPlace();
+        console.log(place);
+    });
+    autocompleteTo.addListener('place_changed', function() {
+        var place = autocompleteTo.getPlace();
+        console.log(place);
+    });
 
 }
 
@@ -199,19 +199,6 @@ function toButton(element){
 }
 
 
-//________________________________________________________________________________________________
-
-
-
-
-
-
-
-
-
-//================================================================================================
-
-
 //Populate the map with information & markers
 $( window ).on( "load", function() { //When DOM & other resourses all loaded and ready...
     console.log( "Page ready!!" ); //FOR DEBUGGING
@@ -250,7 +237,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     //==================================================================================
     function calculateDirections(origin, destination, date_time) {
 
-        console.log("Directions function ");
+        console.log("Directions function "+date_time);
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
@@ -261,7 +248,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             travelMode: 'TRANSIT',
 
             transitOptions: {
-                departureTime: date_time,
+                //departureTime: date_time,
                 modes: ['BUS']
             }
         }
@@ -279,7 +266,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
             }
             else {
-                // Display cannot find route
+                console.log("Issue with directions request");
             }
         });
     }
@@ -420,7 +407,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     }
 
     //set the directions button callback...
-    $( '#exButton' ).click(function(){
+    $( '#directionsButtonEX' ).click(function(){
       //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
       //console.log(typeof $('#destination').val());
       //deleteMarkers(markers); //clear current direction markers
@@ -432,7 +419,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         let origin = $('#location_from').val();
         let destination = $('#location_to').val();
 
-        let date = $('#datepicker').val();
+        let date = $('#datepicker_ex').val();
         let time = $('#clockpicker').val();
         // Convert time to seconds
         console.log(date);
@@ -441,6 +428,9 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
         //date = date.getTime()/1000;
         var date_time = date + seconds;
+
+        console.log(date_time);
+
         calculateDirections(origin, destination, date_time); //show the new direction marker//
         // displayDirectionMarkers(originex, destination); //show the new direction markers
     });
