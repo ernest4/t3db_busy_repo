@@ -89,7 +89,7 @@
             <br>
 
             <div class="col-sm-3" style="background-color:#d9d9d9;">
-                <form action="/tourist/formdata" method="get">
+                <form action="/tourist/formdata" method="get" id="explorer_form">
                     <!-- Input box for "from" with Google directions API -->
                     <div class="form-group"><br>
                         <input id="location_from_ex"   class="form-control" type="text"
@@ -113,7 +113,7 @@
 
                     <!-- Input box for time -->
                     <div class="form-group">
-                        <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
+                        <input id="clockpicker_ex" class="form-control" class="clockpicker" type="time" placeholder="Time"
                                name="time_var_ex" value="00:00" required>
                     </div>
 
@@ -135,36 +135,10 @@
             </div>
         </div>
 
-         {% if error == 0 %}
+        <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
+        <div id="response"></div>
 
-            <div class="col-sm-6">
-                <ul class="list-group">
-                    <h2>Our Estimation</h2>
-                    {% if from %}
-                    <li class="list-group-item">From: {{ from }}
-                    </li>
-                    {% endif %}
-                    {% if to %}
-                    <li class="list-group-item">To: {{ to }}
-                    </li>
-                    {% endif %}
-                    {% if date %}
-                    <li class="list-group-item">Date: {{ date }}</li>
-                    {% endif %}
-                    {% if time %}
-                    <li class="list-group-item">Time {{ time }}</li>
 
-                    {% endif %}
-                </ul>
-            </div>
-
-            {% else %}
-            <!-- there's an error, display error messages -->
-            <div class="col-sm-6">
-
-            </div>
-
-            {% endif %}
     </div>
 
 

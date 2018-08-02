@@ -469,11 +469,12 @@ def touristform(request):
             #return HttpResponse("Bus Num: <br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
             #return HttpResponse("Bus Num: <br>"+"From: <br>"+"To: <br>"+"When: "+toVar) #FOR DEBUGGING
 
-            return render(request, 'tourist.html', {'from': fromVar,
-                                                       'to': toVar,
-                                                       'date': dateVar,
-                                                       'time': timeVar,
-                                                       'error': 0})  # 0 means everything good
+            return render(request, 'response.html', {'persona': 'explorer',
+                                                    'from': fromVar,
+                                                    'to': toVar,
+                                                    'date': dateVar,
+                                                    'time': timeVar,
+                                                    'error': 0})  # 0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 

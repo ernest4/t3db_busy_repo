@@ -3,11 +3,15 @@
   <div class="col-sm-6">
     <h2>Your Input</h2>
     <ul class="list-group">
+
+      {% if persona == 'onthego' or persona == 'planner' %}
       <li class="list-group-item">Bus number: {{ busNum }}</li>
+      {% endif %}
+
       <li class="list-group-item">From: {{ from }}</li>
       <li class="list-group-item">To: {{ to }}</li>
 
-      {% if persona == 'planner' %}
+      {% if persona == 'planner' or persona == 'explorer' %}
       <li class="list-group-item">Date: {{ date }}</li>
       <li class="list-group-item">Time: {{ time }}</li>
       {% endif  %}
@@ -56,9 +60,25 @@
           </li>
           {% endif %}
 
-      {% elif persona == 'explorer %}
+      {% elif persona == 'explorer' %}
 
-        <!-- explorer output here -->
+        {% if from %}
+        <li class="list-group-item">From: {{ from }}
+        </li>
+        {% endif %}
+
+        {% if to %}
+        <li class="list-group-item">To: {{ to }}
+        </li>
+        {% endif %}
+
+        {% if date %}
+        <li class="list-group-item">Date: {{ date }}</li>
+        {% endif %}
+
+        {% if time %}
+        <li class="list-group-item">Time {{ time }}</li>
+        {% endif %}
 
       {% endif %}
 
