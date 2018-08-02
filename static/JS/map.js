@@ -426,11 +426,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
        //var destination = {lat: 53.3369012, lng:-6.2619592};
 
 
-        let origin = $('#location_from').val();
-        let destination = $('#location_to').val();
+        let origin = $('#location_from_ex').val();
+        let destination = $('#location_to_ex').val();
 
         let date = $('#datepicker_ex').val();
-        let time = $('#clockpicker').val();
+        let time = $('#clockpicker_ex').val();
         // Convert time to seconds
         console.log(date);
         var a = time.split(':');
