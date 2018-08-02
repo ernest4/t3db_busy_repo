@@ -87,35 +87,34 @@
             </div>
             <br>
             <div class="col-sm-4">
-                <form action="/planner/formdata" method="get">
+                <form action="/tourist/formdata" method="get">
                     <!-- Input box for "from" with Google directions API -->
                     <div class="form-group">
-                        <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text"
-                               placeholder="Start Location" name="from_var" required>
+                        <input id="location_from"   class="form-control" type="text"
+                               placeholder="Start Location" name="from_var_ex">
                         <datalist id="stop_list"></datalist>
                     </div>
 
                     <!-- Input box for "to" with Google directions API -->
                     <div class="form-group">
                         <!-- AUTOCOMPLETE USER INPUT -->
-                        <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text"
-                               placeholder="Destination" name="to_var" required>
-                        <datalist id="stop_list"></datalist>
+                        <input id="location_to" class="form-control" type="text" placeholder="Destination" name="to_var_ex">
+                        <datalist id="stop_list_ex"></datalist>
                     </div>
 
                     <!-- Input box for date -->
                     <div class="form-group">
-                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var"
+                        <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
                                required>
                     </div>
 
                     <!-- Input box for time -->
                     <div class="form-group">
                         <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var" value="00:00" required>
+                               name="time_var_ex" value="00:00" required>
                     </div>
 
-                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
 
                 </form>
 
@@ -125,14 +124,49 @@
                 <script>
                     $(document).ready(function() {
                         $("input[type=time]").clockInput(false);
-                        $("#datepicker").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
+                        $("#datepicker_ex").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
                     })
 
                 </script>
 
             </div>
         </div>
+
+         {% if error == 0 %}
+
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <h2>Our Estimation</h2>
+                    {% if from %}
+                    <li class="list-group-item">From: {{ from }}
+                    </li>
+                    {% endif %}
+                    {% if to %}
+                    <li class="list-group-item">To: {{ to }}
+                    </li>
+                    {% endif %}
+                    {% if date %}
+                    <li class="list-group-item">Date: {{ date }}</li>
+                    {% endif %}
+                    {% if time %}
+                    <li class="list-group-item">Time {{ time }}</li>
+
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% else %}
+            <!-- there's an error, display error messages -->
+            <div class="col-sm-6">
+
+                    <h2>Diddn't work</h2>
+
+            </div>
+
+            {% endif %}
     </div>
+
+
 </div>
 
 {% endblock %}

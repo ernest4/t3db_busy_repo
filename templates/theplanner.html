@@ -37,7 +37,7 @@
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
 
-                            <input id="location_from" class="form-control" type="text" placeholder="Start stop"
+                            <input id="pl_location_from" class="form-control" type="text" placeholder="Start stop"
                                    name="from_var" required>
 
                         </div>
@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
-                            <input id="location_to" class="form-control" type="text" placeholder="End stop"
+                            <input id="pl_location_to" class="form-control" type="text" placeholder="End stop"
                                    name="to_var" required>
 
                         </div>
@@ -64,7 +64,7 @@
                     <!-- Input box for time -->
                     <div class="form-group">
                         <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var" value="00:00" required>
+                               name="time_var" value="06:00" required>
                     </div>
 
                     <button class="btn btn-primary" type="submit">Submit</button>
@@ -122,18 +122,13 @@
                     {% else %} <!-- have hours, minute & seconds -->
                     <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
                     {% endif %}
-                    <li class="list-group-item">Bus is at {{ leave_time }}</li>
-                    <li class="list-group-item">---</li>
+                    <li class="list-group-item">Bus is at:  {{ leave_time }}</li>
+                    {% if bestJourneyTime %}
                     <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
-                    {% if bestJourneyTime.h %}
-                    <li class="list-group-item">Journey time: {{ bestJourneyTime.h }} hours, {{ bestJourneyTime.m }} minutes, {{ bestJourneyTime.s }} seconds
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime }}
                     </li>
-                    {% elif journeyTime.m %}
-                    <li class="list-group-item">Journey time: {{ bestJourneyTime.m }} minutes, {{ bestJourneyTime.s }} seconds
-                    </li>
-                    {% else %} <!-- have hours, minute & seconds -->
-                    <li class="list-group-item">Journey time: {{ bestJourneyTime.s }} seconds</li>
                     {% endif %}
+
                 </ul>
             </div>
 

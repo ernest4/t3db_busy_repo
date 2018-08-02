@@ -330,15 +330,25 @@ def plannerform(request):
 
             # Find best time to travel
 
+            bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
+
+            #print(bus_timetable)
+
+            if bus_timetable:
+                print(bus_timetable, bus_timetable_seconds)
+                print("Has timetable", index)
+
             timeStart = time_of_day - 3600
             quickestTime = np.inf
-            for x in range(13):
-                # Add 10min (600s) every iteration
-                time = timeStart + 600*x
+            for i in range(len(bus_timetable_seconds)):
+                # Only take values that are within 1 hour of time.
+                if bus_timetable_seconds[i] <= time_of_day-3600 or bus_timetable_seconds[i] >= time_of_day+3600:
+                    continue
+
                 journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
                                                             start_stop=start_stop,
                                                             end_stop=end_stop,
-                                                            time_of_day=time,
+                                                            time_of_day=bus_timetable_seconds[i],
                                                             weatherCode=weather,
                                                             secondary_school=secondary_term,
                                                             primary_school=primary_term,
@@ -351,7 +361,9 @@ def plannerform(request):
                                                             delay=0)
                 if journeyTimeSecondsB < quickestTime:
                     quickestTime = journeyTimeSecondsB
-                    bestTime = time
+                    bestTime = bus_timetable[i]
+
+
 
             if bestTime == time_of_day:
                 msg = 'This is the quickest time'
@@ -359,13 +371,8 @@ def plannerform(request):
                 journeyTimeB = ''
 
             else:
-                timeNorm = str(datetime.timedelta(seconds=bestTime))
-                journeyTimeB = {'h': 0, 'm': 0, 's': 0}
-                journeyTimeB['m'], journeyTimeB['s'] = divmod(quickestTime, 60)
-                journeyTimeB['h'], journeyTimeB['m'] = divmod(journeyTimeB['m'], 60)
-                journeyTimeB['s'] = round(journeyTimeB['s'])  # get rid of trailing floating point for seconds.
-
-            bus_timetable = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
+                journeyTimeB = bestTime
+                timeNorm = quickestTime
 
 
                 # server side rendering - replace with AJAX for client side rendering in the future
@@ -375,9 +382,9 @@ def plannerform(request):
                                                     'journeyTime': journeyTime,
                                                     # 'cost' : cost,
                                                     # 'bestStartTime' : bestStartTime})
-                                                    'leave_time': bus_timetable,
-                                                    'bestStartTime': timeNorm,
-                                                    'bestJourneyTime': journeyTimeB,
+                                                    'leave_time': bus_timetable[index],
+                                                    'bestStartTime': journeyTimeB,
+                                                    'bestJourneyTime': timeNorm,
                                                    'date': dateVar,
                                                    'time': timeVar,
                                                     'error': 0})  # 0 means everything good
@@ -399,32 +406,44 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
 
         # Find timetable for Monday to Friday (This is a join of Monday-Sunday and Monday-Friday)
         if day>=0 and day<=4:
-            timetable = data['results'][1]['departures']
-            timetable.extend(data['results'][0]['departures'])
+            timetable = set(data['results'][1]['departures'])
+            timetable.union(set(data['results'][0]['departures']))
         # Saturday
         elif day == 5:
-            timetable = data['results'][2]['departures']
+            timetable = set(data['results'][2]['departures'])
         # Sunday
         elif day == 6:
-            timetable = data['results'][0]['departures']
+            timetable = set(data['results'][0]['departures'])
 
         # Convert input time to seconds
         #input_time = day_time.hour*3600 + day_time.minute*60
 
+        time_list = list(timetable)
+        time_list.sort()
+        print(time_list)
+
         # Convert timetable times to seconds
-        timetable_seconds = [(int(x.split(':')[0])*3600 + int(x.split(':')[1])*60) for x in timetable]
+        timetable_seconds = [(int(x.split(':')[0])*3600 + int(x.split(':')[1])*60) for x in time_list]
 
         # Find index of closest time
         i_time = min(range(len(timetable_seconds)), key=lambda i: abs(timetable_seconds[i] - day_time))
 
-        return timetable[i_time]
+        # Code to make sure the index does not go out of range
+        if i_time<=6:
+            if len(timetable_seconds) - i_time <=6:
+                return timetable_seconds[0:-1],time_list[0:-1], i_time
+            else:
+                return timetable_seconds[0:i_time+7], time_list[0:i_time+7],i_time
+        else:
+            return timetable_seconds[i_time-6:i_time+7],time_list[i_time-6:i_time+7], 6
 
     else:
-        return None
+        return None, None, None
 
 
 
 def touristform(request):
+    #print('tourist form')
     if request.method == 'GET':
         form = TouristForm(request.GET)
 
@@ -434,12 +453,19 @@ def touristform(request):
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
-            busVar = form.cleaned_data['busnum_var']
-            fromVar = form.cleaned_data['from_var']
-            toVar = form.cleaned_data['to_var']
-            whenVar = form.cleaned_data['when_var']
+            fromVar = form.cleaned_data['from_var_ex']
+            toVar = form.cleaned_data['to_var_ex']
+            dateVar = form.cleaned_data['date_var_ex']
+            timeVar = form.cleaned_data['time_var_ex']
 
-            return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
+            #return HttpResponse("Bus Num: <br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
+            #return HttpResponse("Bus Num: <br>"+"From: <br>"+"To: <br>"+"When: "+toVar) #FOR DEBUGGING
+
+            return render(request, 'tourist.html', {'from': fromVar,
+                                                       'to': toVar,
+                                                       'date': dateVar,
+                                                       'time': timeVar,
+                                                       'error': 0})  # 0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
 
