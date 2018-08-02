@@ -191,7 +191,8 @@ def onthegoform(request):
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
                 errorMSG3 = "Please check your inputs and try again."
-                return render(request, 'response.html', {'busNum': busNum,
+                return render(request, 'response.html', {'persona': 'onthego',
+                                                         'busNum': busNum,
                                                         'from': fromVar,
                                                         'to': toVar,
                                                         'error_1': errorMSG,
@@ -243,7 +244,8 @@ def onthegoform(request):
             journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
 
             # server side rendering of the response html
-            return render(request, 'response.html', {'busNum' : busNum,
+            return render(request, 'response.html', {'persona': 'onthego',
+                                                     'busNum' : busNum,
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime' : journeyTime,
@@ -296,7 +298,8 @@ def plannerform(request):
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
                 errorMSG3 = "Please check your inputs and try again."
-                return render(request, 'theplanner.html', {'busNum': busNum,
+                return render(request, 'response.html', {'persona': 'planner',
+                                                            'busNum': busNum,
                                                             'from': fromVar,
                                                             'to': toVar,
                                                             'journeyTime': errorMSG,
@@ -383,7 +386,8 @@ def plannerform(request):
 
 
                 # server side rendering - replace with AJAX for client side rendering in the future
-            return render(request, 'theplanner.html', {'busNum': busNum,
+            return render(request, 'response.html', {'persona': 'planner',
+                                                     'busNum': busNum,
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime': journeyTime,

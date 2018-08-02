@@ -21,7 +21,7 @@
             <div class="col-sm-3" style="background-color:#d9d9d9;">
                 <br>
 
-                <form action="/planner/formdata" method="get">
+                <form action="/planner/formdata" method="get" id="planner_form">
                     <div class="form-group">
                         <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
@@ -37,7 +37,7 @@
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
 
-                            <input id="pl_location_from" class="form-control" type="text" placeholder="Start stop"
+                            <input id="location_from" class="form-control" type="text" placeholder="Start stop"
                                    name="from_var" required>
 
                         </div>
@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
-                            <input id="pl_location_to" class="form-control" type="text" placeholder="End stop"
+                            <input id="location_to" class="form-control" type="text" placeholder="End stop"
                                    name="to_var" required>
 
                         </div>
@@ -91,65 +91,9 @@
             </div>
         </div>
 
-        <!-- server side rendering of the response to the form submission -->
-        <!-- in next iteration of the product, replace with AJAX call for client side rendering -->
-        {% if busNum %}
-        <!-- if bus number variable is not null...simple check to see if data is returned, before rendering anything below. -->
-        <br/>
-        <div class="row">
-            <div class="col-sm-6">
-                <h2>Your Input</h2>
-                <ul class="list-group">
-                    <li class="list-group-item">Bus number: {{ busNum }}</li>
-                    <li class="list-group-item">From: {{ from }}</li>
-                    <li class="list-group-item">To: {{ to }}</li>
-                    <li class="list-group-item">Date: {{ date }}</li>
-                    <li class="list-group-item">Time: {{ time }}</li>
-                </ul>
-            </div>
-
-            {% if error == 0 %}
-
-            <div class="col-sm-6">
-                <ul class="list-group">
-                    <h2>Journey Details</h2>
-                    {% if journeyTime.h %}
-                    <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes
-                    </li>
-                    {% elif journeyTime.m %}
-                    <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes
-                    </li>
-                    {% else %} <!-- have hours, minute & seconds -->
-                    <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
-                    {% endif %}
-                    <li class="list-group-item">Bus is at:  {{ leave_time }}</li>
-                    {% if bestJourneyTime %}
-                    <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
-                    <li class="list-group-item">Journey time: {{ bestJourneyTime }}
-                    </li>
-                    {% endif %}
-
-                </ul>
-            </div>
-
-            {% else %}
-            <!-- there's an error, display error messages -->
-            <div class="col-sm-6">
-                <ul class="list-group">
-                    <h2>Journey Details</h2>
-                    <li class="list-group-item">{{ journeyTime}}</li>
-
-                    <li class="list-group-item">{{ cost }}</li>
-                    <li class="list-group-item">{{ bestStartTime }}</li>
-                </ul>
-            </div>
-
-            {% endif %}
-
-        </div>
+        <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
+        <div id="response"></div>
     </div>
-
-    {% endif %}
 
 </div>
 </div>
