@@ -22,22 +22,6 @@ function initMap(){
     };
 
     map = new google.maps.Map(mapDiv, mapOptions);
-
-    var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from'));
-    var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to'));
-
-    autocompleteFrom.bindTo('bounds', map);
-    autocompleteTo.bindTo('bounds', map);
-
-    autocompleteFrom.addListener('place_changed', function() {
-        var place = autocompleteFrom.getPlace();
-        console.log(place);
-    });
-    autocompleteTo.addListener('place_changed', function() {
-        var place = autocompleteTo.getPlace();
-        console.log(place);
-    });
-
 }
 
 
@@ -233,6 +217,21 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
+
+    var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from_ex'));
+    var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to_ex'));
+
+    autocompleteFrom.bindTo('bounds', map);
+    autocompleteTo.bindTo('bounds', map);
+
+    autocompleteFrom.addListener('place_changed', function() {
+        var place = autocompleteFrom.getPlace();
+        console.log(place);
+    });
+    autocompleteTo.addListener('place_changed', function() {
+        var place = autocompleteTo.getPlace();
+        console.log(place);
+    });
 
     //==================================================================================
     function calculateDirections(origin, destination, date_time) {
