@@ -8,7 +8,6 @@ urlpatterns = [
     path('theplanner/', views.theplanner, name='theplanner'),
     path('tourist/', views.tourist, name='tourist'),
     path('privacy/', views.privacy, name='privacy'),
-    path('faq/', views.faq, name='faq'),
     path('about/', views.about, name='about'),
     path('terms/', views.terms, name='terms'),
     path('accessibility/', views.accessibility, name='accessibility'),
