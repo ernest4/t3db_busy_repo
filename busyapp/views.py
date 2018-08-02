@@ -29,7 +29,7 @@ with open(STATIC_ROOT+'/model_info/events18.csv', mode='r') as infile:
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html', { 'serverTime': datetime.datetime.now()}) # tzinfo=datetime.timezone.utc
+    return render(request, 'index.html', { 'serverTime': datetime.datetime.now(tzinfo=datetime.timezone.utc)})
 
 
 def onthego(request):
