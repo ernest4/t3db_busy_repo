@@ -61,7 +61,7 @@ def getWeather(timeStamp: int = None):
     def getCachedFutureWeather(timeStamp: int = None):
         index = 0
         for key_dt in futureWeatherCodes:
-            print(key_dt, futureWeatherCodes[key_dt])
+            #print(key_dt, futureWeatherCodes[key_dt])
             if index > 0:
                 next_dt = key_dt
                 if timeStamp < next_dt:

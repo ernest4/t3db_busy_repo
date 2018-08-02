@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="col-sm-4">
-                    <p2>Activities</p2>
+                    <p2>Activities&nbsp;</p2>
                         <img src="http://maps.google.com/mapfiles/kml/pal2/icon14.png">
                         <input id='ActivitiesCheck' type="checkbox">
                         <span class="checkmark"></span>
@@ -52,8 +52,9 @@
                 </div>
 
                 <div class="col-sm-4">
-                    <p2>Family&nbsp;&nbsp;&nbsp;&nbsp; </p2>
+                    <p2>&nbsp;&nbsp;&nbsp;Family&nbsp;&nbsp;</p2>
                         <img src="http://maps.google.com/mapfiles/ms/micons/hiker.png">
+                    <p2>&nbsp; </p2>
                         <input id='FamilyCheck' type="checkbox">
                         <span class="checkmark"></span>
                
@@ -61,7 +62,7 @@
 
 
                 <div class="col-sm-4">
-                    <p2>Outdoors</p2>
+                    <p2>Outdoors&nbsp;&nbsp;</p2>
                         <img src="http://maps.google.com/mapfiles/kml/pal2/icon4.png">
                         <input id="OutdoorsCheck" type="checkbox">
                         <span class="checkmark"></span>
@@ -80,42 +81,51 @@
 
         <div class="row">
 
-            <div class="col-sm-8" style="background-color:white;">
-                <div id="map" style="width:100%; height:400px;">
+            <div class="col-sm-9"> <br>
+                <div id="map" style="width:100%; height:402px;">
                     <!-- google maps go here -->
                 </div>
             </div>
             <br>
-            <div class="col-sm-4">
+<<<<<<< HEAD
+            <div class="col-sm-3" style="background-color:#d9d9d9;">
                 <form action="/planner/formdata" method="get">
                     <!-- Input box for "from" with Google directions API -->
                     <div class="form-group">
+                        <br>
                         <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text"
                                placeholder="Start Location" name="from_var" required>
+=======
+            <div class="col-sm-4">
+                <form action="/tourist/formdata" method="get">
+                    <!-- Input box for "from" with Google directions API -->
+                    <div class="form-group">
+                        <input id="location_from"   class="form-control" type="text"
+                               placeholder="Start Location" name="from_var_ex">
+>>>>>>> 5811ab98f5de75e17bce11f45e605e39a71fac94
                         <datalist id="stop_list"></datalist>
                     </div>
 
                     <!-- Input box for "to" with Google directions API -->
                     <div class="form-group">
                         <!-- AUTOCOMPLETE USER INPUT -->
-                        <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text"
-                               placeholder="Destination" name="to_var" required>
-                        <datalist id="stop_list"></datalist>
+                        <input id="location_to" class="form-control" type="text" placeholder="Destination" name="to_var_ex">
+                        <datalist id="stop_list_ex"></datalist>
                     </div>
 
                     <!-- Input box for date -->
                     <div class="form-group">
-                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var"
+                        <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
                                required>
                     </div>
 
                     <!-- Input box for time -->
                     <div class="form-group">
                         <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var" value="00:00" required>
+                               name="time_var_ex" value="00:00" required>
                     </div>
 
-                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
 
                 </form>
 
@@ -125,14 +135,49 @@
                 <script>
                     $(document).ready(function() {
                         $("input[type=time]").clockInput(false);
-                        $("#datepicker").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
+                        $("#datepicker_ex").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
                     })
 
                 </script>
 
             </div>
         </div>
+
+         {% if error == 0 %}
+
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <h2>Our Estimation</h2>
+                    {% if from %}
+                    <li class="list-group-item">From: {{ from }}
+                    </li>
+                    {% endif %}
+                    {% if to %}
+                    <li class="list-group-item">To: {{ to }}
+                    </li>
+                    {% endif %}
+                    {% if date %}
+                    <li class="list-group-item">Date: {{ date }}</li>
+                    {% endif %}
+                    {% if time %}
+                    <li class="list-group-item">Time {{ time }}</li>
+
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% else %}
+            <!-- there's an error, display error messages -->
+            <div class="col-sm-6">
+
+                    <h2>Diddn't work</h2>
+
+            </div>
+
+            {% endif %}
     </div>
+
+
 </div>
 
 {% endblock %}

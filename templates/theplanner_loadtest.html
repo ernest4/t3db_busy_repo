@@ -13,15 +13,15 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-9">
-                <div id="map" style="width:100%; height:450px;">
+            <div class="col-sm-8" style="background-color:white;">
+                <div id="map" style="width:100%; height:400px;">
                     <!-- google maps go here -->
                 </div>
             </div>
-            <div class="col-sm-3" style="background-color:#d9d9d9;">
+            <div class="col-sm-4">
                 <br>
 
-                <form action="/planner/formdata" method="get">
+                <form action="planner/formdata_loadtest" method="get">
                     <div class="form-group">
                         <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
@@ -30,30 +30,30 @@
                                    name="busnum_var" required>
                         </div>
                     </div>
-                  
+                    <br>
 
                     <!-- Input box for "from" with autocomplete RTPI query -->
                     <div class="form-group">
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
 
-                            <input id="pl_location_from" class="form-control" type="text" placeholder="Start stop"
+                            <input id="location_from" class="form-control" type="text" placeholder="Start stop"
                                    name="from_var" required>
 
                         </div>
                     </div>
-        
+                    <br>
 
                     <!-- Input box for "to" with autocomplete RTPI query -->
                     <div class="form-group">
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
-                            <input id="pl_location_to" class="form-control" type="text" placeholder="End stop"
+                            <input id="location_to" class="form-control" type="text" placeholder="End stop"
                                    name="to_var" required>
 
                         </div>
                     </div>
-                
+                    <br>
 
                     <!-- Input box for date -->
                     <div class="form-group">
@@ -64,7 +64,7 @@
                     <!-- Input box for time -->
                     <div class="form-group">
                         <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var" value="06:00" required>
+                               name="time_var" value="00:00" required>
                     </div>
 
                     <button class="btn btn-primary" type="submit">Submit</button>
@@ -112,23 +112,28 @@
 
             <div class="col-sm-6">
                 <ul class="list-group">
-                    <h2>Journey Details</h2>
+                    <h2>Our Estimation</h2>
                     {% if journeyTime.h %}
-                    <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes
+                    <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds
                     </li>
                     {% elif journeyTime.m %}
-                    <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes
+                    <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds
                     </li>
                     {% else %} <!-- have hours, minute & seconds -->
                     <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
                     {% endif %}
-                    <li class="list-group-item">Bus is at:  {{ leave_time }}</li>
-                    {% if bestJourneyTime %}
+                    <li class="list-group-item">Bus is at {{ leave_time }}</li>
+                    <li class="list-group-item">---</li>
                     <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
-                    <li class="list-group-item">Journey time: {{ bestJourneyTime }}
+                    {% if bestJourneyTime.h %}
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime.h }} hours, {{ bestJourneyTime.m }} minutes, {{ bestJourneyTime.s }} seconds
                     </li>
+                    {% elif journeyTime.m %}
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime.m }} minutes, {{ bestJourneyTime.s }} seconds
+                    </li>
+                    {% else %} <!-- have hours, minute & seconds -->
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime.s }} seconds</li>
                     {% endif %}
-
                 </ul>
             </div>
 
@@ -136,7 +141,7 @@
             <!-- there's an error, display error messages -->
             <div class="col-sm-6">
                 <ul class="list-group">
-                    <h2>Journey Details</h2>
+                    <h2>Our Estimation</h2>
                     <li class="list-group-item">{{ journeyTime}}</li>
 
                     <li class="list-group-item">{{ cost }}</li>

@@ -23,7 +23,34 @@ function initMap(){
 
     map = new google.maps.Map(mapDiv, mapOptions);
 
+    var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from'));
+    var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to'));
+
+    autocompleteFrom.bindTo('bounds', map);
+    autocompleteTo.bindTo('bounds', map);
+
+    autocompleteFrom.addListener('place_changed', function() {
+        var place = autocompleteFrom.getPlace();
+        console.log(place);
+    });
+    autocompleteTo.addListener('place_changed', function() {
+        var place = autocompleteTo.getPlace();
+        console.log(place);
+    });
+
+
 }
+
+
+
+// From the picture you posted, it say it's disabled...
+//
+// Go to Developer Console -> APIs & auth -> APIs
+//
+// Search for Geocoding and click on Google Maps Geocoding API -> Enable API. Do the same thing for Geolocating
+//
+
+
 
 
 //Makes a marker for busstops and add onlick functionality
@@ -36,6 +63,8 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
         map: map,
         icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
     });
+    
+
 
     //Add the pop up box to marker for onclick
     google.maps.event.addListener(marker, 'click', function(content){
@@ -208,6 +237,44 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
 
+    //==================================================================================
+    function calculateDirections(origin, destination, date_time) {
+
+        console.log("Directions function "+date_time);
+
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+
+        var request = {
+            origin: origin,
+            destination: destination,
+            travelMode: 'TRANSIT',
+
+            transitOptions: {
+                //departureTime: date_time,
+                modes: ['BUS']
+            }
+        }
+
+        directionsDisplay.setMap(map);
+        directionsService.route(request, function (result, status) {
+            console.log(status);
+            console.log(result);
+            console.log(origin);
+            console.log(destination);
+
+            if (status == 'OK') {
+                directionsDisplay.setDirections(result);
+                console.log(result);
+
+            }
+            else {
+                console.log("Issue with directions request");
+            }
+        });
+    }
+//======================================================================
+
 
     function showUserPosition(position){
       //Conversts isUser position from geolocation coords to {lat: xxx, lng: xxx}
@@ -285,7 +352,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
                 +"&mode="+"transit"
                 +"&transit_mode="+"bus", function(directionsData){
 
-        //console.log(directionsData.routes[0].legs[0].steps); //DEBUGGING
+        console.log(directionsData.routes[0].legs[0].steps); //DEBUGGING
 
         let index = 0; //keep track of which step along the route we are on...
         let markerColor = "blue"; //Blue is bus, Yellow is walking, Red is the user starting location.
@@ -341,6 +408,36 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         //...
       });
     }
+
+    //set the directions button callback...
+    $( '#directionsButtonEX' ).click(function(){
+      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
+      //console.log(typeof $('#destination').val());
+      //deleteMarkers(markers); //clear current direction markers
+
+       //var originex = {lat: 53.3435162, lng:-6.2732542};
+       //var destination = {lat: 53.3369012, lng:-6.2619592};
+
+
+        let origin = $('#location_from').val();
+        let destination = $('#location_to').val();
+
+        let date = $('#datepicker_ex').val();
+        let time = $('#clockpicker').val();
+        // Convert time to seconds
+        console.log(date);
+        var a = time.split(':');
+        var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+
+        //date = date.getTime()/1000;
+        var date_time = date + seconds;
+
+        console.log(date_time);
+
+        calculateDirections(origin, destination, date_time); //show the new direction marker//
+        // displayDirectionMarkers(originex, destination); //show the new direction markers
+    });
+
 
 
     //set the directions button callback...
