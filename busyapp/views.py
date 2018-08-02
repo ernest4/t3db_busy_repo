@@ -371,7 +371,7 @@ def plannerform(request):
 
 
             # If best time is 20% or greater than 5 minutes quicker suggest time.
-            if (quickestTime <= (time_of_day*0.8) or (time_of_day-quickestTime) > 300) and time_of_day-quickestTime>60:
+            if (quickestTime <= (journeyTimeSeconds*0.8) or (journeyTimeSeconds-quickestTime) > 300) and journeyTimeSeconds-quickestTime>60:
                 if quickestTime/60>1:
                     quickestTime = str(int(quickestTime/60)) + " minutes"
                 else:
@@ -578,7 +578,6 @@ def plannerform_loadtest(request):
                     bestTime = time
 
             if bestTime == time_of_day:
-                msg = 'This is the quickest time'
                 timeNorm = "You have chosen the quickest time to travel in this period"
                 journeyTimeB = ''
 

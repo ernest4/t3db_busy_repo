@@ -222,9 +222,18 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
     var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from_ex'));
     var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to_ex'));
+    // This is ready to go but needs On the go input to change id name to destinationOnTheGo
+    //var autocompleteOnTheGo = new google.maps.places.Autocomplete(document.getElementById('destinationOnTheGo'));
+
 
     autocompleteFrom.bindTo('bounds', map);
     autocompleteTo.bindTo('bounds', map);
+    //autocompleteOnTheGo.bindTo('bounds', map);
+
+    // autocompleteOnTheGo.addListener('place_changed', function() {
+    //     var place = autocompleteOnTheGo.getPlace();
+    //     console.log(place);
+    // });
 
     autocompleteFrom.addListener('place_changed', function() {
         var place = autocompleteFrom.getPlace();
