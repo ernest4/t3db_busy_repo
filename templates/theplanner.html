@@ -122,9 +122,18 @@
                     {% else %} <!-- have hours, minute & seconds -->
                     <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
                     {% endif %}
-
-                    <li class="list-group-item">Journey cost: € {{ cost }}</li>
+                    <li class="list-group-item">Bus is at {{ leave_time }}</li>
+                    <li class="list-group-item">---</li>
                     <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
+                    {% if bestJourneyTime.h %}
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime.h }} hours, {{ bestJourneyTime.m }} minutes, {{ bestJourneyTime.s }} seconds
+                    </li>
+                    {% elif journeyTime.m %}
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime.m }} minutes, {{ bestJourneyTime.s }} seconds
+                    </li>
+                    {% else %} <!-- have hours, minute & seconds -->
+                    <li class="list-group-item">Journey time: {{ bestJourneyTime.s }} seconds</li>
+                    {% endif %}
                 </ul>
             </div>
 

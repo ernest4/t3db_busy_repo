@@ -8,88 +8,106 @@ import time
 import psycopg2
 from pprint import pprint
 from sklearn.externals import joblib
-
 from busy.settings import STATIC_ROOT
-
-#testing pickle
-
-#test_list = ['one', '2', 'three']
-
-#writing pickle
-#with open("./ml_models/test_file",'wb') as outputFile:
-#    pickle.dump(test_list, outputFile)
-
-#loading pickle
-#with open("./ml_models/test_file", 'rb') as inputFile:
-#    loaded_list = pickle.load(inputFile)
-
-#print(loaded_list)
+import requests
+import datetime
+import os
 
 #get weather information
 hourSinceLastCall = 0 # type: float
 weatherCode = 0 # type: int
-def getWeather(weekdayNumber: int = None):
+futureWeatherCodes = {}
+def getWeather(timeStamp: int = None):
     global hourSinceLastCall
     global weatherCode
+    global futureWeatherCodes
 
     #Dublin id for open weather: 7778677
-    def fetchRealTimeWeatherCode():
-        r = requests.get('http://api.openweathermap.org/data/2.5/weather',
-                         params={'q': 'dublin', 'APPID': os.environ.get('APPID')})
-        if r.status_code == requests.codes.ok:
-            weatherData = r.json()
-            weatherCode = weatherData['weather'][0]['id']
-            return weatherCode
-        else:
-            #Could not get weather
-            #Use 'typical' Irish weather, i.e. '801, few clouds'
-            return 801
+    def fetchRealTimeWeatherCode(timeStamp: int = None):
+        global futureWeatherCodes
+
+        if timeStamp is None: #Default to providing current weather
+            r = requests.get('http://api.openweathermap.org/data/2.5/weather',
+                             params={'q': 'dublin', 'APPID': os.environ.get('APPID')})
+
+            if r.status_code == requests.codes.ok:
+                weatherData = r.json()
+                weatherCode = weatherData['weather'][0]['id']
+                return weatherCode
+            else:
+                #Could not get weather
+                #Use 'typical' Irish weather, i.e. '801, few clouds'
+                return 801
+        else: #Make a forecast based on provided timestamp
+            r = requests.get('http://api.openweathermap.org/data/2.5/forecast',
+                             params={'id': '7778677', 'APPID': os.environ.get('APPID')})
+
+            if r.status_code == requests.codes.ok:
+                weatherData = r.json()
+
+                futureWeatherCodes = {} #Empty the dictionary
+                for row in weatherData['list']:
+                    #print(row['dt'],':',row['weather'][0]['id']) #FOR TESTING
+                    #Update the cache
+                    futureWeatherCodes[row['dt']] = row['weather'][0]['id']
+
+                weatherCode = getCachedFutureWeather(timeStamp)
+                return weatherCode
+            else:
+                # Could not get weather
+                # Use 'typical' Irish weather, i.e. '801, few clouds'
+                return 801
+
+    def getCachedFutureWeather(timeStamp: int = None):
+        index = 0
+        for key_dt in futureWeatherCodes:
+            print(key_dt, futureWeatherCodes[key_dt])
+            if index > 0:
+                next_dt = key_dt
+                if timeStamp < next_dt:
+                    futureWeatherCode = futureWeatherCodes[last_dt] #TESTING
+                    return futureWeatherCode
+                else:
+                    last_dt = key_dt
+            else:
+                last_dt = key_dt
+
+            index += 1
+
+        # Could not get weather
+        # Use 'typical' Irish weather, i.e. '801, few clouds'
+        futureWeatherCode = 801
+        return futureWeatherCode
 
     #if app just started up...
     if hourSinceLastCall == 0:
         hourSinceLastCall = datetime.datetime.now() + datetime.timedelta(minutes=60)
         weatherCode = fetchRealTimeWeatherCode()
+        weatherCodeReturned = weatherCode
+        fetchRealTimeWeatherCode(hourSinceLastCall.timestamp())  # Update the forecast cache
 
     # else query OpenWeather API every hour
     currentCallTime = datetime.datetime.now()
-    if currentCallTime > hourSinceLastCall:
+    if currentCallTime > hourSinceLastCall: #If it's been an hour since last API call...
         hourSinceLastCall = currentCallTime + datetime.timedelta(minutes=60)
         #cache the weather code
         weatherCode = fetchRealTimeWeatherCode()
+        weatherCodeReturned = weatherCode
+    else: #use the cached current weather code
+        weatherCodeReturned = weatherCode
 
-    return weatherCode
 
-"""
-# RTPI request based on route and stop_id
-# If there are buses coming, returns list of tuples with arrival time and the delay
-def getLiveBusInfo(stop_id, route_id):
-    times=[]
-    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?"
-                     "stopid="+stop_id+"&routeid="+route_id+"&maxresults&operator&format=json")
-    if r.status_code == requests.codes.ok:
-        data = json.loads(r.content.decode('utf-8'))
-        if len(data['results']) > 0:
-            i = 0
-            while i < 3 and i<len(data['results']):
-                timeArr = data['results'][i]['arrivaldatetime']
-                timeSch = data['results'][i]['scheduledarrivaldatetime']
+    # else query OpenWeather 5 day forecast API if timestamp provided
+    if currentCallTime > hourSinceLastCall and timeStamp is not None:
+        hourSinceLastCall = currentCallTime + datetime.timedelta(minutes=60)
+        futureWeatherCode = fetchRealTimeWeatherCode(timeStamp)
+        weatherCodeReturned = futureWeatherCode
+    elif timeStamp is not None: # else get cached data
+        futureWeatherCode = getCachedFutureWeather(timeStamp)
+        weatherCodeReturned = futureWeatherCode
 
-                timeArr = timeArr.split(" ")[1]
-                timeSch = timeSch.split(" ")[1]
-                FMT = "%H:%M:%S"
-                delay = (datetime.strptime(timeSch, FMT) - datetime.strptime(timeArr, FMT)).total_seconds()
+    return weatherCodeReturned
 
-                times+=(timeArr, delay)
-                i+=1
-            return times
-        else:
-            return null
-"""
-
-# Function to get the events of a certain day
-def getEvents(date):
-    pass
-#"""
 
 
 def getDayOfYear():
@@ -275,8 +293,6 @@ def predictor_ann_improved(ann_improved, start_stop, end_stop, time_of_day, weat
     endPredicion = ann_improved.predict(end_df)
 
     # Estimated time
-    print(startPrediction)
-    print(endPredicion)
     time_est = endPredicion - startPrediction
 
     return time_est[0]

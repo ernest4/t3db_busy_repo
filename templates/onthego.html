@@ -43,7 +43,7 @@
         <br>
 
         <!--Input box for route number with autocomplete RTPI query-->
-        <form action="/onthego/formdata" method="get">
+        <form action="/onthego/formdata" method="get" id="onthego_form">
           <div class="form-group">
             <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
             <div class="ui-widget"> <!-- jQuery autocomplete UI -->
@@ -79,56 +79,8 @@
       </div>
     </div>
 
-    <!-- server side rendering of the response to the form submission -->
-    <!-- in next iteration of the product, replace with AJAX call for client side rendering -->
-    {% if busNum %} <!-- if bus number variable is not null...simple check to see if data is returned, before rendering anything below. -->
-    <br/>
-    <div class="row">
-      <div class="col-sm-6">
-        <h2>Your journey</h2>
-        <ul class="list-group">
-          <li class="list-group-item">Bus number: {{ busNum }}</li>
-          <li class="list-group-item">From: {{ from }}</li>
-          <li class="list-group-item">To: {{ to }}</li>
-        </ul>
-      </div>
-
-      {% if error == 0 %}
-
-      <div class="col-sm-6">
-        <ul class="list-group">
-          <h2>Our Estimation</h2>
-          {% if journeyTime.h %}
-          <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds</li>
-          {% elif journeyTime.m %}
-          <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds</li>
-          {% else %} <!-- have hours, minute & seconds -->
-          <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
-          {% endif %}
-
-          <li class="list-group-item">Journey cost: € {{ cost }}</li>
-          <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
-        </ul>
-      </div>
-
-      {% else %}
-      <!-- there's an error, display error messages -->
-      <div class="col-sm-6">
-        <ul class="list-group">
-          <h2>Our Estimation</h2>
-          <li class="list-group-item">{{ journeyTime}}</li>
-
-          <li class="list-group-item">{{ cost }}</li>
-          <li class="list-group-item">{{ bestStartTime }}</li>
-        </ul>
-      </div>
-
-      {% endif %}
-
-    </div>
+      <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
+    <div id="response"></div>
   </div>
-
-  {% endif %}
-
 </div>
 {% endblock %}
