@@ -324,7 +324,9 @@ def plannerform(request):
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
-            journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
+            journeyTime['h'], journeyTime['m'],journeyTime['s'] = int(journeyTime['h']), int(journeyTime['m']),int(journeyTime['s'])
+              # get rid of trailing floating point for seconds.
+            #journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
 
 
             bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
@@ -332,8 +334,6 @@ def plannerform(request):
             # Find best time to travel
 
             bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
-
-            print(bus_timetable)
 
 
             # Set quickest time to inf so comparison is valid at first run
@@ -364,9 +364,9 @@ def plannerform(request):
 
 
             # If best time is 20% or greater than 5 minutes quicker suggest time.
-            if (quickestTime <= (time_of_day*0.9) or (time_of_day-quickestTime) > 300) and time_of_day-quickestTime>60:
+            if (quickestTime <= (time_of_day*0.8) or (time_of_day-quickestTime) > 300) and time_of_day-quickestTime>60:
                 if quickestTime/60>1:
-                    quickestTime = str(int(quickestTime/60))+ " minutes"
+                    quickestTime = str(int(quickestTime/60)) + " minutes"
                 else:
                     quickestTime = str(int(quickestTime)) + " seconds"
 
@@ -404,8 +404,9 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
 
         # Find timetable for Monday to Friday (This is a join of Monday-Sunday and Monday-Friday)
         if day>=0 and day<=4:
+            # Mon-Friday combines two sets
             timetable = set(data['results'][1]['departures'])
-            timetable.union(set(data['results'][0]['departures']))
+            timetable = timetable.union(set(data['results'][0]['departures']))
         # Saturday
         elif day == 5:
             timetable = set(data['results'][2]['departures'])
@@ -413,29 +414,30 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
         elif day == 6:
             timetable = set(data['results'][0]['departures'])
 
-        # Convert input time to seconds
-        #input_time = day_time.hour*3600 + day_time.minute*60
-
+        # Convert back to ordered liist
         time_list = list(timetable)
         time_list.sort()
 
-        # Convert timetable times to seconds
+        # Convert timetable time_list to seconds
         timetable_seconds = [(int(x.split(':')[0])*3600 + int(x.split(':')[1])*60) for x in time_list]
 
         # Find index of closest time
         i_time = min(range(len(timetable_seconds)), key=lambda i: abs(timetable_seconds[i] - day_time))
 
-        # Code to make sure the index does not go out of range
+        # Initiate 2 lists for time in HH:MM and another for seconds
+        tsecs=[]
+        times=[]
 
-        
-        x = 20
-        if i_time<=x:
-            if len(timetable_seconds) - i_time <=x:
-                return timetable_seconds[0:-1],time_list[0:-1], i_time
-            else:
-                return timetable_seconds[0:i_time+x+1], time_list[0:i_time+x+1],i_time
+        for i, x in enumerate(timetable_seconds):
+            if x > day_time-3600 and x < day_time+3600:
+                tsecs.append(x)
+                times.append(time_list[i])
+
+        if len(tsecs)>0:
+            i_time = min(range(len(tsecs)), key=lambda i: abs(tsecs[i] - day_time))
+            return tsecs, times, i_time
         else:
-            return timetable_seconds[i_time-6:i_time+x+1],time_list[i_time-6:i_time+x+1], x
+            return None, None, None
 
     else:
         return None, None, None
@@ -443,13 +445,8 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
 
 
 def touristform(request):
-    #print('tourist form')
     if request.method == 'GET':
         form = TouristForm(request.GET)
-
-        #Example of reading unvalidated form data. This may crash the app.
-        #print(form['busnum'].value())
-        #print(form.data['busnum'])
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
