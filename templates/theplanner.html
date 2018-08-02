@@ -112,12 +112,12 @@
 
             <div class="col-sm-6">
                 <ul class="list-group">
-                    <h2>Our Estimation</h2>
+                    <h2>Journey Details</h2>
                     {% if journeyTime.h %}
-                    <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds
+                    <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes
                     </li>
                     {% elif journeyTime.m %}
-                    <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds
+                    <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes
                     </li>
                     {% else %} <!-- have hours, minute & seconds -->
                     <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
@@ -136,7 +136,7 @@
             <!-- there's an error, display error messages -->
             <div class="col-sm-6">
                 <ul class="list-group">
-                    <h2>Our Estimation</h2>
+                    <h2>Journey Details</h2>
                     <li class="list-group-item">{{ journeyTime}}</li>
 
                     <li class="list-group-item">{{ cost }}</li>

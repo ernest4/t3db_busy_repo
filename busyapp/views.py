@@ -332,13 +332,10 @@ def plannerform(request):
 
             bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
 
-            #print(bus_timetable)
+            print(bus_timetable)
 
-            if bus_timetable:
-                print(bus_timetable, bus_timetable_seconds)
-                print("Has timetable", index)
 
-            timeStart = time_of_day - 3600
+            # Set quickest time to inf so comparison is valid at first run
             quickestTime = np.inf
             for i in range(len(bus_timetable_seconds)):
                 # Only take values that are within 1 hour of time.
@@ -359,20 +356,22 @@ def plannerform(request):
                                                             day_of_year=dayOfYear,
                                                             weekday=weekDay,
                                                             delay=0)
+                # Compare to see if journey is the quickest
                 if journeyTimeSecondsB < quickestTime:
                     quickestTime = journeyTimeSecondsB
                     bestTime = bus_timetable[i]
 
 
-
-            if bestTime == time_of_day:
-                msg = 'This is the quickest time'
-                timeNorm = "You have chosen the quickest time to travel in this period"
-                journeyTimeB = ''
+            # If best time is 20% or greater than 5 minutes quicker suggest time.
+            if (quickestTime <= (time_of_day*0.9) or (time_of_day-quickestTime) > 300) and time_of_day-quickestTime>60:
+                if quickestTime/60>1:
+                    quickestTime = str(int(quickestTime/60))+ " minutes"
+                else:
+                    quickestTime = str(int(quickestTime)) + " seconds"
 
             else:
-                journeyTimeB = bestTime
-                timeNorm = quickestTime
+                quickestTime = None
+                bestTime = "You have chosen the quickest time to travel in this period"
 
 
                 # server side rendering - replace with AJAX for client side rendering in the future
@@ -380,11 +379,9 @@ def plannerform(request):
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime': journeyTime,
-                                                    # 'cost' : cost,
-                                                    # 'bestStartTime' : bestStartTime})
                                                     'leave_time': bus_timetable[index],
-                                                    'bestStartTime': journeyTimeB,
-                                                    'bestJourneyTime': timeNorm,
+                                                    'bestStartTime': bestTime,
+                                                    'bestJourneyTime': quickestTime,
                                                    'date': dateVar,
                                                    'time': timeVar,
                                                     'error': 0})  # 0 means everything good
@@ -420,7 +417,6 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
 
         time_list = list(timetable)
         time_list.sort()
-        print(time_list)
 
         # Convert timetable times to seconds
         timetable_seconds = [(int(x.split(':')[0])*3600 + int(x.split(':')[1])*60) for x in time_list]
@@ -429,13 +425,16 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
         i_time = min(range(len(timetable_seconds)), key=lambda i: abs(timetable_seconds[i] - day_time))
 
         # Code to make sure the index does not go out of range
-        if i_time<=6:
-            if len(timetable_seconds) - i_time <=6:
+
+        
+        x = 20
+        if i_time<=x:
+            if len(timetable_seconds) - i_time <=x:
                 return timetable_seconds[0:-1],time_list[0:-1], i_time
             else:
-                return timetable_seconds[0:i_time+7], time_list[0:i_time+7],i_time
+                return timetable_seconds[0:i_time+x+1], time_list[0:i_time+x+1],i_time
         else:
-            return timetable_seconds[i_time-6:i_time+7],time_list[i_time-6:i_time+7], 6
+            return timetable_seconds[i_time-6:i_time+x+1],time_list[i_time-6:i_time+x+1], x
 
     else:
         return None, None, None
