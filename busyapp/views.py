@@ -241,7 +241,8 @@ def onthegoform(request):
             return render(request, 'response.html', {'busNum' : busNum,
                                                     'from': fromVar,
                                                     'to': toVar,
-                                                    'journeyTime' : journeyTime,
+                                                    #'journeyTime' : journeyTime,
+                                                     'journeyTime': journeyTimeSeconds,
                                                     'bus1': bus1,
                                                     'bus2': bus2,
                                                     'bus3': bus3,
@@ -442,5 +443,141 @@ def touristform(request):
             whenVar = form.cleaned_data['when_var']
 
             return HttpResponse("Bus Num: "+busVar+"<br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
+        else:
+            return HttpResponse("Oops! Form invalid :/ Try again?")
+
+
+def plannerform_loadtest(request):
+    if request.method == 'GET':
+        form = PlannerForm(request.GET)
+
+        # Example of reading unvalidated form data. This may crash the app.
+        # print(form['busnum_var'].value())
+        # print(form.data['busnum_var'])
+
+        #Prefered way of handling forms, validate first before using.
+        if form.is_valid():
+            busNum = form.cleaned_data['busnum_var']
+            fromVar = form.cleaned_data['from_var']
+            toVar = form.cleaned_data['to_var']
+            dateVar = form.cleaned_data['date_var']
+            timeVar = form.cleaned_data['time_var']
+
+
+            time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
+
+            # Seconds since the epoch till the input date
+            inputDateTimeStamp = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp())
+            weather = getWeather(inputDateTimeStamp) #TESTING, CREATE getFutureWeather() FUNCTION IN THE FUTURE....
+
+            dayOfYear = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc)
+                       - datetime.datetime(2018, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)).total_seconds()
+
+            weekDay = getWeekDayBinaryArray(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, tzinfo=datetime.timezone.utc).weekday())
+
+
+            # Fetch the right model
+            ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, weekdayIndex=datetime.datetime.today().weekday())
+
+            if ann_improved is None:  # Model could not be retreived
+                # server side rendering - replace with AJAX for client side rendering in the future
+                errorMSG = "Oops something went wrong :/"
+                errorMSG2 = "The combination of route and stops you have entered may not be valid \
+                            and/or may not be in service on this particular weekday."
+                errorMSG3 = "Please check your inputs and try again."
+                return render(request, 'theplanner_loadtest.html', {'busNum': busNum,
+                                                            'from': fromVar,
+                                                            'to': toVar,
+                                                            'journeyTime': errorMSG,
+                                                            'cost': errorMSG2,
+                                                            'bestStartTime': errorMSG3,
+                                                           'date': dateVar,
+                                                           'time': timeVar,
+                                                            'error': 1}) #Error code > 0 means something bad happened...
+
+            # Retrieve events
+            date = datetime.datetime.strftime(dateVar, "%Y-%m-%d")
+            dayEvents = events[date]
+            secondary_term, primary_term, trinity, ucd, bank_holiday, event = dayEvents[0], dayEvents[1], dayEvents[
+                2], dayEvents[3], dayEvents[4], dayEvents[5]
+
+            # call the machine learning function & parse the returned seconds into hours, minutes & seconds.
+            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
+                                                        start_stop=start_stop,
+                                                        end_stop=end_stop,
+                                                        time_of_day=time_of_day,
+                                                        weatherCode=weather,
+                                                        secondary_school=secondary_term,
+                                                        primary_school=primary_term,
+                                                        trinity=trinity,
+                                                        ucd=ucd,
+                                                        bank_holiday=bank_holiday,
+                                                        event=event,
+                                                        day_of_year=dayOfYear,
+                                                        weekday=weekDay,
+                                                        delay=0)  # 0 for future dates
+
+            journeyTime = {'h': 0, 'm': 0, 's': 0}
+            journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
+            journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
+            journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
+
+
+            bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
+
+            # Find best time to travel
+
+            timeStart = time_of_day - 3600
+            quickestTime = np.inf
+            for x in range(13):
+                # Add 10min (600s) every iteration
+                time = timeStart + 600*x
+                journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
+                                                            start_stop=start_stop,
+                                                            end_stop=end_stop,
+                                                            time_of_day=time,
+                                                            weatherCode=weather,
+                                                            secondary_school=secondary_term,
+                                                            primary_school=primary_term,
+                                                            trinity=trinity,
+                                                            ucd=ucd,
+                                                            bank_holiday=bank_holiday,
+                                                            event=event,
+                                                            day_of_year=dayOfYear,
+                                                            weekday=weekDay,
+                                                            delay=0)
+                if journeyTimeSecondsB < quickestTime:
+                    quickestTime = journeyTimeSecondsB
+                    bestTime = time
+
+            if bestTime == time_of_day:
+                msg = 'This is the quickest time'
+                timeNorm = "You have chosen the quickest time to travel in this period"
+                journeyTimeB = ''
+
+            else:
+                timeNorm = str(datetime.timedelta(seconds=bestTime))
+                journeyTimeB = {'h': 0, 'm': 0, 's': 0}
+                journeyTimeB['m'], journeyTimeB['s'] = divmod(quickestTime, 60)
+                journeyTimeB['h'], journeyTimeB['m'] = divmod(journeyTimeB['m'], 60)
+                journeyTimeB['s'] = round(journeyTimeB['s'])  # get rid of trailing floating point for seconds.
+
+            bus_timetable = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
+
+
+                # server side rendering - replace with AJAX for client side rendering in the future
+            return render(request, 'theplanner_loadtest.html', {'busNum': busNum,
+                                                                'from': fromVar,
+                                                                'to': toVar,
+                                                                'journeyTime': journeyTime,
+                                                                # 'cost' : cost,
+                                                                # 'bestStartTime' : bestStartTime})
+                                                                'leave_time': bus_timetable,
+                                                                'bestStartTime': timeNorm,
+                                                                'bestJourneyTime': journeyTimeB,
+                                                               'date': dateVar,
+                                                               'time': timeVar,
+                                                                'error': 0})  # 0 means everything good
+
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
