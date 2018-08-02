@@ -21,6 +21,7 @@ $( window ).on( "load", function() {
                 console.log("onthego_form: submission responded with success..."); //DEBUGGING
 
                 document.getElementById('response').innerHTML = response; //more efficient than using jQuery equivalent...
+                document.getElementById('response').scrollIntoView();
             },
 
             error: function(xhr, errmsg, err) {

@@ -4,7 +4,11 @@
 $( window ).on ("load", function () {
 
     //set the autocomplete callback for destination autosuggest powere by directions api
-    $( "#destination" ).autocomplete({
+
+
+    //==================================================================================================================
+$("#destination").each(function(){     //#location_from,#location_to,
+    $(this).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
@@ -31,6 +35,9 @@ $( window ).on ("load", function () {
         },
         minLength: 3 //Number of characters after which the autosuggest should start...
     });
+});
+
+    //==================================================================================================================
 
     //set the autocomplete for bus routes
     $( "#bus_number" ).autocomplete({
@@ -64,7 +71,7 @@ $( window ).on ("load", function () {
     });
 
     //set the autocomplete for start location form input
-    $( "#location_from" ).autocomplete({
+    $( "#pl_location_from" ).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
@@ -93,7 +100,7 @@ $( window ).on ("load", function () {
     });
 
     //set the autocomplete for destination location form input
-    $( "#location_to" ).autocomplete({
+    $( "#pl_location_to" ).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
