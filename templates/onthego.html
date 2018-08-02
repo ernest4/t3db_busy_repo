@@ -11,30 +11,35 @@
       </div>
     </div>
 
-    <div class="row" style="background-color: white">
-      <div class="col-sm-4">
-        <p2 for="destination">What is your destination stop? </p2>
-      </div>
+    <div class="row"style="background-color: white"> 
+        <br>
+   <!-- <div class="col-sm-4">
+      <p2 for="destination"> Find Bus Number from your location  </p2> 
+      </div> -->
+        <div class="col-sm-3"></div>
       <div class="col-sm-4">
         <div class="form-group">
           <div class="ui-widget"> <!-- jQuery autocomplete UI -->
-            <input id="destination" class="form-control" type="text" placeholder="Parnell Square" name="busnum_var" required>
+            <input id="destination" class="form-control" type="text" placeholder="Enter Destination to find bus route" name="busnum_var" required>
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-1">
         <button class="btn btn-primary" id="directionsButton" style="border: 2px solid lightgrey; /* grey */">Get Directions</button>
       </div>
+        <div class="col-sm-4"></div>
     </div>
     <br>
 
     <div class="row">
-      <div class="col-sm-8" style="background-color:white;">
+      <div class="col-sm-9">
         <div id="map" style="width:100%; height:400px;">
           <!-- google maps go here -->
+        
         </div>
       </div>
-      <div class="col-sm-4">
+      
+      <div class="col-sm-3" style="background-color:#d9d9d9;">
         <br>
 
         <!--Input box for route number with autocomplete RTPI query-->
@@ -46,8 +51,7 @@
               <input id="bus_number" class="form-control" type="text" placeholder="Bus number" name="busnum_var" required>
             </div>
           </div>
-          <br>
-
+       
           <!-- Input box for "from" with autocomplete RTPI query -->
           <div class="form-group">
             <div class="ui-widget"> <!-- jQuery autocomplete UI -->
@@ -57,7 +61,8 @@
         
             </div>
           </div>
-          <br>
+              
+       
 
           <!-- Input box for "to" with autocomplete RTPI query -->
           <div class="form-group">
@@ -67,7 +72,7 @@
 
             </div>
           </div>
-          <br>
+      
           <button class="btn btn-primary" type="submit">Submit</button>
             <br/><br/><br/>
         </form>
@@ -76,7 +81,6 @@
 
       <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
     <div id="response"></div>
-
   </div>
 </div>
 {% endblock %}

@@ -46,6 +46,8 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
         map: map,
         icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
     });
+    
+
 
     //Add the pop up box to marker for onclick
     google.maps.event.addListener(marker, 'click', function(content){

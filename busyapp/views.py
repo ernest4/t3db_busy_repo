@@ -31,7 +31,6 @@ with open(STATIC_ROOT+'/model_info/events18.csv', mode='r') as infile:
 def index(request):
     return render(request, 'index.html', { 'serverTime': datetime.datetime.now()})
 
-
 def onthego(request):
     return render(request, 'onthego.html')
 
@@ -92,30 +91,38 @@ def busStopAutosuggest(request):
         return HttpResponse("format=" + params['format']+ ", operator=" + params['operator']+ ", stopname=" + params['stopname'])
 
 #function to return RTPI query results for Bus Routes Autosuggests
+# def busRoutesAutosuggest(request):
+#     params = request.GET;
+#     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routelistinformation",
+#                      params={'format': params['format'],
+#                              'operator': params['operator']})
+#     if r.status_code == requests.codes.ok:
+#         return HttpResponse(r.text)
+#     else:
+#         return HttpResponse("format=" + params['format']+ ", operator=" + params['operator'])
+
 def busRoutesAutosuggest(request):
-    params = request.GET;
-    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routelistinformation",
-                     params={'format': params['format'],
-                             'operator': params['operator']})
-    if r.status_code == requests.codes.ok:
-        return HttpResponse(r.text)
-    else:
-        return HttpResponse("format=" + params['format']+ ", operator=" + params['operator'])
-    
+    with open(STATIC_ROOT+'/bus_data/routes.json', 'r') as file:
+        return HttpResponse(file.read())
+
+
 #Function for RTPI querying for Route Number Autosuggests.
 def routeNumberAutosuggest(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routelistinformation")
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
+
 def loadTest(request):
     with open(STATIC_ROOT+'/load_testing/loaderio-66417165d8f4c651a7a4a33b4dd4c867.txt', 'r', encoding="utf8") as file:
         return HttpResponse(file.read())
+
 
 def testView(request):
     #r = request.GET;
     #return render(request, 'testpage.html', {'msg1' : r['t']})
     return render(request, 'hi')
+
 
 def testView2(request):
     return render(request, 'onthego_response.html', {'busNum': 5, 'error': 0})

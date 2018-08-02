@@ -39,28 +39,29 @@ $("#destination").each(function(){     //#location_from,#location_to,
 
     //==================================================================================================================
 
-    //set the autocomplete for bus routes
+    // Set the autocomplete for bus routes from GTFS routes file
     $( "#bus_number" ).autocomplete({
         source: function(request, response){
             var availableTags = [];
 
             var bus_num_input = request.term; //This is the user input
-            //console.log(bus_num_input); //DEBUGGING
+            // console.log(bus_num_input); //DEBUGGING
 
-            $.getJSON( "/autocomp/routes" + "?format=json&operator=bac", function(data) {
+            $.getJSON( "/autocomp/routes", function(data) {
 
-                _.forEach(data.results, function(busRoute){
-                    //availableTags.push(busStops.stopid+" "+busStops.fullname );
-                    if (busRoute.route.includes(bus_num_input)) { //Manual pruning of results as RTPI does not offer search of bus route based on partial ID...
-                        availableTags.push({ label: busRoute.route, value: busRoute.route });
+                _.forEach(data, function(busRoute){
+
+                    // Only add busRoute as tag if it starts with input
+                    if (busRoute.startsWith(bus_num_input)) {
+                        availableTags.push({label: busRoute, value: busRoute});
                     }
                 });
 
-                //console.log(availableTags); //DEBUGGING
+                // console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
-                console.log("got autosuggest data");
+                // console.log("got autosuggest data");
             }).fail(function(){
                 alert("failed autosuggest");
             }).always(function(){
