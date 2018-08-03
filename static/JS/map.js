@@ -417,7 +417,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     }
 
     //set the directions button callback...
-    $( '#directionsButtonEX' ).click(function(){
+    $( '#exButton' ).click(function(){
       //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
       //console.log(typeof $('#destination').val());
       //deleteMarkers(markers); //clear current direction markers
