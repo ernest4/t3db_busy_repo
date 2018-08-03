@@ -3,9 +3,18 @@
   <div class="col-sm-6">
     <h2>Your Input</h2>
     <ul class="list-group">
+
+      {% if persona == 'onthego' or persona == 'planner' %}
       <li class="list-group-item">Bus number: {{ busNum }}</li>
+      {% endif %}
+
       <li class="list-group-item">From: {{ from }}</li>
       <li class="list-group-item">To: {{ to }}</li>
+
+      {% if persona == 'planner' or persona == 'explorer' %}
+      <li class="list-group-item">Date: {{ date }}</li>
+      <li class="list-group-item">Time: {{ time }}</li>
+      {% endif  %}
     </ul>
   </div>
 
@@ -23,17 +32,57 @@
       <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
       {% endif %}
 
-      <li class="list-group-item">Journeytime raw value: {{ journeyTime }}</li>
+      {% if persona == 'onthego' %} <!-- FOR DEBUGGING -->
+      <li class="list-group-item">PERSONA: {{ persona }}</li> <!-- FOR DEBUGGING -->
+      {% elif persona == 'planner' %} <!-- FOR DEBUGGING -->
+      <li class="list-group-item">PERSONA: {{ persona }}</li> <!-- FOR DEBUGGING -->
+      {% elif persona == 'explorer' %} <!-- FOR DEBUGGING -->
+      <li class="list-group-item">PERSONA: {{ persona }}</li> <!-- FOR DEBUGGING -->
+      {% endif %} <!-- FOR DEBUGGING -->
 
-      <li class="list-group-item">Next buses at this stop:</li>
-      <li class="list-group-item">@ {{ bus1 }}</li>
-      {% if bus2 %}
-      <li class="list-group-item">@ {{ bus2 }}</li>
+      {% if persona == 'onthego' %}
+        <li class="list-group-item">Next buses at this stop:</li>
+        <li class="list-group-item">@ {{ bus1 }}</li>
+          {% if bus2 %}
+          <li class="list-group-item">@ {{ bus2 }}</li>
+          {% endif %}
+
+          {% if bus3 %}
+          <li class="list-group-item">@ {{ bus3 }}</li>
+          {% endif %}
+
+      {% elif persona == 'planner' %}
+
+        <li class="list-group-item">Bus is at:  {{ leave_time }}</li>
+          {% if bestJourneyTime %}
+          <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
+          <li class="list-group-item">Journey time: {{ bestJourneyTime }}
+          </li>
+          {% endif %}
+
+      {% elif persona == 'explorer' %}
+
+        {% if from %}
+        <li class="list-group-item">From: {{ from }}
+        </li>
+        {% endif %}
+
+        {% if to %}
+        <li class="list-group-item">To: {{ to }}
+        </li>
+        {% endif %}
+
+        {% if date %}
+        <li class="list-group-item">Date: {{ date }}</li>
+        {% endif %}
+
+        {% if time %}
+        <li class="list-group-item">Time {{ time }}</li>
+        {% endif %}
+
       {% endif %}
 
-      {% if bus3 %}
-      <li class="list-group-item">@ {{ bus3 }}</li>
-      {% endif %}
+
     </ul>
   </div>
 

@@ -222,9 +222,18 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
     var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from_ex'));
     var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to_ex'));
+    // This is ready to go but needs On the go input to change id name to destinationOnTheGo
+    //var autocompleteOnTheGo = new google.maps.places.Autocomplete(document.getElementById('destinationOnTheGo'));
+
 
     autocompleteFrom.bindTo('bounds', map);
     autocompleteTo.bindTo('bounds', map);
+    //autocompleteOnTheGo.bindTo('bounds', map);
+
+    // autocompleteOnTheGo.addListener('place_changed', function() {
+    //     var place = autocompleteOnTheGo.getPlace();
+    //     console.log(place);
+    // });
 
     autocompleteFrom.addListener('place_changed', function() {
         var place = autocompleteFrom.getPlace();
@@ -408,7 +417,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     }
 
     //set the directions button callback...
-    $( '#directionsButtonEX' ).click(function(){
+    $( '#exButton' ).click(function(){
       //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
       //console.log(typeof $('#destination').val());
       //deleteMarkers(markers); //clear current direction markers
@@ -417,11 +426,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
        //var destination = {lat: 53.3369012, lng:-6.2619592};
 
 
-        let origin = $('#location_from').val();
-        let destination = $('#location_to').val();
+        let origin = $('#location_from_ex').val();
+        let destination = $('#location_to_ex').val();
 
         let date = $('#datepicker_ex').val();
-        let time = $('#clockpicker').val();
+        let time = $('#clockpicker_ex').val();
         // Convert time to seconds
         console.log(date);
         var a = time.split(':');
