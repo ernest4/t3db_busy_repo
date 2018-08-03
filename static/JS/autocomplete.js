@@ -3,7 +3,7 @@
 
 $( window ).on ("load", function () {
 
-    //set the autocomplete callback for destination autosuggest powere by directions api
+    //set the autocomplete callback for destination autosuggest powered by directions api
 
 
     //==================================================================================================================
@@ -71,22 +71,38 @@ $("#destination").each(function(){     //#location_from,#location_to,
         minLength: 1 //Number of characters after which the autosuggest should start...
     });
 
-    //set the autocomplete for start location form input
-    $( "#pl_location_from" ).autocomplete({
+    //==================================================================================================================
+
+    // Set the autocomplete for start stop form input
+    $( "#location_from" ).autocomplete({
         source: function(request, response){
+            var busNumberInput = $("#bus_number").val().toUpperCase();  // Bus route input determines stop to suggest
+
             var availableTags = [];
 
             var to_input = request.term; //This is the user input
             //console.log(to_input); //DEBUGGING
 
+            var routeList = [];  // To store all routes of a stop in loop below
+
+            var routeCheck = -1; // To check if input route is in routeList using indexing
+
             $.getJSON( "/autocomp" + "?format=json&operator=bac&stopname="+to_input, function(data) {
 
                 _.forEach(data.results, function(busStops){
-                    //availableTags.push(busStops.stopid+" "+busStops.fullname );
-                    availableTags.push({ label: busStops.fullname+" "+busStops.stopid, value: busStops.stopid });
+
+                    routeList = busStops.operators[0].routes;
+                    routeCheck = routeList.indexOf(busNumberInput);
+
+                    if ( busNumberInput === "" ) {
+                        availableTags.push({label: busStops.fullname + " " + busStops.stopid, value: busStops.stopid});
+
+                    } else if ( routeCheck !== -1 ) {
+                        availableTags.push({label: busStops.fullname + " " + busStops.stopid, value: busStops.stopid});
+                    }
                 });
 
-                //console.log(availableTags); //DEBUGGING
+                // console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
@@ -97,25 +113,41 @@ $("#destination").each(function(){     //#location_from,#location_to,
                 //
             });
         },
-        minLength: 3 //Number of characters after which the autosuggest should start...
+        minLength: 1 //Number of characters after which the autosuggest should start...
     });
 
-    //set the autocomplete for destination location form input
-    $( "#pl_location_to" ).autocomplete({
+    //==================================================================================================================
+
+    // Set the autocomplete for destination stop form input
+    $( "#location_to" ).autocomplete({
         source: function(request, response){
+            var busNumberInput = $("#bus_number").val().toUpperCase();  // Bus route input determines stop to suggest
+
             var availableTags = [];
 
             var to_input = request.term; //This is the user input
             //console.log(to_input); //DEBUGGING
 
+            var routeList = [];  // To store all routes of a stop in loop below
+
+            var routeCheck = -1; // To check if input route is in routeList using indexing
+
             $.getJSON( "/autocomp" + "?format=json&operator=bac&stopname="+to_input, function(data) {
 
                 _.forEach(data.results, function(busStops){
-                    //availableTags.push(busStops.stopid+" "+busStops.fullname );
-                    availableTags.push({ label: busStops.fullname+" "+busStops.stopid, value: busStops.stopid });
+
+                    routeList = busStops.operators[0].routes;
+                    routeCheck = routeList.indexOf(busNumberInput);
+
+                    if ( busNumberInput === "" ) {
+                        availableTags.push({label: busStops.fullname + " " + busStops.stopid, value: busStops.stopid});
+
+                    } else if ( routeCheck !== -1 ) {
+                        availableTags.push({label: busStops.fullname + " " + busStops.stopid, value: busStops.stopid});
+                    }
                 });
 
-                //console.log(availableTags); //DEBUGGING
+                // console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
@@ -126,9 +158,7 @@ $("#destination").each(function(){     //#location_from,#location_to,
                 //
             });
         },
-        minLength: 3 //Number of characters after which the autosuggest should start...
+        minLength: 1 //Number of characters after which the autosuggest should start...
     });
-
-    
 
 });

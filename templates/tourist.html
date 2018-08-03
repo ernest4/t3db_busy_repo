@@ -16,57 +16,57 @@
                 <div class="col-sm-4">
                     <p2>Transport</p2>
 
-                        <img src="http://maps.google.com/mapfiles/ms/micons/bus.png">
-                        <input id="TravelLinksCheck" type="checkbox">
+                    <img src="http://maps.google.com/mapfiles/ms/micons/bus.png">
+                    <input id="TravelLinksCheck" type="checkbox">
 
-                        <span class="checkmark"></span>
-                  
+                    <span class="checkmark"></span>
+
                 </div>
 
 
                 <div class="col-sm-4">
                     <p2>Shopping          </p2>
-                        <img src="http://maps.google.com/mapfiles/ms/micons/shopping.png">
-                        <input id="ShoppingCheck" type="checkbox">
-                        <span class="checkmark"></span>
-                    
+                    <img src="http://maps.google.com/mapfiles/ms/micons/shopping.png">
+                    <input id="ShoppingCheck" type="checkbox">
+                    <span class="checkmark"></span>
+
                 </div>
 
                 <div class="col-sm-4">
                     <p2>Activities&nbsp;</p2>
-                        <img src="http://maps.google.com/mapfiles/kml/pal2/icon14.png">
-                        <input id='ActivitiesCheck' type="checkbox">
-                        <span class="checkmark"></span>
-              
+                    <img src="http://maps.google.com/mapfiles/kml/pal2/icon14.png">
+                    <input id='ActivitiesCheck' type="checkbox">
+                    <span class="checkmark"></span>
+
                 </div>
             </div>
 
             <div class="col-xs-6">
                 <div class="col-sm-4">
                     <p2>The Sights</p2>
-                        <img src="http://maps.google.com/mapfiles/kml/pal2/icon2.png">
-                        <input id='SightsCheck' type="checkbox">
+                    <img src="http://maps.google.com/mapfiles/kml/pal2/icon2.png">
+                    <input id='SightsCheck' type="checkbox">
 
-                        <span class="checkmark"></span>
-                 
+                    <span class="checkmark"></span>
+
                 </div>
 
                 <div class="col-sm-4">
                     <p2>&nbsp;&nbsp;&nbsp;Family&nbsp;&nbsp;</p2>
-                        <img src="http://maps.google.com/mapfiles/ms/micons/hiker.png">
+                    <img src="http://maps.google.com/mapfiles/ms/micons/hiker.png">
                     <p2>&nbsp; </p2>
-                        <input id='FamilyCheck' type="checkbox">
-                        <span class="checkmark"></span>
-               
+                    <input id='FamilyCheck' type="checkbox">
+                    <span class="checkmark"></span>
+
                 </div>
 
 
                 <div class="col-sm-4">
                     <p2>Outdoors&nbsp;&nbsp;</p2>
-                        <img src="http://maps.google.com/mapfiles/kml/pal2/icon4.png">
-                        <input id="OutdoorsCheck" type="checkbox">
-                        <span class="checkmark"></span>
-             
+                    <img src="http://maps.google.com/mapfiles/kml/pal2/icon4.png">
+                    <input id="OutdoorsCheck" type="checkbox">
+                    <span class="checkmark"></span>
+
                 </div>
             </div>
 
@@ -75,9 +75,7 @@
 
                 <br></div>
 
-
         </div>
-
 
         <div class="row">
 
@@ -87,7 +85,7 @@
                 </div>
             </div>
             <br>
-<<<<<<< HEAD
+            <<<<<<< HEAD
             <div class="col-sm-3" style="background-color:#d9d9d9;">
                 <form action="/planner/formdata" method="get">
                     <!-- Input box for "from" with Google directions API -->
@@ -95,89 +93,90 @@
                         <br>
                         <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text"
                                placeholder="Start Location" name="from_var" required>
-=======
-            <div class="col-sm-4">
-                <form action="/tourist/formdata" method="get">
-                    <!-- Input box for "from" with Google directions API -->
-                    <div class="form-group">
-                        <input id="location_from_ex"   class="form-control" type="text"
-                               placeholder="Start Location" name="from_var_ex">
->>>>>>> 5811ab98f5de75e17bce11f45e605e39a71fac94
-                        <datalist id="stop_list"></datalist>
+                        =======
+                        <div class="col-sm-4">
+                            <form action="/tourist/formdata" method="get">
+                                <!-- Input box for "from" with Google directions API -->
+                                <div class="form-group">
+                                    <input id="location_from_ex"   class="form-control" type="text"
+                                           placeholder="Start Location" name="from_var_ex">
+                                    >>>>>>> 5811ab98f5de75e17bce11f45e605e39a71fac94
+                                    <datalist id="stop_list"></datalist>
+                                </div>
+
+                                <!-- Input box for "to" with Google directions API -->
+                                <div class="form-group">
+                                    <!-- AUTOCOMPLETE USER INPUT -->
+                                    <input id="location_to_ex" class="form-control" type="text" placeholder="Destination" name="to_var_ex">
+                                    <datalist id="stop_list_ex"></datalist>
+                                </div>
+
+                                <!-- Input box for date -->
+                                <div class="form-group">
+                                    <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
+                                           required>
+                                </div>
+
+                                <!-- Input box for time -->
+                                <div class="form-group">
+                                    <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
+                                           name="time_var_ex" value="00:00" required>
+                                </div>
+
+                                <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
+                                <br/><br/>
+
+                            </form>
+
+                            <div id="datepicker"></div>
+
+                            <!--Script to render clockpicker and datepicker-->
+                            <script>
+                                $(document).ready(function() {
+                                    $("input[type=time]").clockInput(false);
+                                    $("#datepicker_ex").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
+                                })
+
+                            </script>
+
+                        </div>
                     </div>
 
-                    <!-- Input box for "to" with Google directions API -->
-                    <div class="form-group">
-                        <!-- AUTOCOMPLETE USER INPUT -->
-                        <input id="location_to_ex" class="form-control" type="text" placeholder="Destination" name="to_var_ex">
-                        <datalist id="stop_list_ex"></datalist>
+                    {% if error == 0 %}
+
+                    <div class="col-sm-6">
+                        <ul class="list-group">
+                            <h2>Our Estimation</h2>
+                            {% if from %}
+                            <li class="list-group-item">From: {{ from }}
+                            </li>
+                            {% endif %}
+                            {% if to %}
+                            <li class="list-group-item">To: {{ to }}
+                            </li>
+                            {% endif %}
+                            {% if date %}
+                            <li class="list-group-item">Date: {{ date }}</li>
+                            {% endif %}
+                            {% if time %}
+                            <li class="list-group-item">Time {{ time }}</li>
+
+                            {% endif %}
+                        </ul>
                     </div>
 
-                    <!-- Input box for date -->
-                    <div class="form-group">
-                        <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
-                               required>
+                    {% else %}
+                    <!-- there's an error, display error messages -->
+                    <div class="col-sm-6">
+
+                        <h2>Diddn't work</h2>
+
                     </div>
 
-                    <!-- Input box for time -->
-                    <div class="form-group">
-                        <input id="clockpicker" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var_ex" value="00:00" required>
-                    </div>
-
-                    <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
-
-                </form>
-
-                <div id="datepicker"></div>
-
-                <!--Script to render clockpicker and datepicker-->
-                <script>
-                    $(document).ready(function() {
-                        $("input[type=time]").clockInput(false);
-                        $("#datepicker_ex").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
-                    })
-
-                </script>
-
+                    {% endif %}
             </div>
+
+
         </div>
 
-         {% if error == 0 %}
-
-            <div class="col-sm-6">
-                <ul class="list-group">
-                    <h2>Our Estimation</h2>
-                    {% if from %}
-                    <li class="list-group-item">From: {{ from }}
-                    </li>
-                    {% endif %}
-                    {% if to %}
-                    <li class="list-group-item">To: {{ to }}
-                    </li>
-                    {% endif %}
-                    {% if date %}
-                    <li class="list-group-item">Date: {{ date }}</li>
-                    {% endif %}
-                    {% if time %}
-                    <li class="list-group-item">Time {{ time }}</li>
-
-                    {% endif %}
-                </ul>
-            </div>
-
-            {% else %}
-            <!-- there's an error, display error messages -->
-            <div class="col-sm-6">
-
-                    <h2>Diddn't work</h2>
-
-            </div>
-
-            {% endif %}
-    </div>
-
-
-</div>
-
-{% endblock %}
+        {% endblock %}
