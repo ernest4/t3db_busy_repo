@@ -1,103 +1,119 @@
 <br/>
-<div class="row">
-  <div class="col-sm-6">
-    <h2>Your Input</h2>
-    <ul class="list-group">
+    <div class="row" id="inputbox">
 
-      {% if persona == 'onthego' or persona == 'planner' %}
-      <li class="list-group-item">Bus number: {{ busNum }}</li>
-      {% endif %}
+        <div class="col-sm-12">
 
-      <li class="list-group-item">From: {{ from }}</li>
-      <li class="list-group-item">To: {{ to }}</li>
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Bus</th>
+                    <th>Start</th>
+                    <th>End</th>
 
-      {% if persona == 'planner' or persona == 'explorer' %}
-      <li class="list-group-item">Date: {{ date }}</li>
-      <li class="list-group-item">Time: {{ time }}</li>
-      {% endif  %}
-    </ul>
-  </div>
+                    {% if persona == 'planner' or persona == 'explorer' %}
 
-  {% if error == 0 %}
+                    <th>Departure</th>
 
-  <div class="col-sm-6">
-    <ul class="list-group">
-      <h2>Our Estimation</h2>
+                    {% endif %}
 
-      {% if journeyTime.h %}
-      <li class="list-group-item">Journey time: {{ journeyTime.h }} hours, {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds</li>
-      {% elif journeyTime.m %}
-      <li class="list-group-item">Journey time: {{ journeyTime.m }} minutes, {{ journeyTime.s }} seconds</li>
-      {% else %} <!-- have hours, minute & seconds -->
-      <li class="list-group-item">Journey time: {{ journeyTime.s }} seconds</li>
-      {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ busNum }}</td>
+                    <td>{{ from }}</td>
+                    <td>{{ to }}</td>
 
-      {% if persona == 'onthego' %} <!-- FOR DEBUGGING -->
-      <li class="list-group-item">PERSONA: {{ persona }}</li> <!-- FOR DEBUGGING -->
-      {% elif persona == 'planner' %} <!-- FOR DEBUGGING -->
-      <li class="list-group-item">PERSONA: {{ persona }}</li> <!-- FOR DEBUGGING -->
-      {% elif persona == 'explorer' %} <!-- FOR DEBUGGING -->
-      <li class="list-group-item">PERSONA: {{ persona }}</li> <!-- FOR DEBUGGING -->
-      {% endif %} <!-- FOR DEBUGGING -->
+                    {% if persona == 'planner' or persona == 'explorer' %}
 
-      {% if persona == 'onthego' %}
-        <li class="list-group-item">Next buses at this stop:</li>
-        <li class="list-group-item">@ {{ bus1 }}</li>
-          {% if bus2 %}
-          <li class="list-group-item">@ {{ bus2 }}</li>
-          {% endif %}
+                    <td>{{ date }} {{ time }}</td>
 
-          {% if bus3 %}
-          <li class="list-group-item">@ {{ bus3 }}</li>
-          {% endif %}
+                    {% endif %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-      {% elif persona == 'planner' %}
+    </div>
 
-        <li class="list-group-item">Bus is at:  {{ leave_time }}</li>
-          {% if bestJourneyTime %}
-          <li class="list-group-item">Best time to catch bus: {{ bestStartTime }}</li>
-          <li class="list-group-item">Journey time: {{ bestJourneyTime }}
-          </li>
-          {% endif %}
+{% if error == 0 %}
 
-      {% elif persona == 'explorer' %}
+<div class="row"> </div>
+<div class="row" id="suggestionbox">
 
-        {% if from %}
-        <li class="list-group-item">From: {{ from }}
-        </li>
-        {% endif %}
+    <div class="col-sm-12">
 
-        {% if to %}
-        <li class="list-group-item">To: {{ to }}
-        </li>
-        {% endif %}
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Trip time</th>
+                <th>Next departures</th>
 
-        {% if date %}
-        <li class="list-group-item">Date: {{ date }}</li>
-        {% endif %}
+                {% if persona == 'planner' %}
 
-        {% if time %}
-        <li class="list-group-item">Time {{ time }}</li>
-        {% endif %}
+                <th>Shorter trips</th>
 
-      {% endif %}
+                {% endif %}
 
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% if journeyTime.h %}
+                <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
-    </ul>
-  </div>
+                {% elif journeyTime.m %}
+                <td>{{ journeyTime.m }} minutes</td>
 
-  {% else %}
-  <!-- there's an error, display error messages -->
-  <div class="col-sm-6">
-    <ul class="list-group">
-      <h2>Our Estimation</h2>
-      <li class="list-group-item">{{ error_1 }}</li>
+                {% else %} <!-- have hours, minute & seconds -->
+                <td>{{ journeyTime.s }} seconds</td>
 
-      <li class="list-group-item">{{ error_2 }}</li>
-      <li class="list-group-item">{{ error_3 }}</li>
-    </ul>
-  </div>
+                {% endif %}
 
-  {% endif %}
+                {% if persona == 'onthego' %}
+                <td> {{ bus1 }}
+
+                    {% if bus2 %}
+
+                    <br>{{ bus2 }}
+                    {% endif %}
+
+                    {% if bus3 %}
+
+                    <br>{{ bus3 }}</td>
+                {% endif %}
+                {% endif %}
+
+                {% if persona == 'planner' %}
+                <td> some other value should go here</td>
+                <td> suggested travel time should go here</td>
+                {% endif %}
+
+                {% if persona == 'explorer' %}
+                <td>{{ date }} {{ time }}</td>
+                {% endif %}
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 </div>
+
+
+{% else %}
+<!-- there's an error, display error messages -->
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="list-group">
+            <h3>Suggestion</h3>
+            <li class="list-group-item">{{ error_1 }}</li>
+
+            <li class="list-group-item">{{ error_2 }}</li>
+            <li class="list-group-item">{{ error_3 }}</li>
+        </ul>
+    </div>
+</div>
+
+{% endif %}
+

@@ -17,14 +17,11 @@ body {
     border-color:white;
 }
 
-
-
 .nav navbar-nav navbar-right {
     
     color:white;
     
 }
-
 
 .navbar {
     background-color: white;
@@ -50,6 +47,14 @@ footer a:hover, .navbar-right a:hover {
     text-decoration: none;
 }
 
+.table td {
+    text-align: left;
+}
+
+.table {
+    font-size: medium;
+}
+
 .navbar-brand:hover {
     background-color: #e6e6e6;
     color: black;
@@ -71,3 +76,14 @@ footer a:hover, .navbar-right a:hover {
     color:black;
     margin-top: -20px
 }
+
+#inputbox {
+    background-color:#F6F9FE;
+    margin-top: 5px;
+}
+
+#suggestionbox{
+    background-color:#DEE9FC;
+    margin-top: 5px;
+}
+
