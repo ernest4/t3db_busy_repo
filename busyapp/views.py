@@ -517,15 +517,16 @@ def plannerform_loadtest(request):
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
                 errorMSG3 = "Please check your inputs and try again."
-                return render(request, 'theplanner_loadtest.html', {'busNum': busNum,
-                                                            'from': fromVar,
-                                                            'to': toVar,
-                                                            'journeyTime': errorMSG,
-                                                            'cost': errorMSG2,
-                                                            'bestStartTime': errorMSG3,
-                                                           'date': dateVar,
-                                                           'time': timeVar,
-                                                            'error': 1}) #Error code > 0 means something bad happened...
+                return render(request, 'response.html', {'persona': 'planner',
+                                                         'busNum': busNum,
+                                                         'from': fromVar,
+                                                         'to': toVar,
+                                                         'journeyTime': errorMSG,
+                                                         'cost': errorMSG2,
+                                                         'bestStartTime': errorMSG3,
+                                                         'date': dateVar,
+                                                         'time': timeVar,
+                                                         'error': 1}) #Error code > 0 means something bad happened...
 
             # Retrieve events
             date = datetime.datetime.strftime(dateVar, "%Y-%m-%d")
@@ -597,18 +598,19 @@ def plannerform_loadtest(request):
 
 
                 # server side rendering - replace with AJAX for client side rendering in the future
-            return render(request, 'theplanner_loadtest.html', {'busNum': busNum,
-                                                                'from': fromVar,
-                                                                'to': toVar,
-                                                                'journeyTime': journeyTime,
-                                                                # 'cost' : cost,
-                                                                # 'bestStartTime' : bestStartTime})
-                                                                'leave_time': bus_timetable,
-                                                                'bestStartTime': timeNorm,
-                                                                'bestJourneyTime': journeyTimeB,
-                                                               'date': dateVar,
-                                                               'time': timeVar,
-                                                                'error': 0})  # 0 means everything good
+            return render(request, 'response.html', {'persona': 'planner',
+                                                     'busNum': busNum,
+                                                     'from': fromVar,
+                                                     'to': toVar,
+                                                     'journeyTime': journeyTime,
+                                                     # 'cost' : cost,
+                                                     # 'bestStartTime' : bestStartTime})
+                                                     'leave_time': bus_timetable,
+                                                     'bestStartTime': timeNorm,
+                                                     'bestJourneyTime': journeyTimeB,
+                                                     'date': dateVar,
+                                                     'time': timeVar,
+                                                     'error': 0})  # 0 means everything good
 
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
