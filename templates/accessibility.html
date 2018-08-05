@@ -17,46 +17,50 @@
 
         <!--Input box for route number with autocomplete RTPI query-->
         <div class="form-group">
-          <span class="sr-only">Bus Route Number</span>
-          <label>Bus Number:</label>
-          <input id="route_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" name="busnum_var" required>
+          <span class="sr-only">Bus route number</span>
+          <label>Bus Number</label>
+          <input id="bus_number" onkeyup="pred1()" list="route_list" class="form-control" type="text" name="busnum_var" required>
           <datalist id="route_list"></datalist>
         </div>
 
         <!-- Input box for "from" with autocomplete RTPI query -->
         <div class="form-group">
-          <span class="sr-only">Start Location</span>
-          <label>From:</label>
-          <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text" name="from_var" required>
+          <span class="sr-only">Start Stop</span>
+          <label>Start Stop</label>
+          <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text" name="from_var" required>
           <datalist id="stop_list"></datalist>
         </div>
 
         <!-- Input box for "to" with autocomplete RTPI query -->
         <div class="form-group">
-          <span class="sr-only">End Location</span>
-          <label>To:</label>
+          <span class="sr-only">End Stop</span>
+          <label>End Stop</label>
           <!-- AUTOCOMPLETE USER INPUT -->
-          <input id="location_from" onkeyup="pred()" list="stop_list" class="form-control" type="text" name="to_var" required>
+          <input id="location_to" onkeyup="pred()" list="stop_list" class="form-control" type="text" name="to_var" required>
           <datalist id="stop_list"></datalist>
         </div>
 
         <div class="form-group">
-          <span class="sr-only">Time, For Example 22:30 </span>
-          <label>Time:</label>
-          <input id="time" class="form-control" type="text" name="time" required>
+          <span class="sr-only">Date, for example 23/07/2018</span>
+          <label>Date</label>
+          <input id="date_var" class="form-control" type="text" name="date_var" placeholder="Date, for example 08/24/2018" required>
         </div>
 
         <div class="form-group">
-          <span class="sr-only">Date, for example, 23/07/2018</span>
-          <label>Date:</label>
-          <input id="date" class="form-control" type="text" name="date" required>
+          <span class="sr-only">Time, for example 22:30 </span>
+          <label>Time</label>
+          <input id="time_var" class="form-control" type="text" name="time_var" placeholder="Time, for example 22:30" required>
         </div>
 
-        <span class="sr-only">Please Click Submit</span>
+        <span class="sr-only">Please click submit</span>
         <button class="btn btn-primary" type="submit">Submit</button>
 
       </form>
     </div>
+
+    <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
+    <div id="response"></div>
+
   </div>
 </div>
 

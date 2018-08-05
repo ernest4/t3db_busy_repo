@@ -12,7 +12,7 @@
 
                     {% if persona == 'planner' or persona == 'explorer' %}
 
-                    <th>Departure</th>
+                    <th>Date & Time</th>
 
                     {% endif %}
 
@@ -51,7 +51,7 @@
 
                 {% if persona == 'planner' %}
 
-                <th>Shorter trips</th>
+                <th>Flexi trip</th>
 
                 {% endif %}
 
@@ -81,12 +81,12 @@
                     {% if bus3 %}
 
                     <br>{{ bus3 }}</td>
-                {% endif %}
+                    {% endif %}
                 {% endif %}
 
                 {% if persona == 'planner' %}
-                <td> some other value should go here</td>
-                <td> suggested travel time should go here</td>
+                <td>{{ leave_time }}</td>
+                <td>{{ bestStartTime }} {{ bestJourneyTime }}</td>
                 {% endif %}
 
                 {% if persona == 'explorer' %}
