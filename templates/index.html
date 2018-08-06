@@ -45,7 +45,7 @@
             </hover>
         </div>
 
-        <form action="/onthego/formdata" method="get">
+        <form action="/onthego/formdata" method="get" id="onthego_form">
             <div class="col-sm-3">
                 <div class="form-group">
                     <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
@@ -80,8 +80,10 @@
             </div>
 
         </form>
-
     </div>
+
+    <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
+    <div id="response"></div>
 
     <div class="jumbotron text-center">
         <div class="container">
@@ -126,6 +128,7 @@
 
 <script src="{% static 'JS/autocomplete.js' %}"></script>
 <script src="{% static 'JS/lodash.js '%}"></script>
+<script src="{% static 'JS/response.js' %}"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </body>
 </html>
