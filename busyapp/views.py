@@ -282,7 +282,7 @@ def plannerform(request):
             # Fetch the right model
             ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, weekdayIndex=datetime.datetime.today().weekday())
 
-            if ann_improved is None:  # Model could not be retreived
+            if ann_improved is None:  # Model could not be retrieved
                 # server side rendering - replace with AJAX for client side rendering in the future
                 errorMSG = "Oops something went wrong :/"
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
@@ -389,7 +389,7 @@ def plannerform(request):
                                                     'error': 0})  # 0 means everything good
 
         else:
-            return HttpResponse("Oops! Form invalid :/ Try again?")
+            return HttpResponse("Oops! Form invalid :/ Try again?" + form.cleaned_data['time_var'])
 
 # Function to get timetable information in the future
 def getTimetableInfo(stop_id, route_id, day_time, date):
