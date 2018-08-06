@@ -134,6 +134,7 @@ def getWeekDayBinaryArray(weekdayNumber: int = None) -> [int, ...]:
     return weekDay
 
 
+results = [{'route_id':-1}] #TESTING BASIC CACHING OF DB RESULTS
 def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex: int = None, testing: bool = False) -> (object, int, int):
     '''
     Get the model, start_prog_num (in DB), end_prog_num (in DB)
@@ -152,6 +153,9 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
 
     """
     '''
+
+    #declaring globals to modify in this function
+    global results
 
     # To uppercase
     busNum = busNum.upper()
@@ -178,21 +182,26 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
         if serviceIDs[serviceID][weekdayIndex] == 1:
             relevantServiceIDs.append(serviceID)
 
-    # Connect to db
-    DATABASE_URL = os.environ.get('DATABASE_URL')  # Get the connection URI string
-    conn = psycopg2.connect(DATABASE_URL)
+    if not busNum == results[0]['route_id']: # Check the cached query first to skip DB access if not necessary
+        # Connect to db
+        DATABASE_URL = os.environ.get('DATABASE_URL')  # Get the connection URI string
+        conn = psycopg2.connect(DATABASE_URL)
 
-    # Open a (dictionary) cursor to perform db operation
-    # For documentation: http://initd.org/psycopg/docs/extras.html
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        # Open a (dictionary) cursor to perform db operation
+        # For documentation: http://initd.org/psycopg/docs/extras.html
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    # Execute a command: this creates a new table
-    # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
-    cur.execute("SELECT * FROM stops WHERE route_id = '{0}';".format(busNum))
+        # Should return 46a in direction 0 with stops 810 and 2795 as prognum 4 and 23
+        queryString = "SELECT * FROM stops WHERE route_id = '{0}';".format(busNum)
+        cur.execute(queryString)
 
-    # Obtain data as Python object
-    # result = cur.fetchone() #one line only, even if the query returns multiple records.
-    results = cur.fetchall()  # multiple results, returns all the records from the query.
+        # Obtain data as Python object
+        # result = cur.fetchone() #one line only, even if the query returns multiple records.
+        results = cur.fetchall()  # multiple results, returns all the records from the query.
+
+        # Clean up
+        cur.close()
+        conn.close()
 
     allRouteInfoFound = False
     for index, result in enumerate(results):  # For every row in the returned query
@@ -213,10 +222,6 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
                     allRouteInfoFound = True
                     direction = str(result['direction_id'] + 1)  # DB -> APP,    0+1 -> 1,     1+1 -> 2
                     break
-
-    #Clean up
-    cur.close()
-    conn.close()
 
     #Get the pickle and return the values
     file = busNum + '_' + direction + '.pkl' # replace busDirection with direction when not testing
