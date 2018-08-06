@@ -135,7 +135,6 @@ def getWeekDayBinaryArray(weekdayNumber: int = None) -> [int, ...]:
 
 
 results = [{'route_id':-1}] #TESTING BASIC CACHING OF DB RESULTS
-modelPickleGlobal = joblib.load(STATIC_ROOT + '/ml_models_final/46A_1.pkl')
 def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex: int = None, testing: bool = False) -> (object, int, int):
     '''
     Get the model, start_prog_num (in DB), end_prog_num (in DB)
@@ -157,7 +156,6 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
 
     #declaring globals to modify in this function
     global results
-    global modelPickleGlobal
 
     # To uppercase
     busNum = busNum.upper()
@@ -183,12 +181,6 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
     for serviceID in serviceIDs:
         if serviceIDs[serviceID][weekdayIndex] == 1:
             relevantServiceIDs.append(serviceID)
-
-    #TESTING, FASTEST POSSIBLE CACHING (IDEAL) ~O(1) dictionary look up emulation...
-    modelPickle = modelPickleGlobal
-    startStopProgramNumber = 4
-    endStopProgramNumber = 23
-    return modelPickle, startStopProgramNumber, endStopProgramNumber
 
 
     if not busNum == results[0]['route_id']: # Check the cached query first to skip DB access if not necessary

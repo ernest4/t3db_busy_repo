@@ -329,7 +329,7 @@ def plannerform(request):
             #journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
 
 
-            bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
+            #bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
 
             # Find best time to travel
 
