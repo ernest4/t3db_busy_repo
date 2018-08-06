@@ -182,6 +182,13 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
         if serviceIDs[serviceID][weekdayIndex] == 1:
             relevantServiceIDs.append(serviceID)
 
+    #TESTING, FASTEST POSSIBLE CACHING (IDEAL) ~O(1) dictionary look up emulation...
+    modelPickle = joblib.load(STATIC_ROOT + '/ml_models_final/46A_1.pkl')
+    startStopProgramNumber = 4
+    endStopProgramNumber = 23
+    return modelPickle, startStopProgramNumber, endStopProgramNumber
+
+
     if not busNum == results[0]['route_id']: # Check the cached query first to skip DB access if not necessary
         # Connect to db
         DATABASE_URL = os.environ.get('DATABASE_URL')  # Get the connection URI string
