@@ -44,7 +44,8 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
         title: "Bus Stop No. " + stopid,
         draggable: false,
         map: map,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+        //icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+        icon: 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_'+ color +'.png'
     });
     
 
@@ -61,6 +62,7 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
     } else {
       marker.title = stopid; //This will just display the isUser string "You Are Here" instead of bus stop number
       marker.setAnimation(google.maps.Animation.BOUNCE);
+      marker.icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
       userMarker = marker;
     }
 }
@@ -172,7 +174,7 @@ function fromButton(element){
     console.log(element.id.slice(5)); //Extract the bus number e.g. "from_623" -> "623"
     console.log(element.innerHTML);
 
-    document.getElementById('from').value = element.id.slice(5); //Populate a form field
+    document.getElementById('location_from').value = element.id.slice(5); //Populate a form field
 }
 
 
@@ -181,7 +183,7 @@ function toButton(element){
     console.log(element.id.slice(3)); //Extract the bus number e.g. "to_623" -> "623"
     console.log(element.innerHTML);
 
-    document.getElementById('to').value = element.id.slice(3); //Populate a form field
+    document.getElementById('location_to').value = element.id.slice(3); //Populate a form field
 }
 
 
@@ -416,6 +418,76 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         //...
       });
     }
+
+    //Displaying routes on MAP based on user input
+    var bus_route_input = document.getElementById("bus_number");
+    bus_route_input.addEventListener("blur", function() { 
+        //alert('just left the input field, the bus was '+bus_route_input.value);
+        displayBusStopMarkersForRoute(bus_route_input.value);
+    });
+
+    function displayBusStopMarkersForRoute(route){
+        //populate the markers for an input route
+        $.getJSON("/routeinfo"
+                    + "?format="+'json'
+                    +"&operator="+'bac'
+                    +"&routeid="+route, function(busData){
+
+            var lastLargestSubRoute = 0;
+            _.forEach(busData.results, function(bus_route){
+
+                //First pass, keep track of largest sub route
+                if (bus_route.stops.length > lastLargestSubRoute) {
+                    lastLargestSubRoute = bus_route.stops.length;
+                }
+                console.log(bus_route.stops.length); //DEBUGGING
+          });
+
+          console.log("Largest sub route: "+lastLargestSubRoute);
+
+          _.forEach(busData.results, function(bus_route){
+
+            //Second pass display the largest sub route only
+            if (bus_route.stops.length == lastLargestSubRoute) {
+                console.log(bus_route.stops.length); //DEBUGGING
+
+                _.forEach(bus_route.stops, function(bus_stop){
+                    let infowindow_content = "<b>Bus Stop No: </b>"+bus_stop.stopid
+                                    +"<br><br>"
+                                    +"<b>Name:</b> "+bus_stop.fullname
+                                    +"<br><br>"
+                                    +"<b>Routes serving this stop:</b>"
+                                    +"<br><br>"+bus_stop.operators[0].routes
+                                    +"<br><br>"
+                                    +"<button type=\"button\" id=\"from_"+bus_stop.stopid+"\" onclick=\"fromButton(this)\">From "+bus_stop.stopid+"</button>"
+                                    +"<br><br>"
+                                    +"<button type=\"button\" id=\"to_"+bus_stop.stopid+"\" onclick=\"toButton(this)\">To "+bus_stop.stopid+"</button>";
+
+                    addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "blue", infowindow, infowindow_content, bus_stop.stopid);
+                    
+                })
+            }
+      });
+  
+        }).done(function() {
+  
+        console.log("Done!!"); //for DEBUGING
+  
+        //var markerCluster = new MarkerClusterer(map, markers, {
+        //    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        //});
+  
+        }).fail(function() {
+  
+        console.log("Failed!!"); //for DEBUGING
+        alert("Warnign: map markers could not load...");
+  
+        }).always(function(){
+  
+        console.log("Always...!"); //for DEBUGING
+  
+        });
+      }
 
     //set the directions button callback...
     $( '#exButton' ).click(function(){

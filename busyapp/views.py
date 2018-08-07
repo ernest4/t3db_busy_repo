@@ -29,7 +29,7 @@ with open(STATIC_ROOT+'/model_info/events18.csv', mode='r') as infile:
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html', { 'serverTime': datetime.datetime.now()})
+    return render(request, 'index.html')
 
 def onthego(request):
     return render(request, 'onthego.html')
@@ -52,6 +52,13 @@ def terms(request):
 def privacy(request):
     return render(request, 'privacy.html')
 
+def routeInfo(request):
+    params = request.GET;
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?format=json",
+                     params={'operator': params['operator'],
+                             'routeid': params['routeid']})
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
 
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
