@@ -34,8 +34,6 @@ function initMap(){
 //
 
 
-
-
 //Makes a marker for busstops and add onlick functionality
 function addMarkers(latlong, color = "red", infowindow, infowindow_content, stopid, isUser = false){
   //create a marker
@@ -47,7 +45,6 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
         icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
     });
     
-
 
     //Add the pop up box to marker for onclick
     google.maps.event.addListener(marker, 'click', function(content){
@@ -136,6 +133,9 @@ function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_c
    });
 
 }
+
+
+
 
 // Fucntion to show groups of destinations at a time
 function showDestinations(destinations, type, icon){
@@ -456,11 +456,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       let destination = $('#destination').val();
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
-
+    
 
     // Functions to add explorer icons based on checkboxes
     $( '#ShoppingCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/ms/micons/shopping.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_gray.png';
 
         if (document.getElementById("ShoppingCheck").checked) {
             showDestinations(Shopping, 1, icon);
@@ -471,7 +471,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#TravelLinksCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_green.png';
 
         if (document.getElementById("TravelLinksCheck").checked) {
             showDestinations(travel_links, 0, icon);
@@ -482,7 +482,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#ActivitiesCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon14.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_orange.png';
 
         if (document.getElementById("ActivitiesCheck").checked) {
             showDestinations(Activities, 2, icon);
@@ -493,7 +493,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#SightsCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon2.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_purple.png';
 
         if (document.getElementById("SightsCheck").checked) {
             showDestinations(SightSeeing, 3, icon);
@@ -504,7 +504,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
      $( '#FamilyCheck' ).click(function(){
-         var icon = 'http://maps.google.com/mapfiles/ms/micons/hiker.png';
+         var icon = 'http://labs.google.com/ridefinder/images/mm_20_black.png';
 
         if (document.getElementById("FamilyCheck").checked) {
             showDestinations(Family, 4, icon);
@@ -515,7 +515,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#OutdoorsCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_white.png';
 
         if (document.getElementById("OutdoorsCheck").checked) {
             showDestinations(Outdoors, 5, icon);
