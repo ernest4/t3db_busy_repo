@@ -143,7 +143,9 @@ def getLiveBusInfo(stop_id, route_id):
 
                 delay = (datetime.datetime.strptime(timeSch, FMT) - datetime.datetime.strptime(timeArr, FMT)).total_seconds()
 
-                times.append([timeArr, delay])
+                timeFmt = datetime.datetime.strptime(timeArr, FMT).strftime('%H:%M')
+
+                times.append([timeFmt, delay])
                 i+=1
 
             return times
@@ -231,11 +233,13 @@ def onthegoform(request):
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
-            journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
+            #journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
+            journeyTime['h'], journeyTime['m'],journeyTime['s'] = int(journeyTime['h']), int(journeyTime['m']),int(journeyTime['s'])
+
 
             # server side rendering of the response html
             return render(request, 'response.html', {'persona': 'onthego',
-                                                     'busNum' : busNum,
+                                                     'busNum' : busNum.upper(),
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime' : journeyTime,
@@ -339,9 +343,6 @@ def plannerform(request):
 
             bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
 
-            print(bus_timetable_seconds)
-            print(bus_timetable)
-            print(index)
             # Set quickest time to inf so comparison is valid at first run
             # Timetables return None if there are no buses. Need to check for this
             if bus_timetable_seconds != None:
@@ -373,7 +374,11 @@ def plannerform(request):
 
                 # If best time is 20% or greater than 5 minutes quicker suggest time.
                 if (quickestTime <= (journeyTimeSeconds*0.8) or (journeyTimeSeconds-quickestTime) > 300) and journeyTimeSeconds-quickestTime>60:
-                    if quickestTime/60>1:
+                    # If time is over an hour
+                    if quickestTime/3600>1:
+                        quickestTime = str(int(quickestTime/3600)) + "hrs"+str(int((quickestTime%3600) / 60)) + " mins"
+                    # If time is in minutes
+                    elif quickestTime/60>1:
                         quickestTime = str(int(quickestTime/60)) + " minutes"
                     else:
                         quickestTime = str(int(quickestTime)) + " seconds"
@@ -452,7 +457,6 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
             if x > day_time-3600 and x < day_time+3600:
                 tsecs.append(x)
                 times.append(time_list[i])
-        print(tsecs, times, i_time)
 
         if len(tsecs)>0:
             i_time = min(range(len(tsecs)), key=lambda i: abs(tsecs[i] - day_time))

@@ -79,6 +79,16 @@
 
                 {% if persona == 'planner' %}
                 <td>{{ leave_time }}</td>
+
+                {% if journeyTime.h %}
+                    <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
+                {% elif journeyTime.m %}
+                    <td>{{ journeyTime.m }} minutes</td>
+                {% else %} <!-- have hours, minute & seconds -->
+                    <td>{{ journeyTime.s }} seconds</td>
+                {% endif %}
+
+
                     {% if bestJourneyTime %}
                 <td>{{ bestStartTime }}</td><td> {{ bestJourneyTime }}</td>
                     {% else %}
@@ -99,18 +109,17 @@
 
                     <br>{{ bus3 }}</td>
                     {% endif %}
+
+                    {% if journeyTime.h %}
+                        <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
+                    {% elif journeyTime.m %}
+                        <td>{{ journeyTime.m }} minutes</td>
+                    {% else %} <!-- have hours, minute & seconds -->
+                        <td>{{ journeyTime.s }} seconds</td>
+                    {% endif %}
                 {% endif %}
 
-                {% if journeyTime.h %}
-                <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
-                {% elif journeyTime.m %}
-                <td>{{ journeyTime.m }} minutes</td>
-
-                {% else %} <!-- have hours, minute & seconds -->
-                <td>{{ journeyTime.s }} seconds</td>
-
-                {% endif %}
 
 
 
