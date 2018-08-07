@@ -198,12 +198,10 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     //Get the isUser location
     if (navigator && navigator.geolocation) {
       console.log("Got location");
-      //errorMSG_1.innerHTML += "Got location";
 
       navigator.geolocation.getCurrentPosition(gotPosition, failedToGetPosition);
     } else { 
       console.log("Failed to get location, Geolocation unavailable");
-      //errorMSG_2.innerHTML += "Geolocation is not supported by this browser. We could not find your location.";
     }
 
 
@@ -216,6 +214,9 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
     function failedToGetPosition(error){
       console.log("Error code:" + error.code + ", " + "Error message: " + error.message);
+
+      //Warn the user
+      $("#location_alert").css({"display" : "block"});
 
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
