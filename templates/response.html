@@ -47,11 +47,15 @@
             <thead>
             <tr>
                 <th>Trip time</th>
-                <th>Next departures</th>
+                <th>Departure time</th>
 
                 {% if persona == 'planner' %}
-
-                <th>Flexi trip</th>
+                    {% if bestJourneyTime %}
+                    <th>Flexi trip: Departure</th>
+                    <th>Duration</th>
+                    {% else %}
+                    <th>Flexi trip</th>
+                    {% endif %}
 
                 {% endif %}
 
@@ -86,7 +90,11 @@
 
                 {% if persona == 'planner' %}
                 <td>{{ leave_time }}</td>
-                <td>{{ bestStartTime }} {{ bestJourneyTime }}</td>
+                    {% if bestJourneyTime %}
+                <td>{{ bestStartTime }}</td><td> {{ bestJourneyTime }}</td>
+                    {% else %}
+                    <td>{{ bestStartTime }}</td>
+                    {% endif %}
                 {% endif %}
 
                 {% if persona == 'explorer' %}
