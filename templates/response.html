@@ -3,21 +3,27 @@
 
         <div class="col-sm-12">
 
+            <span class="sr-only">Your input</span>
             <table class="table table-condensed">
                 <thead>
                 <tr>
+                    <span class="sr-only">Bus route number</span>
                     <th>Bus</th>
+                    <span class="sr-only">Start stop</span>
                     <th>Start</th>
+                    <span class="sr-only">End stop</span>
                     <th>End</th>
 
                     {% if persona == 'planner' or persona == 'explorer' %}
 
+                    <span class="sr-only">Date and time</span>
                     <th>Date & Time</th>
 
                     {% endif %}
 
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr>
                     <td>{{ busNum }}</td>
@@ -43,14 +49,22 @@
 
     <div class="col-sm-12">
 
+        <span class="sr-only">Our trip suggestion</span>
         <table class="table table-condensed">
             <thead>
             <tr>
+                <span class="sr-only">Duration</span>
                 <th>Trip time</th>
                 <th>Departure time</th>
 
                 {% if persona == 'planner' %}
-                    {% if bestJourneyTime %}
+
+                <span class="sr-only">Next departures</span>
+                <th>Next departures</th>
+
+                {% if persona == 'planner' %}
+                <span class="sr-only">We found a quicker trip for you: Duration and departure time</span>
+                {% if bestJourneyTime %}
                     <th>Flexi trip: Departure</th>
                     <th>Duration</th>
                     {% else %}
