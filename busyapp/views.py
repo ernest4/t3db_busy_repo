@@ -9,7 +9,7 @@ import json
 import pytz
 import csv
 import json
-import sys
+import googlemaps
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -472,12 +472,8 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
         return None, None, None
 
 
-
-
-
-
-
 def touristform(request):
+
     if request.method == 'GET':
         form = TouristForm(request.GET)
 
@@ -486,26 +482,43 @@ def touristform(request):
             fromVar = form.cleaned_data['from_var_ex'].split(',')[0]
             toVar = form.cleaned_data['to_var_ex'].split(',')[0]
             dateVar = form.cleaned_data['date_var_ex']
+            timeVar = form.cleaned_data['time_var_ex']
+
+            # Get timestamp in seconds for Google directions request
+            whenVar = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp())
+
+
+            # This HAS TO BE removed before committing
+            gmaps = googlemaps.Client(key='AIzaSyD6np6k3fgrKMPsQuDFFFdcTaBNmE-iGXU')
+
+            # Request directions via public transit
+            directions_result = gmaps.directions(fromVar,
+                                     toVar)
+            #                          mode="transit",
+            #                          departure_time=whenVar)
 
             # Get time in standard 24hr format
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
-
-
-            request = json.load(sys.stdin)
-            response = handle_request(request)
-
-            jsonResponse = json.dump(response, sys.stdout, indent=2)
-
 
             return render(request, 'response.html', {'persona': 'explorer',
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'date': dateVar,
                                                     'time': timeVar,
-                                                    'jsonResponse': jsonResponse,
+                                                    'directions': directions_result,
                                                     'error': 0})  # 0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
+
+# def tourist_directions(request):
+#     if request.method == 'POST':
+#
+#         # Get directions result
+#         # result = json.load(sys.stdin)
+#         result = json.load(request)
+#         jsonResponse = json.dump(result, sys.stdout, indent=2)
+#
+#         return HttpResponse(jsonResponse)
 
 
 def plannerform_loadtest(request):
