@@ -9,6 +9,7 @@ import json
 import pytz
 import csv
 import json
+import sys
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -472,6 +473,10 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
 
 
 
+
+
+
+
 def touristform(request):
     if request.method == 'GET':
         form = TouristForm(request.GET)
@@ -485,14 +490,19 @@ def touristform(request):
             # Get time in standard 24hr format
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
 
-            #return HttpResponse("Bus Num: <br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
-            #return HttpResponse("Bus Num: <br>"+"From: <br>"+"To: <br>"+"When: "+toVar) #FOR DEBUGGING
+
+            request = json.load(sys.stdin)
+            response = handle_request(request)
+
+            jsonResponse = json.dump(response, sys.stdout, indent=2)
+
 
             return render(request, 'response.html', {'persona': 'explorer',
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'date': dateVar,
                                                     'time': timeVar,
+                                                    'jsonResponse': jsonResponse,
                                                     'error': 0})  # 0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")

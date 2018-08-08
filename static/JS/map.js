@@ -275,6 +275,23 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
                 console.log(result);
+
+                $.ajax({
+                    url: "../../busyapp/views.py",
+                    type: "POST",
+                    data: JSON.stringify(result),
+                    dataType: "json",
+                    success: function(result) {
+                        alert(result);
+                        console.log('sucess');
+                    },
+                    error: function(result) {
+                        console.log('error');
+                    }
+                    // error: on_request_error
+                });
+
+
             // } else if (status == 'NOT_FOUND') {
             //     console.log("At least one of the locations could not be geocoded");
             // } else if (status == 'ZERO_RESULTS') {
@@ -494,12 +511,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
     //set the directions button callback...
     $( '#exButton' ).click(function(){
-      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
-      //console.log(typeof $('#destination').val());
-      //deleteMarkers(markers); //clear current direction markers
-
-       //var originex = {lat: 53.3435162, lng:-6.2732542};
-       //var destination = {lat: 53.3369012, lng:-6.2619592};
 
         let origin = $('#location_from_ex').val();
         let destination = $('#location_to_ex').val();
@@ -511,7 +522,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         var date_time = new Date (date + " " + time).getTime();
 
         calculateDirections(origin, destination, date_time); //show the new direction marker//
-        // displayDirectionMarkers(originex, destination); //show the new direction markers
     });
 
 
