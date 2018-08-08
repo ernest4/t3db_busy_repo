@@ -275,15 +275,16 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
                 console.log(result);
-            // } else if (status == 'NOT_FOUND') {
-            //     console.log("At least one of the locations could not be geocoded");
-            // } else if (status == 'ZERO_RESULTS') {
-            //     console.log("No results found");
+            } else if (status == 'NOT_FOUND') {
+                console.log("At least one of the locations could not be geocoded");
+            } else if (status == 'ZERO_RESULTS') {
+                console.log("No results found");
             } else {
                 console.log("Issue with directions request");
             }
 
-            // document.getElementById('directions-result').innerHTML = result;
+            // Tried to display part of result but this didn't work
+            // document.getElementById("directions-result").innerHTML = result.routes[0].legs[0].steps[0].instructions;
         });
     }
 //======================================================================
