@@ -27,10 +27,23 @@
   <!--Reference: https://www.jqueryscript.net/time-clock/Clock-Time-Input-Plugin-jQuery-clockInput.html-->
   <link rel="stylesheet" href="{% static 'CSS/jquery.clockinput.css' %}" >
 
+    <script>
+     $(function() {
+        $('#nav li a').click(function() {
+           $('#nav li').removeClass();
+           $($(this).attr('href')).addClass('active');
+        });
+     });
+  </script>
+
+    
 </head>
 <body>
 
-<!-- navigation bar -->
+<!-- navigation bar -->    
+    
+
+    
 <nav class="navbar navbar-fixed-top" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">

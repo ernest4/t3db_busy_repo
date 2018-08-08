@@ -13,11 +13,11 @@
           </div>
         </div>
 
-        <div class="row">
+    <!--    <div class="row">
             <div class="col-sm-12">
                 <p>The Planner</p>
             </div>
-        </div>
+        </div> -->
 
         <div class="row">
             <div class="col-sm-9">
@@ -30,6 +30,15 @@
 
                 <form action="/planner/formdata" method="get" id="planner_form">
                     <div class="form-group">
+                        
+                         <!-- Input box for date -->
+                    <div class="form-group">
+
+                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var"
+                               required>
+
+                    </div>
+                        
                         <!-- <input id="route_number" onkeyup="pred1()" class="form-control" type="text" placeholder="e.g. 46A" name="busnum_var" required> -->
                         <div class="ui-widget"> <!-- jQuery autocomplete UI -->
 
@@ -62,14 +71,6 @@
                     </div>
 
 
-                    <!-- Input box for date -->
-                    <div class="form-group">
-
-                        <input id="datepicker" class="form-control" type="text" placeholder="Date" name="date_var"
-                               required>
-
-                    </div>
-
                     <!-- Input box for time -->
                     <div class="form-group">
 
@@ -79,7 +80,7 @@
                     </div>
 
                     <button class="btn btn-primary" type="submit">Submit</button>
-                    <br/><br/>
+             <br>
 
                 </form>
 
