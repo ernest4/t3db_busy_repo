@@ -17,6 +17,7 @@ urlpatterns = [
     path('planner/formdata', views.plannerform, name="plannerform"),
     path('planner/formdata_loadtest', views.plannerform_loadtest, name="plannerform_loadtest"),
     path('tourist/formdata', views.touristform, name="onthegoform"),
+    path('routeinfo', views.routeInfo, name="routeinfo"),
     path('busstops', views.busStops, name="busstops"),
     path('autocomp', views.busStopAutosuggest, name="autocomp_stops"),
     path('autocomp/routes', views.busRoutesAutosuggest, name="autocomp_routes"),
