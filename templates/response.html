@@ -1,83 +1,58 @@
 <br/>
-    <div class="row" id="inputbox">
-
-        <div class="col-sm-12">
-
-            <span class="sr-only">Your input</span>
-            <table class="table table-condensed">
-                <thead>
-                <tr>
-
-                    {% if persona != 'explorer' %}
-                    <span class="sr-only">Bus route number</span>
-                    <th>Bus</th>
-
-                    {% endif %}
-
-                    <span class="sr-only">Start stop</span>
-                    <th>Start</th>
-                    <span class="sr-only">End stop</span>
-                    <th>End</th>
-
-                    {% if persona == 'planner' or persona == 'explorer' %}
-
-                    <span class="sr-only">Date and time</span>
-                    <th>Date & Time</th>
-
-                    {% endif %}
-
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr>
-                    {% if persona != 'explorer' %}
-                    <td>{{ busNum }}</td>
-                    {% endif %}}
-
-                    <td>{{ from }}</td>
-                    <td>{{ to }}</td>
-
-                    {% if persona == 'planner' or persona == 'explorer' %}
-
-                    <td>{{ date }} {{ time }}</td>
-
-                    {% endif %}
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-{% if error == 0 %}
-
-<div class="row"> </div>
-<div class="row" id="suggestionbox">
-
-    <div class="col-sm-12">
-
-        <span class="sr-only">Our trip suggestion</span>
+    <div class="table-condensed" id="inputbox">
         <table class="table table-condensed">
             <thead>
             <tr>
-                <span class="sr-only">Duration</span>
+
+                {% if persona != 'explorer' %}
+                <th>Bus</th>
+                {% endif %}
+
+                <th>Start</th>
+                <th>End</th>
+
+                {% if persona == 'planner' or persona == 'explorer' %}
+                <th>Date & Time</th>
+                {% endif %}
+
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                {% if persona != 'explorer' %}
+                <td>{{ busNum }}</td>
+                {% endif %}}
+
+                <td>{{ from }}</td>
+                <td>{{ to }}</td>
+
+                {% if persona == 'planner' or persona == 'explorer' %}
+                <td>{{ date }} {{ time }}</td>
+                {% endif %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% if error == 0 %}
+{% if persona == 'planner' or persona == 'onthego' %}
+<div class="table-condensed" id="suggestionbox">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
                 <th>Departure</th>
-                <span class="sr-only">Departure time</span>
 
                 <th>Duration</th>
 
                 {% if persona == 'planner' %}
 
-
-                <span class="sr-only">We found a quicker trip for you: Duration and departure time</span>
                 {% if bestJourneyTime %}
-                    <th>Flexi trip: Departure</th>
-                    <th>Duration</th>
-                    {% else %}
-                    <th>Flexi trip</th>
-                    {% endif %}
-
+                <th>Flexi trip: Departure</th>
+                <th>Duration</th>
+                {% else %}
+                <th>Flexi trip</th>
+                {% endif %}
                 {% endif %}
 
             </tr>
@@ -87,13 +62,13 @@
 
                 {% if persona == 'planner' %}
                 <td>{{ leave_time }}</td>
-                    {% if bestJourneyTime %}
-                <td>{{ bestStartTime }}</td><td> {{ bestJourneyTime }}</td>
-                    {% else %}
-                    <td>{{ bestStartTime }}</td>
-                    {% endif %}
+                {% if bestJourneyTime %}
+                <td>{{ bestStartTime }}</td>
+                <td> {{ bestJourneyTime }}</td>
+                {% else %}
+                <td>{{ bestStartTime }}</td>
                 {% endif %}
-
+                {% endif %}
 
                 {% if persona == 'onthego' %}
                 <td> {{ bus1 }}
@@ -109,6 +84,7 @@
                     {% endif %}
                 {% endif %}
 
+                {% if persona == 'planner' %}
                 {% if journeyTime.h %}
                 <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
@@ -117,23 +93,17 @@
 
                 {% else %} <!-- have hours, minute & seconds -->
                 <td>{{ journeyTime.s }} seconds</td>
-
                 {% endif %}
-
-
-
-                {% if persona == 'explorer' %}
-                <td>{{ date }} {{ time }}</td>
                 {% endif %}
 
             </tr>
             </tbody>
         </table>
-    </div>
-
 </div>
+{% endif %}
+{% endif %}
 
-{% if persona == 'explorer' %}
+{% if error == 0 and persona == 'explorer' %}
 <div class="row">
     <div class="col-sm-12" id="directions-result">
     </div>
@@ -141,19 +111,16 @@
 {% endif %}}
 
 
-{% else %}
+{% if error != 0 %}
 <!-- there's an error, display error messages -->
 <div class="row">
     <div class="col-sm-12">
         <ul class="list-group">
-            <h3>Suggestion</h3>
+            <h3>Something went wrong...</h3>
             <li class="list-group-item">{{ error_1 }}</li>
-
             <li class="list-group-item">{{ error_2 }}</li>
             <li class="list-group-item">{{ error_3 }}</li>
         </ul>
     </div>
 </div>
-
 {% endif %}
-

@@ -250,7 +250,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
     //==================================================================================
     function calculateDirections(origin, destination, date_time) {
 
-        // console.log("Directions function "+date_time);
+        console.log("Directions function "+date_time);
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
@@ -275,18 +275,16 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
                 console.log(result);
-            } else if (status == 'NOT_FOUND') {
-                console.log("At least one of the locations could not be geocoded");
-            } else if (status == 'ZERO_RESULTS') {
-                console.log("No results found");
+            // } else if (status == 'NOT_FOUND') {
+            //     console.log("At least one of the locations could not be geocoded");
+            // } else if (status == 'ZERO_RESULTS') {
+            //     console.log("No results found");
             } else {
                 console.log("Issue with directions request");
             }
 
-            document.getElementById('directions-result').innerHTML = result;
+            // document.getElementById('directions-result').innerHTML = result;
         });
-
-
     }
 //======================================================================
 
@@ -425,11 +423,11 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
     }
 
     //Displaying routes on MAP based on user input
-    var bus_route_input = document.getElementById("bus_number");
-    bus_route_input.addEventListener("blur", function() { 
-        //alert('just left the input field, the bus was '+bus_route_input.value);
-        displayBusStopMarkersForRoute(bus_route_input.value);
-    });
+    // var bus_route_input = document.getElementById("bus_number");
+    // bus_route_input.addEventListener("blur", function() {
+    //     //alert('just left the input field, the bus was '+bus_route_input.value);
+    //     displayBusStopMarkersForRoute(bus_route_input.value);
+    // });
 
     function displayBusStopMarkersForRoute(route){
         //populate the markers for an input route
