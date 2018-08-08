@@ -34,8 +34,6 @@ function initMap(){
 //
 
 
-
-
 //Makes a marker for busstops and add onlick functionality
 function addMarkers(latlong, color = "red", infowindow, infowindow_content, stopid, isUser = false){
   //create a marker
@@ -48,7 +46,6 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
         icon: 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_'+ color +'.png'
     });
     
-
 
     //Add the pop up box to marker for onclick
     google.maps.event.addListener(marker, 'click', function(content){
@@ -139,6 +136,9 @@ function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_c
 
 }
 
+
+
+
 // Fucntion to show groups of destinations at a time
 function showDestinations(destinations, type, icon){
     // Set up info window for each type
@@ -188,7 +188,7 @@ function toButton(element){
 
 
 //Populate the map with information & markers
-$( window ).on( "load", function() { //When DOM & other resourses all loaded and ready...
+$( window ).on( "load", function() { //When DOM & other resources all loaded and ready...
     console.log( "Page ready!!" ); //FOR DEBUGGING
 
     var infowindow = new google.maps.InfoWindow(); //Common infowindow handle for all infowindows
@@ -240,11 +240,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
     autocompleteFrom.addListener('place_changed', function() {
         var place = autocompleteFrom.getPlace();
-        console.log(place);
+        // console.log(place);
     });
     autocompleteTo.addListener('place_changed', function() {
         var place = autocompleteTo.getPlace();
-        console.log(place);
+        // console.log(place);
     });
 
     //==================================================================================
@@ -259,35 +259,38 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
             origin: origin,
             destination: destination,
             travelMode: 'TRANSIT',
-
             transitOptions: {
-                //departureTime: date_time,
-                modes: ['BUS']
-            }
+                departureTime: new Date(date_time),
+                modes: ['BUS'],
+                routingPreference: 'FEWER_TRANSFERS'
+            },
         }
 
         directionsDisplay.setMap(map);
         directionsService.route(request, function (result, status) {
-            console.log(status);
-            console.log(result);
-            console.log(origin);
-            console.log(destination);
+            // console.log(status);
+            // console.log(origin);
+            // console.log(destination);
 
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
                 console.log(result);
-
-            }
-            else {
+            // } else if (status == 'NOT_FOUND') {
+            //     console.log("At least one of the locations could not be geocoded");
+            // } else if (status == 'ZERO_RESULTS') {
+            //     console.log("No results found");
+            } else {
                 console.log("Issue with directions request");
             }
+
+            // document.getElementById('directions-result').innerHTML = result;
         });
     }
 //======================================================================
 
 
     function showUserPosition(position){
-      //Conversts isUser position from geolocation coords to {lat: xxx, lng: xxx}
+      //Converts isUser position from geolocation coords to {lat: xxx, lng: xxx}
       //and add the a marker to the map.
       //
       //returns converted isUser position
@@ -332,7 +335,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
       }).done(function() {
 
-      console.log("Done!!"); //for DEBUGING
+      console.log("Done!!"); //for DEBUGGING
 
       //var markerCluster = new MarkerClusterer(map, markers, {
       //    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
@@ -340,12 +343,12 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
 
       }).fail(function() {
 
-      console.log("Failed!!"); //for DEBUGING
+      console.log("Failed!!"); //for DEBUGGING
       alert("Warnign: map markers could not load...");
 
       }).always(function(){
 
-      console.log("Always...!"); //for DEBUGING
+      console.log("Always...!"); //for DEBGUGGING
 
       });
     }
@@ -420,11 +423,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
     }
 
     //Displaying routes on MAP based on user input
-    var bus_route_input = document.getElementById("bus_number");
-    bus_route_input.addEventListener("blur", function() { 
-        //alert('just left the input field, the bus was '+bus_route_input.value);
-        displayBusStopMarkersForRoute(bus_route_input.value);
-    });
+    // var bus_route_input = document.getElementById("bus_number");
+    // bus_route_input.addEventListener("blur", function() {
+    //     //alert('just left the input field, the bus was '+bus_route_input.value);
+    //     displayBusStopMarkersForRoute(bus_route_input.value);
+    // });
 
     function displayBusStopMarkersForRoute(route){
         //populate the markers for an input route
@@ -498,26 +501,18 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
        //var originex = {lat: 53.3435162, lng:-6.2732542};
        //var destination = {lat: 53.3369012, lng:-6.2619592};
 
-
         let origin = $('#location_from_ex').val();
         let destination = $('#location_to_ex').val();
 
         let date = $('#datepicker_ex').val();
         let time = $('#clockpicker_ex').val();
-        // Convert time to seconds
-        console.log(date);
-        var a = time.split(':');
-        var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
 
-        //date = date.getTime()/1000;
-        var date_time = date + seconds;
-
-        console.log(date_time);
+        // Convert date and time to timestamp
+        var date_time = new Date (date + " " + time).getTime();
 
         calculateDirections(origin, destination, date_time); //show the new direction marker//
         // displayDirectionMarkers(originex, destination); //show the new direction markers
     });
-
 
 
     //set the directions button callback...
@@ -529,11 +524,11 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       let destination = $('#destination').val();
       displayDirectionMarkers(userPosition, destination); //show the new direction markers
     });
-
+    
 
     // Functions to add explorer icons based on checkboxes
     $( '#ShoppingCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/ms/micons/shopping.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_gray.png';
 
         if (document.getElementById("ShoppingCheck").checked) {
             showDestinations(Shopping, 1, icon);
@@ -544,7 +539,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#TravelLinksCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/ms/micons/bus.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_green.png';
 
         if (document.getElementById("TravelLinksCheck").checked) {
             showDestinations(travel_links, 0, icon);
@@ -555,7 +550,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#ActivitiesCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon14.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_orange.png';
 
         if (document.getElementById("ActivitiesCheck").checked) {
             showDestinations(Activities, 2, icon);
@@ -566,7 +561,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#SightsCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon2.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_purple.png';
 
         if (document.getElementById("SightsCheck").checked) {
             showDestinations(SightSeeing, 3, icon);
@@ -577,7 +572,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
      $( '#FamilyCheck' ).click(function(){
-         var icon = 'http://maps.google.com/mapfiles/ms/micons/hiker.png';
+         var icon = 'http://labs.google.com/ridefinder/images/mm_20_black.png';
 
         if (document.getElementById("FamilyCheck").checked) {
             showDestinations(Family, 4, icon);
@@ -588,7 +583,7 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
         });
 
     $( '#OutdoorsCheck' ).click(function(){
-        var icon = 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
+        var icon = 'http://labs.google.com/ridefinder/images/mm_20_white.png';
 
         if (document.getElementById("OutdoorsCheck").checked) {
             showDestinations(Outdoors, 5, icon);
