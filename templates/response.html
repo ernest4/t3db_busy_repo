@@ -7,8 +7,13 @@
             <table class="table table-condensed">
                 <thead>
                 <tr>
+
+                    {% if persona != 'explorer' %}
                     <span class="sr-only">Bus route number</span>
                     <th>Bus</th>
+
+                    {% endif %}
+
                     <span class="sr-only">Start stop</span>
                     <th>Start</th>
                     <span class="sr-only">End stop</span>
@@ -26,7 +31,10 @@
 
                 <tbody>
                 <tr>
+                    {% if persona != 'explorer' %}
                     <td>{{ busNum }}</td>
+                    {% endif %}}
+
                     <td>{{ from }}</td>
                     <td>{{ to }}</td>
 
@@ -108,6 +116,13 @@
     </div>
 
 </div>
+
+{% if persona == 'explorer' %}
+<div class="row">
+    <div class="col-sm-12" id="directions-result">
+    </div>
+</div>
+{% endif %}}
 
 
 {% else %}

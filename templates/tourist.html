@@ -15,69 +15,55 @@
             <div class="col-xs-6">
                 <div class="col-sm-4">
                     <p2>Transport</p2>
-
-                        <img src="http://maps.google.com/mapfiles/ms/micons/bus.png">
-                        <input id="TravelLinksCheck" type="checkbox">
-
-                        <span class="checkmark"></span>
-
+                    <img src="http://maps.google.com/mapfiles/ms/micons/bus.png">
+                    <input id="TravelLinksCheck" type="checkbox">
+                    <span class="checkmark"></span>
                 </div>
-
 
                 <div class="col-sm-4">
                     <p2>Shopping          </p2>
-                        <img src="http://maps.google.com/mapfiles/ms/micons/shopping.png">
-                        <input id="ShoppingCheck" type="checkbox">
-                        <span class="checkmark"></span>
-
+                    <img src="http://maps.google.com/mapfiles/ms/micons/shopping.png">
+                    <input id="ShoppingCheck" type="checkbox">
+                    <span class="checkmark"></span>
                 </div>
 
                 <div class="col-sm-4">
                     <p2>Activities&nbsp;</p2>
-                        <img src="http://maps.google.com/mapfiles/kml/pal2/icon14.png">
-                        <input id='ActivitiesCheck' type="checkbox">
-                        <span class="checkmark"></span>
-
+                    <img src="http://maps.google.com/mapfiles/kml/pal2/icon14.png">
+                    <input id='ActivitiesCheck' type="checkbox">
+                    <span class="checkmark"></span>
                 </div>
             </div>
 
             <div class="col-xs-6">
                 <div class="col-sm-4">
                     <p2>The Sights</p2>
-                        <img src="http://maps.google.com/mapfiles/kml/pal2/icon2.png">
-                        <input id='SightsCheck' type="checkbox">
-
-                        <span class="checkmark"></span>
-
+                    <img src="http://maps.google.com/mapfiles/kml/pal2/icon2.png">
+                    <input id='SightsCheck' type="checkbox">
+                    <span class="checkmark"></span>
                 </div>
 
                 <div class="col-sm-4">
                     <p2>&nbsp;&nbsp;&nbsp;Family&nbsp;&nbsp;</p2>
-                        <img src="http://maps.google.com/mapfiles/ms/micons/hiker.png">
+                    <img src="http://maps.google.com/mapfiles/ms/micons/hiker.png">
                     <p2>&nbsp; </p2>
-                        <input id='FamilyCheck' type="checkbox">
-                        <span class="checkmark"></span>
-
+                    <input id='FamilyCheck' type="checkbox">
+                    <span class="checkmark"></span>
                 </div>
-
 
                 <div class="col-sm-4">
                     <p2>Outdoors&nbsp;&nbsp;</p2>
-                        <img src="http://maps.google.com/mapfiles/kml/pal2/icon4.png">
-                        <input id="OutdoorsCheck" type="checkbox">
-                        <span class="checkmark"></span>
-
+                    <img src="http://maps.google.com/mapfiles/kml/pal2/icon4.png">
+                    <input id="OutdoorsCheck" type="checkbox">
+                    <span class="checkmark"></span>
                 </div>
             </div>
 
-
             <div class="col-sm-12">
-
-                <br></div>
-
+                <br>
+            </div>
 
         </div>
-
 
         <div class="row">
 
@@ -89,12 +75,12 @@
             <br>
 
             <div class="col-sm-3" style="background-color:#d9d9d9;">
+
                 <form action="/tourist/formdata" method="get" id="explorer_form">
                     <!-- Input box for "from" with Google directions API -->
                     <div class="form-group"><br>
                         <input id="location_from_ex"   class="form-control" type="text"
                                placeholder="Start Location" name="from_var_ex">
-
                         <datalist id="stop_list"></datalist>
                     </div>
 
@@ -114,7 +100,7 @@
                     <!-- Input box for time -->
                     <div class="form-group">
                         <input id="clockpicker_ex" class="form-control" class="clockpicker" type="time" placeholder="Time"
-                               name="time_var_ex" value="00:00" required>
+                               name="time_var_ex" value="06:00" required>
                     </div>
 
                     <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
@@ -129,7 +115,6 @@
                         $("input[type=time]").clockInput(false);
                         $("#datepicker_ex").datepicker({maxDate: new Date( 2018, 11, 31), minDate: new Date(), altField: "#selectDate"});
                     })
-
                 </script>
 
             </div>
@@ -138,9 +123,7 @@
         <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
         <div id="response"></div>
 
-
     </div>
-
 
 </div>
 
