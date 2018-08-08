@@ -3,21 +3,27 @@
 
         <div class="col-sm-12">
 
+            <span class="sr-only">Your input</span>
             <table class="table table-condensed">
                 <thead>
                 <tr>
+                    <span class="sr-only">Bus route number</span>
                     <th>Bus</th>
+                    <span class="sr-only">Start stop</span>
                     <th>Start</th>
+                    <span class="sr-only">End stop</span>
                     <th>End</th>
 
                     {% if persona == 'planner' or persona == 'explorer' %}
 
+                    <span class="sr-only">Date and time</span>
                     <th>Date & Time</th>
 
                     {% endif %}
 
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr>
                     <td>{{ busNum }}</td>
@@ -43,15 +49,26 @@
 
     <div class="col-sm-12">
 
+        <span class="sr-only">Our trip suggestion</span>
         <table class="table table-condensed">
             <thead>
             <tr>
-                <th>Trip time</th>
-                <th>Next departures</th>
+                <span class="sr-only">Duration</span>
+                <th>Departure</th>
+                <span class="sr-only">Departure time</span>
+
+                <th>Duration</th>
 
                 {% if persona == 'planner' %}
 
-                <th>Flexi trip</th>
+
+                <span class="sr-only">We found a quicker trip for you: Duration and departure time</span>
+                {% if bestJourneyTime %}
+                    <th>Flexi trip: Departure</th>
+                    <th>Duration</th>
+                    {% else %}
+                    <th>Flexi trip</th>
+                    {% endif %}
 
                 {% endif %}
 
@@ -59,16 +76,16 @@
             </thead>
             <tbody>
             <tr>
-                {% if journeyTime.h %}
-                <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
-                {% elif journeyTime.m %}
-                <td>{{ journeyTime.m }} minutes</td>
-
-                {% else %} <!-- have hours, minute & seconds -->
-                <td>{{ journeyTime.s }} seconds</td>
-
+                {% if persona == 'planner' %}
+                <td>{{ leave_time }}</td>
+                    {% if bestJourneyTime %}
+                <td>{{ bestStartTime }}</td><td> {{ bestJourneyTime }}</td>
+                    {% else %}
+                    <td>{{ bestStartTime }}</td>
+                    {% endif %}
                 {% endif %}
+
 
                 {% if persona == 'onthego' %}
                 <td> {{ bus1 }}
@@ -84,10 +101,18 @@
                     {% endif %}
                 {% endif %}
 
-                {% if persona == 'planner' %}
-                <td>{{ leave_time }}</td>
-                <td>{{ bestStartTime }} {{ bestJourneyTime }}</td>
+                {% if journeyTime.h %}
+                <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
+
+                {% elif journeyTime.m %}
+                <td>{{ journeyTime.m }} minutes</td>
+
+                {% else %} <!-- have hours, minute & seconds -->
+                <td>{{ journeyTime.s }} seconds</td>
+
                 {% endif %}
+
+
 
                 {% if persona == 'explorer' %}
                 <td>{{ date }} {{ time }}</td>

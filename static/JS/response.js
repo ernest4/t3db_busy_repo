@@ -34,7 +34,7 @@ $( window ).on( "load", function() {
         });
     }
 
-    //_________________________________________PLANNER
+    //_________________________________________PLANNER/ACCESIBILITY
 
     $( "#planner_form" ).on('submit', function(event){
         event.preventDefault();

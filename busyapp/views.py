@@ -29,7 +29,7 @@ with open(STATIC_ROOT+'/model_info/events18.csv', mode='r') as infile:
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html', { 'serverTime': datetime.datetime.now()})
+    return render(request, 'index.html')
 
 def onthego(request):
     return render(request, 'onthego.html')
@@ -52,6 +52,13 @@ def terms(request):
 def privacy(request):
     return render(request, 'privacy.html')
 
+def routeInfo(request):
+    params = request.GET;
+    r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?format=json",
+                     params={'operator': params['operator'],
+                             'routeid': params['routeid']})
+    if r.status_code == requests.codes.ok:
+        return HttpResponse(r.text)
 
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
@@ -267,6 +274,10 @@ def plannerform(request):
             timeVar = form.cleaned_data['time_var']
 
 
+
+
+
+
             time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
 
             # Seconds since the epoch till the input date
@@ -335,44 +346,59 @@ def plannerform(request):
 
             bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
 
-
+            print(bus_timetable_seconds)
+            print(bus_timetable)
+            print(index)
             # Set quickest time to inf so comparison is valid at first run
-            quickestTime = np.inf
-            for i in range(len(bus_timetable_seconds)):
-                # Only take values that are within 1 hour of time.
-                if bus_timetable_seconds[i] <= time_of_day-3600 or bus_timetable_seconds[i] >= time_of_day+3600:
-                    continue
+            # Timetables return None if there are no buses. Need to check for this
+            if bus_timetable_seconds != None:
+                quickestTime = np.inf
+                for i in range(len(bus_timetable_seconds)):
+                    # Only take values that are within 1 hour of time.
+                    if bus_timetable_seconds[i] <= time_of_day-3600 or bus_timetable_seconds[i] >= time_of_day+3600:
+                        continue
 
-                journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
-                                                            start_stop=start_stop,
-                                                            end_stop=end_stop,
-                                                            time_of_day=bus_timetable_seconds[i],
-                                                            weatherCode=weather,
-                                                            secondary_school=secondary_term,
-                                                            primary_school=primary_term,
-                                                            trinity=trinity,
-                                                            ucd=ucd,
-                                                            bank_holiday=bank_holiday,
-                                                            event=event,
-                                                            day_of_year=dayOfYear,
-                                                            weekday=weekDay,
-                                                            delay=0)
-                # Compare to see if journey is the quickest
-                if journeyTimeSecondsB < quickestTime:
-                    quickestTime = journeyTimeSecondsB
-                    bestTime = bus_timetable[i]
+                    journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
+                                                                start_stop=start_stop,
+                                                                end_stop=end_stop,
+                                                                time_of_day=bus_timetable_seconds[i],
+                                                                weatherCode=weather,
+                                                                secondary_school=secondary_term,
+                                                                primary_school=primary_term,
+                                                                trinity=trinity,
+                                                                ucd=ucd,
+                                                                bank_holiday=bank_holiday,
+                                                                event=event,
+                                                                day_of_year=dayOfYear,
+                                                                weekday=weekDay,
+                                                                delay=0)
+                    # Compare to see if journey is the quickest
+                    if journeyTimeSecondsB < quickestTime:
+                        quickestTime = journeyTimeSecondsB
+                        bestTime = bus_timetable[i][:-3]
 
 
-            # If best time is 20% or greater than 5 minutes quicker suggest time.
-            if (quickestTime <= (journeyTimeSeconds*0.8) or (journeyTimeSeconds-quickestTime) > 300) and journeyTimeSeconds-quickestTime>60:
-                if quickestTime/60>1:
-                    quickestTime = str(int(quickestTime/60)) + " minutes"
+                # If best time is 20% or greater than 5 minutes quicker suggest time.
+                if (quickestTime <= (journeyTimeSeconds*0.8) or (journeyTimeSeconds-quickestTime) > 300) and journeyTimeSeconds-quickestTime>60:
+                    if quickestTime/60>1:
+                        quickestTime = str(int(quickestTime/60)) + " minutes"
+                    else:
+                        quickestTime = str(int(quickestTime)) + " seconds"
                 else:
-                    quickestTime = str(int(quickestTime)) + " seconds"
+                    quickestTime = None
+                    bestTime = "You have chosen the quickest time to travel in this period"
 
             else:
                 quickestTime = None
-                bestTime = "You have chosen the quickest time to travel in this period"
+                bestTime = "There are no buses at this time"
+
+            if bus_timetable != None:
+                leaveTime = bus_timetable[index][:-3]
+            else:
+                leaveTime = None
+
+            # Get time in standard 24hr format
+            timeVar = timeVar.strftime("%H:%M")
 
 
                 # server side rendering - replace with AJAX for client side rendering in the future
@@ -381,7 +407,7 @@ def plannerform(request):
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime': journeyTime,
-                                                    'leave_time': bus_timetable[index],
+                                                    'leave_time': leaveTime,
                                                     'bestStartTime': bestTime,
                                                     'bestJourneyTime': quickestTime,
                                                    'date': dateVar,
@@ -433,9 +459,11 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
             if x > day_time-3600 and x < day_time+3600:
                 tsecs.append(x)
                 times.append(time_list[i])
+        print(tsecs, times, i_time)
 
         if len(tsecs)>0:
             i_time = min(range(len(tsecs)), key=lambda i: abs(tsecs[i] - day_time))
+
             return tsecs, times, i_time
         else:
             return None, None, None
@@ -454,7 +482,9 @@ def touristform(request):
             fromVar = form.cleaned_data['from_var_ex']
             toVar = form.cleaned_data['to_var_ex']
             dateVar = form.cleaned_data['date_var_ex']
-            timeVar = form.cleaned_data['time_var_ex']
+
+            # Get time in standard 24hr format
+            timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
 
             #return HttpResponse("Bus Num: <br>"+"From: "+fromVar+"<br>"+"To: "+toVar+"<br>"+"When: "+whenVar) #FOR DEBUGGING
             #return HttpResponse("Bus Num: <br>"+"From: <br>"+"To: <br>"+"When: "+toVar) #FOR DEBUGGING
