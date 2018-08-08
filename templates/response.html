@@ -41,18 +41,19 @@
         <table class="table table-condensed">
             <thead>
             <tr>
+                <span class="sr-only">Departure time</span>
                 <th>Departure</th>
+                <span class="sr-only">Duration</span>
 
                 <th>Duration</th>
 
                 {% if persona == 'planner' %}
-
-                {% if bestJourneyTime %}
-                <th>Flexi trip: Departure</th>
-                <th>Duration</th>
-                {% else %}
-                <th>Flexi trip</th>
-                {% endif %}
+                    {% if bestJourneyTime %}
+                    <th>Flexi trip: Departure</th>
+                    <th>Duration</th>
+                    {% else %}
+                    <th>Flexi trip</th>
+                    {% endif %}
                 {% endif %}
 
             </tr>
@@ -61,13 +62,14 @@
             <tr>
 
                 {% if persona == 'planner' %}
-                <td>{{ leave_time }}</td>
-                {% if bestJourneyTime %}
-                <td>{{ bestStartTime }}</td>
-                <td> {{ bestJourneyTime }}</td>
-                {% else %}
-                <td>{{ bestStartTime }}</td>
-                {% endif %}
+
+                    <td>{{ leave_time }}</td>
+                    {% if bestJourneyTime %}
+                    <td>{{ bestStartTime }}</td>
+                    <td> {{ bestJourneyTime }}</td>
+                    {% else %}
+                    <td>{{ bestStartTime }}</td>
+                    {% endif %}
                 {% endif %}
 
                 {% if persona == 'onthego' %}
@@ -82,18 +84,19 @@
 
                     <br>{{ bus3 }}</td>
                     {% endif %}
+
                 {% endif %}
 
                 {% if persona == 'planner' %}
-                {% if journeyTime.h %}
-                <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
+                    {% if journeyTime.h %}
+                    <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
-                {% elif journeyTime.m %}
-                <td>{{ journeyTime.m }} minutes</td>
+                    {% elif journeyTime.m %}
+                    <td>{{ journeyTime.m }} minutes</td>
 
-                {% else %} <!-- have hours, minute & seconds -->
-                <td>{{ journeyTime.s }} seconds</td>
-                {% endif %}
+                    {% else %} <!-- have hours, minute & seconds -->
+                    <td>{{ journeyTime.s }} seconds</td>
+                    {% endif %}
                 {% endif %}
 
             </tr>
@@ -106,6 +109,9 @@
 {% if error == 0 and persona == 'explorer' %}
 <div class="row">
     <div class="col-sm-12" id="directions-result">
+
+        {{ jsonResponse }}
+
     </div>
 </div>
 {% endif %}}
