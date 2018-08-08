@@ -223,8 +223,8 @@ $( window ).on( "load", function() { //When DOM & other resourses all loaded and
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
 
-    var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from_ex'));
-    var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to_ex'));
+    var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from_ex'), {componentRestrictions: {country: 'ie'}});
+    var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to_ex'), {componentRestrictions: {country: 'ie'}});
     // This is ready to go but needs On the go input to change id name to destinationOnTheGo
     //var autocompleteOnTheGo = new google.maps.places.Autocomplete(document.getElementById('destinationOnTheGo'));
 

@@ -240,7 +240,6 @@ def onthegoform(request):
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
-            #journeyTime['s'] = round(journeyTime['s']) # get rid of trailing floating point for seconds.
             journeyTime['h'], journeyTime['m'],journeyTime['s'] = int(journeyTime['h']), int(journeyTime['m']),int(journeyTime['s'])
 
 
@@ -278,10 +277,6 @@ def plannerform(request):
             timeVar = form.cleaned_data['time_var']
 
 
-
-
-
-
             time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()
 
             # Seconds since the epoch till the input date
@@ -304,7 +299,7 @@ def plannerform(request):
                             and/or may not be in service on this particular weekday."
                 errorMSG3 = "Please check your inputs and try again."
                 return render(request, 'response.html', {'persona': 'planner',
-                                                            'busNum': busNum,
+                                                            'busNum': busNum.upper(),
                                                             'from': fromVar,
                                                             'to': toVar,
                                                             'journeyTime': errorMSG,
@@ -408,7 +403,7 @@ def plannerform(request):
 
                 # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'response.html', {'persona': 'planner',
-                                                     'busNum': busNum,
+                                                     'busNum': busNum.upper(),
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime': journeyTime,
@@ -483,8 +478,8 @@ def touristform(request):
 
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
-            fromVar = form.cleaned_data['from_var_ex']
-            toVar = form.cleaned_data['to_var_ex']
+            fromVar = form.cleaned_data['from_var_ex'].split(',')[0]
+            toVar = form.cleaned_data['to_var_ex'].split(',')[0]
             dateVar = form.cleaned_data['date_var_ex']
 
             # Get time in standard 24hr format
