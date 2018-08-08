@@ -92,10 +92,10 @@
             <div class="col-sm-12">
                 <img  src="{% static 'images/logo.png'%}" alt="Dublin Bus Logo">
 
-                <p>a revolutionary bus journey time predictor </p>
-                <h2>Welcome to BUSy </h2>
+               <!-- <p>a revolutionary bus journey time predictor </p> -->
+          
                 <p> Click To Select Your Mood</p>
-                <p>Current time: {{ serverTime }}</p>
+                <!-- <p>Current time: {{ serverTime }}</p> -->
                 <hr>
                 <p></p>
             </div>
@@ -105,14 +105,14 @@
                 <a type="button" id="cardbutton" class="btn btn-lg btn-primary" href="/onthego">
                     <img class="erb-image-wrapper" src="{% static 'images/runningman.PNG'%}" alt="Buses Coming Now">
                     <hr>Go</a>
-                <p>Know your bus number and want to leave now? </p>
+                <p>Know which bus and want to leave now? </p>
 
             </div>
 
             <div class="col-sm-4">
                 <a type="button" class="btn btn-lg btn-primary" href="/theplanner">
                     <img class="erb-image-wrapper" src="{% static 'images/planner.PNG'%}" alt="Buses leaving in the future"> <hr>Plan</a>
-                <p>Know your bus number and leaving later?</p>
+                <p>Know which bus and fancy leaving later?</p>
 
 
             </div>
@@ -120,7 +120,9 @@
             <div class="col-sm-4">
                 <a type="button" class="btn btn-lg btn-primary" href="/tourist">
                     <img class="erb-image-wrapper" src="{% static 'images/tourist.PNG'%}" alt="Points of Interest In Dublin"> <hr>Explore</a>
-                <p>Not sure which bus or what's on offer in Dublin?</p>
+                <p>Unsure of which bus or <br>
+                what Dublin has to offer?</p>
+                
             </div>
         </div>
     </div>
