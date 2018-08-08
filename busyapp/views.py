@@ -477,7 +477,7 @@ def touristform(request):
     if request.method == 'GET':
         form = TouristForm(request.GET)
 
-        #Prefered way of handling forms, validate first before using.
+        # Prefered way of handling forms, validate first before using.
         if form.is_valid():
             fromVar = form.cleaned_data['from_var_ex'].split(',')[0]
             toVar = form.cleaned_data['to_var_ex'].split(',')[0]
@@ -487,15 +487,36 @@ def touristform(request):
             # Get timestamp in seconds for Google directions request
             whenVar = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp())
 
+            # Get Google directions API
+            # Package: https://github.com/googlemaps/google-maps-services-python
+            gmaps = googlemaps.Client(key=os.environ.get('DIRECTIONS_API'))
 
-            # This HAS TO BE removed before committing
-            gmaps = googlemaps.Client(key='AIzaSyD6np6k3fgrKMPsQuDFFFdcTaBNmE-iGXU')
-
-            # Request directions via public transit
+            # Request directions via public transit and fewer transfers
             directions_result = gmaps.directions(fromVar,
-                                     toVar)
-            #                          mode="transit",
-            #                          departure_time=whenVar)
+                                    toVar,
+                                    departure_time=whenVar,
+                                    mode="transit",
+                                    transit_mode="bus",
+                                    transit_routing_preference="fewer_transfers")
+
+            # Get time values from directions_result
+            departure_time = directions_result[0]['legs'][0]['departure_time']['text']
+            arrival_time = directions_result[0]['legs'][0]['arrival_time']['text']
+            duration = directions_result[0]['legs'][0]['duration']['text']
+
+            # Extract steps of directions
+            steps = []
+
+            for step in directions_result[0]['legs'][0]['steps']:
+
+                if step['travel_mode'] == 'TRANSIT':    # If it's a bus, store all information provided
+                    steps.append([step['html_instructions'],
+                                  step['travel_mode'],
+                                  step['transit_details']])
+                else:
+                    steps.append([step['html_instructions'],
+                                  step['travel_mode']])
+
 
             # Get time in standard 24hr format
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
@@ -505,20 +526,13 @@ def touristform(request):
                                                     'to': toVar,
                                                     'date': dateVar,
                                                     'time': timeVar,
-                                                    'directions': directions_result,
+                                                    'departure': departure_time,
+                                                    'arrival': arrival_time,
+                                                    'duration': duration,
+                                                    'steps': steps,
                                                     'error': 0})  # 0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
-
-# def tourist_directions(request):
-#     if request.method == 'POST':
-#
-#         # Get directions result
-#         # result = json.load(sys.stdin)
-#         result = json.load(request)
-#         jsonResponse = json.dump(result, sys.stdout, indent=2)
-#
-#         return HttpResponse(jsonResponse)
 
 
 def plannerform_loadtest(request):
