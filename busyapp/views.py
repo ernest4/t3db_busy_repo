@@ -402,6 +402,9 @@ def plannerform(request):
             timeVar = timeVar.strftime("%H:%M")
 
 
+
+
+
                 # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'response.html', {'persona': 'planner',
                                                      'busNum': busNum.upper(),
