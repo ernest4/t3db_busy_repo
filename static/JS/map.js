@@ -345,7 +345,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                                     +"<br><br>"
                                     +"<button type=\"button\" id=\"to_"+bus_stop.stopid+"\" onclick=\"toButton(this)\">To "+bus_stop.stopid+"</button>";
 
-                addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "green", infowindow, infowindow_content, bus_stop.stopid);
+                addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "blue", infowindow, infowindow_content, bus_stop.stopid);
               }
         });
 
