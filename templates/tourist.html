@@ -13,12 +13,12 @@
           </div>
         </div>
 
-        <div class="row">
+       <!-- <div class="row">
             <div class="col-sm-12">
                 <p>The Explorer</p>
                 <br>
             </div>
-        </div>
+        </div> -->
 
         <div class="row">
             <div class="col-xs-6">
@@ -89,7 +89,7 @@
 
         <div class="row">
             <div class="col-sm-9"> <br>
-                <div id="map" style="width:100%; height:402px;">
+                <div id="map" style="width:100%; height:420px;">
                     <!-- google maps go here -->
                 </div>
             </div>
@@ -98,8 +98,16 @@
             <div class="col-sm-3" style="background-color:#d9d9d9;">
 
                 <form action="/tourist/formdata" method="get" id="explorer_form">
+                    
+                         <!-- Input box for date -->
+                    <div class="form-group">
+                        <br>
+                        <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
+                               required>
+                    </div>
+                    
                     <!-- Input box for "from" with Google directions API -->
-                    <div class="form-group"><br>
+                    <div class="form-group">
                         <input id="location_from_ex"   class="form-control" type="text"
                                placeholder="Start Location" name="from_var_ex">
                     </div>
@@ -110,11 +118,7 @@
                         <input id="location_to_ex" class="form-control" type="text" placeholder="Destination" name="to_var_ex">
                     </div>
 
-                    <!-- Input box for date -->
-                    <div class="form-group">
-                        <input id="datepicker_ex" class="form-control" type="text" placeholder="Date" name="date_var_ex"
-                               required>
-                    </div>
+               <br>
 
                     <!-- Input box for time -->
                     <div class="form-group">
@@ -123,7 +127,7 @@
                                name="time_var_ex" value="09:00" required>
                     </div>
 
-                    <button class="btn btn-primary" id ="exButton" type="submit">Submit</button>
+                    <button class="btn btn-primary" id ="exButton" type="submit">Submit</button> 
 
                 </form>
 
