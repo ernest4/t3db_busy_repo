@@ -248,6 +248,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
     });
 
     //==================================================================================
+    //Function to process and display directions on map
     function calculateDirections(origin, destination, date_time) {
 
         console.log("Directions function "+date_time);
@@ -283,23 +284,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                 console.log("Issue with directions request");
             }
 
-                $.ajax({
-                    url: "../../busyapp/views.py",
-                    type: "POST",
-                    data: JSON.stringify(result),
-                    dataType: "json",
-                    success: function(result) {
-                        alert(result);
-                        console.log('sucess');
-                    },
-                    error: function(result) {
-                        console.log('error');
-                    }
-                    // error: on_request_error
-                });
-            
-            // Tried to display part of result but this didn't work
-            // document.getElementById("directions-result").innerHTML = result.routes[0].legs[0].steps[0].instructions;
+
         });
     }
 //======================================================================
