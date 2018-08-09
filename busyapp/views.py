@@ -269,7 +269,7 @@ def plannerform(request):
         # print(form['busnum_var'].value())
         # print(form.data['busnum_var'])
 
-        #Prefered way of handling forms, validate first before using.
+        #Preferred way of handling forms, validate first before using.
         if form.is_valid():
             busNum = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
@@ -485,7 +485,7 @@ def touristform(request):
             timeVar = form.cleaned_data['time_var_ex']
 
             # Get timestamp in seconds for Google directions request
-            whenVar = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp())
+            whenVar = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()) - 3600
 
             # Get Google directions API
             # Package: https://github.com/googlemaps/google-maps-services-python
@@ -508,14 +508,41 @@ def touristform(request):
             steps = []
 
             for step in directions_result[0]['legs'][0]['steps']:
+                # If it's a bus, store all information provided
+                # 0 instructions
+                # 1 duration
+                # 2 distance
+                # 3 bus route number
+                # 4 departure stop [lat, lng, name]
+                # 5 arrival stop [lat, lng, name]
+                if step['travel_mode'] == 'TRANSIT' and step['transit_details']['line']['vehicle']['type'] == 'BUS':
 
-                if step['travel_mode'] == 'TRANSIT':    # If it's a bus, store all information provided
+                    #Get route, start and end stop
+                    route = step['transit_details']['line']['short_name']
+                    start_stop = step['transit_details']['departure_stop']
+                    end_stop = step['transit_details']['arrival_stop']
+
+                    # Get program numbers
+                    bus_stops = busStops(request)
+
+                    # Get model
+                    # If no model found, keep original value
+
+                    # Compare duration with model prediction
+
+                    # If predictions differs, replace original value
+
                     steps.append([step['html_instructions'],
-                                  step['travel_mode'],
-                                  step['transit_details']])
+                                  step['duration']['text'],
+                                  step['distance']['text'],
+                                  step['transit_details']['line']['short_name'],
+                                  step['transit_details']['departure_stop'],
+                                  step['transit_details']['arrival_stop']])
+
                 else:
                     steps.append([step['html_instructions'],
-                                  step['travel_mode']])
+                                  step['duration']['text'],
+                                  step['distance']['text']])
 
 
             # Get time in standard 24hr format

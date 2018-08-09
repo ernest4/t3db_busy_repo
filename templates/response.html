@@ -22,7 +22,7 @@
         <tr>
             {% if persona != 'explorer' %}
             <td>{{ busNum }}</td>
-            {% endif %}}
+            {% endif %}
 
             <td>{{ from }}</td>
             <td>{{ to }}</td>
@@ -125,18 +125,36 @@
         </tbody>
     </table>
 
-    <div class="row">
-        <div class="col-sm-12" id="directions-result">
-            <ul class="list-group"></ul>
-            <h3>Steps of the trip</h3>
-            
-            {{ steps }}
-
-        </div>
+    <div class="table-condensed" id="directions-result">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Steps of the trip</th>
+                <th>Duration</th>
+                <th>Distance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for step in steps %}
+            <tr>
+                <td>{{ step.0|default:"Shoot, we don't have any information on this for you." }}</td>
+                <td>{{ step.1 }}</td>
+                <td>{{ step.2 }}</td>
+            </tr>
+            {% if step.3 %}
+            <tr style="font-size: smaller", >
+                <td>Bus <br> {{ step.3 }}</td>
+                <td>Start <br> {{ step.4.name }}</td>
+                <td>End <br> {{ step.5.name }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
 </div>
-{% endif %}}
+{% endif %}
 
 
 {% if error != 0 %}
