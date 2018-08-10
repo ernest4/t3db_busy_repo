@@ -405,7 +405,22 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                                     +"<button type=\"button\" id=\"to_"+bus_stop.stopid+"\" onclick=\"toButton(this)\">To "+bus_stop.stopid+"</button>";
 
                     addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "blue", infowindow, infowindow_content, bus_stop.stopid);
-                    
+
+                    var bounds = new google.maps.LatLngBounds();
+                    for (var i = 0; i < markers.length; i++) {
+                        bounds.extend(markers[i].getPosition());
+                    }
+
+
+                    // map.setCenter(bounds.getCenter());
+                    map.setCenter(bounds.getCenter());
+                    map.fitBounds(bounds);
+
+                    // map.fitBounds(bounds);
+                    // map.panToBounds(bounds);
+
+                    // map.setZoom(map.getZoom()-1);
+
                 })
             }
       });
