@@ -431,7 +431,7 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
                      "stopid="+stop_id+"&routeid="+route_id+"&format=json")
     if r.status_code == requests.codes.ok:
         data = json.loads(r.content)
-        day = date.weekday()
+        day = date.weekday() # Weekday in number form
 
         # Find timetable for Monday to Friday (This is a join of Monday-Sunday and Monday-Friday)
         if day>=0 and day<=4:
