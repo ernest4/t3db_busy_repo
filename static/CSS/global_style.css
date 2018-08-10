@@ -79,12 +79,21 @@ footer a:hover, .navbar-right a:hover {
 }
 
 #inputbox {
-    background-color:#bfbfbf;
+    background-color: white;
     margin-top: 5px;
 }
 
-#suggestionbox{
-    background-color:#bfbfbf;
+#suggestionbox {
+    background-color:white;
     margin-top: 5px;
 }
 
+#directions-result {
+    background-color: white;
+    border: black;
+}
+
+#directions-rows {
+    font-size: smaller;
+    background-color: #e6e6e6;
+}
