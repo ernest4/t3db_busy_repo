@@ -504,7 +504,7 @@ def touristform(request):
 
             # Get timestamp in seconds for Google directions request
             whenVar = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()) - 3600
-
+           
             # Get Google directions API
             # Package: https://github.com/googlemaps/google-maps-services-python
             gmaps = googlemaps.Client(key=os.environ.get('DIRECTIONS_API'))
@@ -526,6 +526,7 @@ def touristform(request):
             steps = []
 
             for step in directions_result[0]['legs'][0]['steps']:
+
                 # If it's a bus, store all information provided
                 # 0 instructions
                 # 1 duration
@@ -533,6 +534,7 @@ def touristform(request):
                 # 3 bus route number
                 # 4 departure stop [lat, lng, name]
                 # 5 arrival stop [lat, lng, name]
+
                 if step['travel_mode'] == 'TRANSIT' and step['transit_details']['line']['vehicle']['type'] == 'BUS':
 
                     #Get route, start and end stop
@@ -540,9 +542,7 @@ def touristform(request):
                     start_stop = step['transit_details']['departure_stop']
                     end_stop = step['transit_details']['arrival_stop']
 
-                    # Check if route is covered by us, if not, no need to check stop numbers
-
-                    # Get program numbers
+                    # Get program numbers for start and end stop
                     bus_stops = busStops()
 
                     # Get lat and lng for start and end stop
@@ -556,7 +556,10 @@ def touristform(request):
                     diff_lat_end = 1.0
                     diff_lng_end = 1.0
 
-                    # Find stopid by matching lat and lng
+                    start_stop_id = None
+                    end_stop_id = None
+
+                    # Get stopid by matching lat and lng and find closest values
                     for stop in bus_stops['results']:
                         if (diff_lat_start > abs(float(stop['latitude']) - lat_start)) and (diff_lng_start > abs(float(stop['longitude']) - lng_start)):
                             start_stop_id = stop['stopid']
@@ -568,27 +571,72 @@ def touristform(request):
                             diff_lat_end = abs(float(stop['latitude']) - lat_end)
                             diff_lng_end = abs(float(stop['longitude']) - lng_end)
 
-                    print(start_stop_id, end_stop_id)
+                    # If stops not found, keep original value
+                    if start_stop_id is None or end_stop_id is None:
+                        pass
+                    else:   # Get model
+                        weekDay = getWeekDayBinaryArray(datetime.datetime(dateVar.year, dateVar.month, dateVar.day,
+                                                                          tzinfo=datetime.timezone.utc).weekday())
 
-                    # Get model
-                    # If no model found, keep original value
+                        ann_improved, start_stop_prog, end_stop_prog = getModelAndProgNum(route, start_stop_id, end_stop_id,
+                                                                                weekdayIndex=datetime.datetime.today().weekday())
+                        # If no model found, keep original value
+                        if ann_improved is None:  # Model could not be retrieved
+                            pass
+                        else:   # Compare duration with model prediction
+                            # Get values required for model prediction
+                            time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second,
+                                                            tzinfo=datetime.timezone.utc).timestamp()
+                            weather = getWeather(whenVar + 3600)
 
-                    # Compare duration with model prediction
+                            date = datetime.datetime.strftime(dateVar, "%Y-%m-%d")
+                            dayEvents = events[date]
+                            secondary_term, primary_term, trinity, ucd, bank_holiday, event = dayEvents[0], dayEvents[1], \
+                                                                                              dayEvents[
+                                                                                                  2], dayEvents[3], \
+                                                                                              dayEvents[4], dayEvents[5]
 
-                    # If predictions differs, replace original value
+                            dayOfYear = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day,
+                                                           tzinfo=datetime.timezone.utc)
+                                         - datetime.datetime(2018, 1, 1, 0, 0, 0,
+                                                             tzinfo=datetime.timezone.utc)).total_seconds()
+
+                            # Call the machine learning function & parse the returned seconds into hours, minutes & seconds
+                            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
+                                                                        start_stop=start_stop_prog,
+                                                                        end_stop=end_stop_prog,
+                                                                        time_of_day=time_of_day,
+                                                                        weatherCode=weather,
+                                                                        secondary_school=secondary_term,
+                                                                        primary_school=primary_term,
+                                                                        trinity=trinity,
+                                                                        ucd=ucd,
+                                                                        bank_holiday=bank_holiday,
+                                                                        event=event,
+                                                                        day_of_year=dayOfYear,
+                                                                        weekday=weekDay,
+                                                                        delay=0)  # 0 for future dates
+
+                            # If predictions available, replace original value with it
+                            journeyTimeSeconds
+
+                    try:
+                        travel_time = str(int(journeyTimeSeconds/60)) + ' mins'   # Convert to minutes
+                    except:
+                        travel_time = step['duration']['text']
 
                     steps.append([step['html_instructions'],
-                                  step['duration']['text'],
+                                  travel_time,
                                   step['distance']['text'],
                                   step['transit_details']['line']['short_name'],
                                   step['transit_details']['departure_stop'],
                                   step['transit_details']['arrival_stop']])
 
+                # If step is not bus, include less details
                 else:
                     steps.append([step['html_instructions'],
                                   step['duration']['text'],
                                   step['distance']['text']])
-
 
             # Get time in standard 24hr format
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
