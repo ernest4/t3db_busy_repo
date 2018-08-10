@@ -78,8 +78,6 @@ function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_c
 }
 
 
-
-
 // Fucntion to show groups of destinations at a time
 function showDestinations(destinations, type, icon){
     // Set up info window for each type
@@ -180,11 +178,10 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         // console.log(place);
     });
 
-    //==================================================================================
-
     var directionsService = new google.maps.DirectionsService;
     var directionsDisplay = new google.maps.DirectionsRenderer;
     //Function to process and display directions on map
+
     function calculateDirections(origin, destination, date_time) {
 
         // console.log("Directions function "+date_time);
@@ -204,9 +201,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
         directionsDisplay.setMap(map);
         directionsService.route(request, function (result, status) {
-            // console.log(status);
-            // console.log(origin);
-            // console.log(destination);
 
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
@@ -214,15 +208,12 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
             } else if (status == 'NOT_FOUND') {
                 console.log("At least one of the locations could not be geocoded");
             } else if (status == 'ZERO_RESULTS') {
-                console.log("No results found")
+                console.log("No results found");
             } else {
                 console.log("Issue with directions request");
             }
-
-
         });
     }
-//======================================================================
 
     // Function to place users location on map
     function showUserPosition(position){

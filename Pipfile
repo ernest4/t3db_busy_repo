@@ -17,5 +17,6 @@ scikit-learn = "*"
 scipy = "*"
 requests = "*"
 dj-database-url = "*"
+googlemaps = "*"
 
 [dev-packages]
