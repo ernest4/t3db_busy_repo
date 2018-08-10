@@ -1,128 +1,157 @@
 <br/>
-    <div class="table-condensed" id="inputbox">
+<div class="table-condensed" id="inputbox">
+    <table class="table table-condensed">
+        <thead>
+        <tr>
 
-        <table class="table table-condensed">
-            <thead>
-            <tr>
+            {% if persona != 'explorer' %}
+            <th>Bus</th>
+            {% endif %}
 
-                {% if persona != 'explorer' %}
-                <th>Bus</th>
-                {% endif %}
+            <th>Start</th>
+            <th>End</th>
 
-                <th>Start</th>
-                <th>End</th>
+            {% if persona == 'planner' or persona == 'explorer' %}
+            <th>Date & Time</th>
+            {% endif %}
 
-                {% if persona == 'planner' or persona == 'explorer' %}
-                <th>Date & Time</th>
-                {% endif %}
+        </tr>
+        </thead>
 
-            </tr>
-            </thead>
+        <tbody>
+        <tr>
+            {% if persona != 'explorer' %}
+            <td>{{ busNum }}</td>
+            {% endif %}
 
-            <tbody>
-            <tr>
-                {% if persona != 'explorer' %}
-                <td>{{ busNum }}</td>
-                {% endif %}
+            <td>{{ from }}</td>
+            <td>{{ to }}</td>
 
-                <td>{{ from }}</td>
-                <td>{{ to }}</td>
-
-                {% if persona == 'planner' or persona == 'explorer' %}
-                <td>{{ date }} {{ time }}</td>
-                {% endif %}
-            </tr>
-            </tbody>
-        </table>
-    </div>
+            {% if persona == 'planner' or persona == 'explorer' %}
+            <td>{{ date }} {{ time }}</td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 {% if error == 0 %}
 {% if persona == 'planner' or persona == 'onthego' %}
 <div class="table-condensed" id="suggestionbox">
-        <table class="table table-condensed">
-            <thead>
-            <tr>
-                <span class="sr-only">Departure time</span>
-                <th>Departure</th>
-                <span class="sr-only">Duration</span>
-                <th>Duration</th>
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <span class="sr-only">Departure time</span>
+            <th>Departure</th>
+            <span class="sr-only">Duration</span>
 
+            <th>Duration</th>
 
+            {% if persona == 'planner' %}
+            {% if bestJourneyTime %}
+            <th>Flexi trip: Departure</th>
+            <th>Duration</th>
+            {% else %}
+            <th>Flexi trip</th>
+            {% endif %}
+            {% endif %}
 
-                {% if persona == 'planner' %}
-                    {% if bestJourneyTime %}
-                    <th>Flexi trip: Departure</th>
-                    <th>Duration</th>
-                    {% else %}
-                    <th>Flexi trip</th>
-                    {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+
+            {% if persona == 'planner' %}
+
+            <td>{{ leave_time }}</td>
+            {% if bestJourneyTime %}
+            <td>{{ bestStartTime }}</td>
+            <td> {{ bestJourneyTime }}</td>
+            {% else %}
+            <td>{{ bestStartTime }}</td>
+            {% endif %}
+            {% endif %}
+
+            {% if persona == 'onthego' %}
+            <td> {{ bus1 }}
+
+                {% if bus2 %}
+
+                <br>{{ bus2 }}
                 {% endif %}
 
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                 {% if persona == 'planner' %}
-                <td>{{ leave_time }}</td>
-                {% endif %}
+                {% if bus3 %}
 
-                {% if persona == 'onthego' %}
-                <td> {{ bus1 }}
+                <br>{{ bus3 }}</td>
+            {% endif %}
+            {% endif %}
 
-                    {% if bus2 %}
+            {% if persona == 'planner' %}
+            {% if journeyTime.h %}
+            <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
-                    <br>{{ bus2 }}
-                    {% endif %}
+            {% elif journeyTime.m %}
+            <td>{{ journeyTime.m }} minutes</td>
 
-                    {% if bus3 %}
+            {% else %} <!-- have hours, minute & seconds -->
+            <td>{{ journeyTime.s }} seconds</td>
+            {% endif %}
+            {% endif %}
 
-                    <br>{{ bus3 }}</td>
-                    {% endif %}
-
-                {% endif %}
-
-                {% if persona != 'explorer' %}
-                    {% if journeyTime.h %}
-                    <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
-
-                    {% elif journeyTime.m %}
-                    <td>{{ journeyTime.m }} minutes</td>
-
-                    {% else %} <!-- have hours, minute & seconds -->
-                    <td>{{ journeyTime.s }} seconds</td>
-                    {% endif %}
-                {% endif %}
-
-
-                {% if persona == 'planner' %}
-
-
-                    {% if bestJourneyTime %}
-                    <td>{{ bestStartTime }}</td>
-                    <td> {{ bestJourneyTime }}</td>
-                    {% else %}
-                    <td>{{ bestStartTime }}</td>
-                    {% endif %}
-                {% endif %}
-
-
-
-
-
-            </tr>
-            </tbody>
-        </table>
+        </tr>
+        </tbody>
+    </table>
 </div>
 {% endif %}
 {% endif %}
 
 {% if error == 0 and persona == 'explorer' %}
-<div class="row">
-    <div class="col-sm-12" id="directions-result">
+<div class="table-condensed" id="suggestionbox">
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th>Duration</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ departure }}</td>
+            <td>{{ arrival }}</td>
+            <td>{{ duration }}</td>
+        </tr>
+        </tbody>
+    </table>
 
-        {{ jsonResponse }}
-
+    <div class="table-condensed" id="directions-result">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Steps of the trip</th>
+                <th>Duration</th>
+                <th>Distance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for step in steps %}
+            <tr>
+                <td>{{ step.0|default:"Shoot, we don't have any information on this for you." }}</td>
+                <td>{{ step.1 }}</td>
+                <td>{{ step.2 }}</td>
+            </tr>
+            {% if step.3 %}
+            <tr id="directions-rows">
+                <td>Bus <br>{{ step.3 }}</td>
+                <td>Start <br> {{ step.4.name }}</td>
+                <td>End <br> {{ step.5.name }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
+
 </div>
 {% endif %}
 
