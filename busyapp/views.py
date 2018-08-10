@@ -5,11 +5,11 @@ import requests
 import numpy as np
 import os
 import datetime
-import json
 import pytz
 import csv
 import json
 import googlemaps
+import urllib
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -61,6 +61,8 @@ def routeInfo(request):
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
+
+# Function to retrieve bus stops for frontend
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
     if r.status_code == requests.codes.ok:
@@ -74,6 +76,21 @@ def busStops(request):
         with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
             return HttpResponse(file.read())
 
+
+# Function to retrieve bus stops for backend
+def busStops():
+    url = "https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac"
+
+    try:
+        response = urllib.urlopen(url)
+        return json.loads(response.read())
+
+    # If API fails, use local file
+    except:
+        with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
+            return json.load(file)
+
+
 #function to return Google Directions API query results for the map
 def directions(request):
     params = request.GET;
@@ -85,6 +102,7 @@ def directions(request):
                              'key': os.environ.get('DIRECTIONS_API')})
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
+
 
 #function to return RTPI query results for Bus Stop Autosuggests
 def busStopAutosuggest(request):
@@ -522,8 +540,35 @@ def touristform(request):
                     start_stop = step['transit_details']['departure_stop']
                     end_stop = step['transit_details']['arrival_stop']
 
+                    # Check if route is covered by us, if not, no need to check stop numbers
+
                     # Get program numbers
-                    bus_stops = busStops(request)
+                    bus_stops = busStops()
+
+                    # Get lat and lng for start and end stop
+                    lat_start = start_stop['location']['lat']
+                    lng_start = start_stop['location']['lng']
+                    lat_end = end_stop['location']['lat']
+                    lng_end = end_stop['location']['lng']
+
+                    diff_lat_start = 1.0
+                    diff_lng_start = 1.0
+                    diff_lat_end = 1.0
+                    diff_lng_end = 1.0
+
+                    # Find stopid by matching lat and lng
+                    for stop in bus_stops['results']:
+                        if (diff_lat_start > abs(float(stop['latitude']) - lat_start)) and (diff_lng_start > abs(float(stop['longitude']) - lng_start)):
+                            start_stop_id = stop['stopid']
+                            diff_lat_start = abs(float(stop['latitude']) - lat_start)
+                            diff_lng_start = abs(float(stop['longitude']) - lng_start)
+
+                        elif (diff_lat_end > abs(float(stop['latitude']) - lat_end)) and (diff_lng_end > abs(float(stop['longitude']) - lng_end)):
+                            end_stop_id = stop['stopid']
+                            diff_lat_end = abs(float(stop['latitude']) - lat_end)
+                            diff_lng_end = abs(float(stop['longitude']) - lng_end)
+
+                    print(start_stop_id, end_stop_id)
 
                     # Get model
                     # If no model found, keep original value
