@@ -29,22 +29,9 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-1">
+        <br>
+    
             
-
-            <span class="sr-only">Please select for Screen Reader Compatibility</span>
-
-
-
-            <hover title="Accessibility Page For Visually Impared">
-                <a class="action" href="/accessibility">
-                    <i class = "glyphicon glyphicon-search">
-                    </i>
-
-                </a>
-            </hover>
-        </div>
-
         <form action="/onthego/formdata" method="get" id="onthego_form">
             <div class="col-sm-3">
                 <div class="form-group">
@@ -80,6 +67,24 @@
             </div>
 
         </form>
+        
+              <div class="col-sm-1">
+            
+
+            <span class="sr-only">Please select for Screen Reader Compatibility</span>
+
+
+
+            <hover title="Accessibility Page For Visually Impared">
+                <a class="action" href="/accessibility"> 
+                    <i class = "glyphicon glyphicon-search"> <br> 
+                    </i>
+
+                </a>
+            </hover>
+        </div>
+        
+        
     </div>
 
     <!-- the response rendered by back end Django will be inserted here by jQuery AJAX call -->
@@ -90,10 +95,8 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <img  src="{% static 'images/logo.png'%}" alt="Dublin Bus Logo">
-
-               
-                <p> Click To Select Your Mood</p>
+        
+                <p> Click to select your mood </p> 
 
                 <!-- <p>Current time: {{ serverTime }}</p> -->
 
