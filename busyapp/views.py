@@ -420,6 +420,9 @@ def plannerform(request):
             timeVar = timeVar.strftime("%H:%M")
 
 
+
+
+
                 # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'response.html', {'persona': 'planner',
                                                      'busNum': busNum.upper(),
@@ -446,7 +449,7 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
                      "stopid="+stop_id+"&routeid="+route_id+"&format=json")
     if r.status_code == requests.codes.ok:
         data = json.loads(r.content)
-        day = date.weekday()
+        day = date.weekday() # Weekday in number form
 
         # Find timetable for Monday to Friday (This is a join of Monday-Sunday and Monday-Friday)
         if day>=0 and day<=4:
@@ -687,22 +690,22 @@ def plannerform_loadtest(request):
             # Fetch the right model
             ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, weekdayIndex=datetime.datetime.today().weekday())
 
-            if ann_improved is None:  # Model could not be retreived
+            if ann_improved is None:  # Model could not be retrieved
                 # server side rendering - replace with AJAX for client side rendering in the future
                 errorMSG = "Oops something went wrong :/"
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
                 errorMSG3 = "Please check your inputs and try again."
                 return render(request, 'response.html', {'persona': 'planner',
-                                                         'busNum': busNum,
-                                                         'from': fromVar,
-                                                         'to': toVar,
-                                                         'journeyTime': errorMSG,
-                                                         'cost': errorMSG2,
-                                                         'bestStartTime': errorMSG3,
-                                                         'date': dateVar,
-                                                         'time': timeVar,
-                                                         'error': 1}) #Error code > 0 means something bad happened...
+                                                            'busNum': busNum.upper(),
+                                                            'from': fromVar,
+                                                            'to': toVar,
+                                                            'journeyTime': errorMSG,
+                                                            'cost': errorMSG2,
+                                                            'bestStartTime': errorMSG3,
+                                                           'date': dateVar,
+                                                           'time': timeVar,
+                                                            'error': 1}) #Error code > 0 means something bad happened...
 
             # Retrieve events
             date = datetime.datetime.strftime(dateVar, "%Y-%m-%d")
@@ -729,64 +732,85 @@ def plannerform_loadtest(request):
             journeyTime = {'h': 0, 'm': 0, 's': 0}
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
-            journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
+            journeyTime['h'], journeyTime['m'],journeyTime['s'] = int(journeyTime['h']), int(journeyTime['m']),int(journeyTime['s'])
+              # get rid of trailing floating point for seconds.
+            #journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
 
 
-            bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
+            #bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
 
             # Find best time to travel
 
-            timeStart = time_of_day - 3600
-            quickestTime = np.inf
-            for x in range(13):
-                # Add 10min (600s) every iteration
-                time = timeStart + 600*x
-                journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
-                                                            start_stop=start_stop,
-                                                            end_stop=end_stop,
-                                                            time_of_day=time,
-                                                            weatherCode=weather,
-                                                            secondary_school=secondary_term,
-                                                            primary_school=primary_term,
-                                                            trinity=trinity,
-                                                            ucd=ucd,
-                                                            bank_holiday=bank_holiday,
-                                                            event=event,
-                                                            day_of_year=dayOfYear,
-                                                            weekday=weekDay,
-                                                            delay=0)
-                if journeyTimeSecondsB < quickestTime:
-                    quickestTime = journeyTimeSecondsB
-                    bestTime = time
+            bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
 
-            if bestTime == time_of_day:
-                timeNorm = "You have chosen the quickest time to travel in this period"
-                journeyTimeB = ''
+            # Set quickest time to inf so comparison is valid at first run
+            # Timetables return None if there are no buses. Need to check for this
+            if bus_timetable_seconds != None:
+                quickestTime = np.inf
+                for i in range(len(bus_timetable_seconds)):
+                    # Only take values that are within 1 hour of time.
+                    if bus_timetable_seconds[i] <= time_of_day-3600 or bus_timetable_seconds[i] >= time_of_day+3600:
+                        continue
+
+                    journeyTimeSecondsB = predictor_ann_improved(ann_improved=ann_improved,
+                                                                start_stop=start_stop,
+                                                                end_stop=end_stop,
+                                                                time_of_day=bus_timetable_seconds[i],
+                                                                weatherCode=weather,
+                                                                secondary_school=secondary_term,
+                                                                primary_school=primary_term,
+                                                                trinity=trinity,
+                                                                ucd=ucd,
+                                                                bank_holiday=bank_holiday,
+                                                                event=event,
+                                                                day_of_year=dayOfYear,
+                                                                weekday=weekDay,
+                                                                delay=0)
+                    # Compare to see if journey is the quickest
+                    if journeyTimeSecondsB < quickestTime:
+                        quickestTime = journeyTimeSecondsB
+                        bestTime = bus_timetable[i][:-3]
+
+
+                # If best time is 20% or greater than 5 minutes quicker suggest time.
+                if (quickestTime <= (journeyTimeSeconds*0.8) or (journeyTimeSeconds-quickestTime) > 300) and journeyTimeSeconds-quickestTime>60:
+                    # If time is over an hour
+                    if quickestTime/3600>1:
+                        quickestTime = str(int(quickestTime/3600)) + "hrs"+str(int((quickestTime%3600) / 60)) + " mins"
+                    # If time is in minutes
+                    elif quickestTime/60>1:
+                        quickestTime = str(int(quickestTime/60)) + " minutes"
+                    else:
+                        quickestTime = str(int(quickestTime)) + " seconds"
+                else:
+                    quickestTime = None
+                    bestTime = "You have chosen the quickest time to travel in this period"
 
             else:
-                timeNorm = str(datetime.timedelta(seconds=bestTime))
-                journeyTimeB = {'h': 0, 'm': 0, 's': 0}
-                journeyTimeB['m'], journeyTimeB['s'] = divmod(quickestTime, 60)
-                journeyTimeB['h'], journeyTimeB['m'] = divmod(journeyTimeB['m'], 60)
-                journeyTimeB['s'] = round(journeyTimeB['s'])  # get rid of trailing floating point for seconds.
+                quickestTime = None
+                bestTime = "There are no buses at this time"
 
-            bus_timetable = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
+            if bus_timetable != None:
+                leaveTime = bus_timetable[index][:-3]
+            else:
+                leaveTime = None
+
+            # Get time in standard 24hr format
+            timeVar = timeVar.strftime("%H:%M")
 
 
                 # server side rendering - replace with AJAX for client side rendering in the future
             return render(request, 'response.html', {'persona': 'planner',
-                                                     'busNum': busNum,
-                                                     'from': fromVar,
-                                                     'to': toVar,
-                                                     'journeyTime': journeyTime,
-                                                     # 'cost' : cost,
-                                                     # 'bestStartTime' : bestStartTime})
-                                                     'leave_time': bus_timetable,
-                                                     'bestStartTime': timeNorm,
-                                                     'bestJourneyTime': journeyTimeB,
-                                                     'date': dateVar,
-                                                     'time': timeVar,
-                                                     'error': 0})  # 0 means everything good
+                                                     'busNum': busNum.upper(),
+                                                    'from': fromVar,
+                                                    'to': toVar,
+                                                    'journeyTime': journeyTime,
+                                                    'leave_time': leaveTime,
+                                                    'bestStartTime': bestTime,
+                                                    'bestJourneyTime': quickestTime,
+                                                   'date': dateVar,
+                                                   'time': timeVar,
+                                                    'error': 0})  # 0 means everything good
 
         else:
-            return HttpResponse("Oops! Form invalid :/ Try again?")
+            return HttpResponse("Oops! Form invalid :/ Try again?" + form.cleaned_data['time_var'])

@@ -22,14 +22,15 @@
 
 .glyphicon {
     color:black;
-  position:relative;
-  top:10px;
+  position:inherit;
+  top:30px;
   display:inline-block;
+
     font-size:20px;
   font-family:'Glyphicons Halflings';
   font-style:normal;
   font-weight:400;
-  line-height:1;
+  line-height:2;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
@@ -39,18 +40,6 @@
 -webkit-transform: scale(1.2); 
 
 }
-
-.glyphicons .glyphicons-ear {  
-    color:black;
-  position:relative;
-  top:1px;
-  display:inline-block;
-    font-size:20px;
-  font-family:'Glyphicons Halflings';
-  font-style:normal;
-  font-weight:400;
-  line-height:1;}
-
 
 
 .access {
