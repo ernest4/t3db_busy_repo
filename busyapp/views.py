@@ -5,11 +5,11 @@ import requests
 import numpy as np
 import os
 import datetime
-import json
 import pytz
 import csv
 import json
-import sys
+import googlemaps
+import urllib
 
 from .forms import OnTheGoForm, PlannerForm, TouristForm
 from .ml import predictor_ann_improved
@@ -61,6 +61,8 @@ def routeInfo(request):
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
 
+
+# Function to retrieve bus stops for frontend
 def busStops(request):
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac")
     if r.status_code == requests.codes.ok:
@@ -74,6 +76,21 @@ def busStops(request):
         with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
             return HttpResponse(file.read())
 
+
+# Function to retrieve bus stops for backend
+def busStops():
+    url = "https://data.dublinked.ie/cgi-bin/rtpi/busstopinformation?format=json&operator=bac"
+
+    try:
+        response = urllib.urlopen(url)
+        return json.loads(response.read())
+
+    # If API fails, use local file
+    except:
+        with open(STATIC_ROOT+'/bus_data/busstopinformation.json', 'r', encoding="utf8") as file:
+            return json.load(file)
+
+
 #function to return Google Directions API query results for the map
 def directions(request):
     params = request.GET;
@@ -85,6 +102,7 @@ def directions(request):
                              'key': os.environ.get('DIRECTIONS_API')})
     if r.status_code == requests.codes.ok:
         return HttpResponse(r.text)
+
 
 #function to return RTPI query results for Bus Stop Autosuggests
 def busStopAutosuggest(request):
@@ -269,7 +287,7 @@ def plannerform(request):
         # print(form['busnum_var'].value())
         # print(form.data['busnum_var'])
 
-        #Prefered way of handling forms, validate first before using.
+        #Preferred way of handling forms, validate first before using.
         if form.is_valid():
             busNum = form.cleaned_data['busnum_var']
             fromVar = form.cleaned_data['from_var']
@@ -475,37 +493,166 @@ def getTimetableInfo(stop_id, route_id, day_time, date):
         return None, None, None
 
 
-
-
-
-
-
 def touristform(request):
+
     if request.method == 'GET':
         form = TouristForm(request.GET)
 
-        #Prefered way of handling forms, validate first before using.
+        # Prefered way of handling forms, validate first before using.
         if form.is_valid():
             fromVar = form.cleaned_data['from_var_ex'].split(',')[0]
             toVar = form.cleaned_data['to_var_ex'].split(',')[0]
             dateVar = form.cleaned_data['date_var_ex']
+            timeVar = form.cleaned_data['time_var_ex']
+
+            # Get timestamp in seconds for Google directions request
+            whenVar = int(datetime.datetime(dateVar.year, dateVar.month, dateVar.day, timeVar.hour, timeVar.minute, timeVar.second, tzinfo=datetime.timezone.utc).timestamp()) - 3600
+           
+            # Get Google directions API
+            # Package: https://github.com/googlemaps/google-maps-services-python
+            gmaps = googlemaps.Client(key=os.environ.get('DIRECTIONS_API'))
+
+            # Request directions via public transit and fewer transfers
+            directions_result = gmaps.directions(fromVar,
+                                    toVar,
+                                    departure_time=whenVar,
+                                    mode="transit",
+                                    transit_mode="bus",
+                                    transit_routing_preference="fewer_transfers")
+
+            # Get time values from directions_result
+            departure_time = directions_result[0]['legs'][0]['departure_time']['text']
+            arrival_time = directions_result[0]['legs'][0]['arrival_time']['text']
+            duration = directions_result[0]['legs'][0]['duration']['text']
+
+            # Extract steps of directions
+            steps = []
+
+            for step in directions_result[0]['legs'][0]['steps']:
+
+                # If it's a bus, store all information provided
+                # 0 instructions
+                # 1 duration
+                # 2 distance
+                # 3 bus route number
+                # 4 departure stop [lat, lng, name]
+                # 5 arrival stop [lat, lng, name]
+
+                if step['travel_mode'] == 'TRANSIT' and step['transit_details']['line']['vehicle']['type'] == 'BUS':
+
+                    #Get route, start and end stop
+                    route = step['transit_details']['line']['short_name']
+                    start_stop = step['transit_details']['departure_stop']
+                    end_stop = step['transit_details']['arrival_stop']
+
+                    # Get program numbers for start and end stop
+                    bus_stops = busStops()
+
+                    # Get lat and lng for start and end stop
+                    lat_start = start_stop['location']['lat']
+                    lng_start = start_stop['location']['lng']
+                    lat_end = end_stop['location']['lat']
+                    lng_end = end_stop['location']['lng']
+
+                    diff_lat_start = 1.0
+                    diff_lng_start = 1.0
+                    diff_lat_end = 1.0
+                    diff_lng_end = 1.0
+
+                    start_stop_id = None
+                    end_stop_id = None
+
+                    # Get stopid by matching lat and lng and find closest values
+                    for stop in bus_stops['results']:
+                        if (diff_lat_start > abs(float(stop['latitude']) - lat_start)) and (diff_lng_start > abs(float(stop['longitude']) - lng_start)):
+                            start_stop_id = stop['stopid']
+                            diff_lat_start = abs(float(stop['latitude']) - lat_start)
+                            diff_lng_start = abs(float(stop['longitude']) - lng_start)
+
+                        elif (diff_lat_end > abs(float(stop['latitude']) - lat_end)) and (diff_lng_end > abs(float(stop['longitude']) - lng_end)):
+                            end_stop_id = stop['stopid']
+                            diff_lat_end = abs(float(stop['latitude']) - lat_end)
+                            diff_lng_end = abs(float(stop['longitude']) - lng_end)
+
+                    # If stops not found, keep original value
+                    if start_stop_id is None or end_stop_id is None:
+                        pass
+                    else:   # Get model
+                        weekDay = getWeekDayBinaryArray(datetime.datetime(dateVar.year, dateVar.month, dateVar.day,
+                                                                          tzinfo=datetime.timezone.utc).weekday())
+
+                        ann_improved, start_stop_prog, end_stop_prog = getModelAndProgNum(route, start_stop_id, end_stop_id,
+                                                                                weekdayIndex=datetime.datetime.today().weekday())
+                        # If no model found, keep original value
+                        if ann_improved is None:  # Model could not be retrieved
+                            pass
+                        else:   # Compare duration with model prediction
+                            # Get values required for model prediction
+                            time_of_day = datetime.datetime(1970, 1, 1, timeVar.hour, timeVar.minute, timeVar.second,
+                                                            tzinfo=datetime.timezone.utc).timestamp()
+                            weather = getWeather(whenVar + 3600)
+
+                            date = datetime.datetime.strftime(dateVar, "%Y-%m-%d")
+                            dayEvents = events[date]
+                            secondary_term, primary_term, trinity, ucd, bank_holiday, event = dayEvents[0], dayEvents[1], \
+                                                                                              dayEvents[
+                                                                                                  2], dayEvents[3], \
+                                                                                              dayEvents[4], dayEvents[5]
+
+                            dayOfYear = (datetime.datetime(dateVar.year, dateVar.month, dateVar.day,
+                                                           tzinfo=datetime.timezone.utc)
+                                         - datetime.datetime(2018, 1, 1, 0, 0, 0,
+                                                             tzinfo=datetime.timezone.utc)).total_seconds()
+
+                            # Call the machine learning function & parse the returned seconds into hours, minutes & seconds
+                            journeyTimeSeconds = predictor_ann_improved(ann_improved=ann_improved,
+                                                                        start_stop=start_stop_prog,
+                                                                        end_stop=end_stop_prog,
+                                                                        time_of_day=time_of_day,
+                                                                        weatherCode=weather,
+                                                                        secondary_school=secondary_term,
+                                                                        primary_school=primary_term,
+                                                                        trinity=trinity,
+                                                                        ucd=ucd,
+                                                                        bank_holiday=bank_holiday,
+                                                                        event=event,
+                                                                        day_of_year=dayOfYear,
+                                                                        weekday=weekDay,
+                                                                        delay=0)  # 0 for future dates
+
+                            # If predictions available, replace original value with it
+                            journeyTimeSeconds
+
+                    try:
+                        travel_time = str(int(journeyTimeSeconds/60)) + ' mins'   # Convert to minutes
+                    except:
+                        travel_time = step['duration']['text']
+
+                    steps.append([step['html_instructions'],
+                                  travel_time,
+                                  step['distance']['text'],
+                                  step['transit_details']['line']['short_name'],
+                                  step['transit_details']['departure_stop'],
+                                  step['transit_details']['arrival_stop']])
+
+                # If step is not bus, include less details
+                else:
+                    steps.append([step['html_instructions'],
+                                  step['duration']['text'],
+                                  step['distance']['text']])
 
             # Get time in standard 24hr format
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
-
-
-            request = json.load(sys.stdin)
-            response = handle_request(request)
-
-            jsonResponse = json.dump(response, sys.stdout, indent=2)
-
 
             return render(request, 'response.html', {'persona': 'explorer',
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'date': dateVar,
                                                     'time': timeVar,
-                                                    'jsonResponse': jsonResponse,
+                                                    'departure': departure_time,
+                                                    'arrival': arrival_time,
+                                                    'duration': duration,
+                                                    'steps': steps,
                                                     'error': 0})  # 0 means everything good
         else:
             return HttpResponse("Oops! Form invalid :/ Try again?")
