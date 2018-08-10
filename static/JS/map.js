@@ -11,7 +11,7 @@ var sightsmarkers = [];
 // Create one object that contains all tourist markers
 var markerslists = [travelmarkers, Shopmarkers , activitiesmarkers , sightsmarkers,  familymarkers, outdoorsmarkers ];
 var userMarker; //User marker handle
-var boxeschecked //global var to count number of boxes checked in explore
+var boxeschecked; //global var to count number of boxes checked in explore
 
 //Loads the map
 function initMap(){
@@ -25,15 +25,6 @@ function initMap(){
 }
 
 
-
-// From the picture you posted, it say it's disabled...
-//
-// Go to Developer Console -> APIs & auth -> APIs
-//
-// Search for Geocoding and click on Google Maps Geocoding API -> Enable API. Do the same thing for Geolocating
-//
-
-
 //Makes a marker for busstops and add onlick functionality
 function addMarkers(latlong, color = "red", infowindow, infowindow_content, stopid, isUser = false){
   //create a marker
@@ -42,7 +33,6 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
         title: "Bus Stop No. " + stopid,
         draggable: false,
         map: map,
-        //icon: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
         icon: 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_'+ color +'.png'
     });
     
@@ -64,57 +54,8 @@ function addMarkers(latlong, color = "red", infowindow, infowindow_content, stop
     }
 }
 
-// Explorer map point indormation
-var travel_links = [
-       ['Dublin Airport', 53.4264513, -6.2521038],
-       ['Europecar Dublin City', 53.3484939, -6.2400041],
-       ['St Stephen\'s Green Luas', 53.3391899, -6.2635223],
-       ['Dublin Connolly Station', 53.351829, -6.2517332],
-       ['Aircoach O\'Connell Street', 53.3517839, -6.2633345]
-   ];
-var Shopping = [
-       ['Grafton Street', 53.3421532, -6.2620394],
-       ['Henry Street', 53.3493502, -6.2652141],
-       ['Dundrum Shopping Centre', 53.2874809, -6.2438303],
-       ['St Stephen\'s Green Shopping Centre', 53.3399155, -6.26479],
-       ['Powerscourt Townhouse Centre', 53.3422148, -6.2639623],
-       ['O\'Connell Street', 53.3512448, -6.2629729]
-   ];
 
-var Activities = [
-       ['AdventureRooms Dublin', 53.3494134, -6.2721929],
-       ['Incognito Escape Room', 53.3434981, -6.2833655],
-       ['Escape Boats', 53.3413279, -6.2411257],
-       ['Hop on Hop Off', 53.3505611, -6.2631577],
-       ['GoQuest Indoor Challenge Zone', 53.4007191, -6.3176467]
-   ];
-var SightSeeing = [
-       ['Trinity College Dublin', 53.3517996, -6.2699275],
-       ['Guinness Storehouse', 53.3418772, -6.2889033],
-       ['St. Patrick\'s Cathedral', 53.3395186, -6.2736707],
-       ['Temple Bar', 53.3454388, -6.2690681],
-       ['Dublin Castle', 53.3428893, -6/2696224],
-       ['Christ Church Cathedral', 53.3435162, -6.2732542],
-       ['St Stephen\'s Green', 53.3369012, -6.2619592],
-       ['City Hall', 53.3438672, -6.269369]
-   ];
-var Family = [
-       ['Dublin Zoo Phoenix Park', 53.3561967, -6.3074838],
-       ['The Ark - Temple Bar', 53.3449479, -6.2672568],
-       ['Viking Splash Tours', 53.3392812, -6.260881, 3],
-       ['Imaginosity, Dublin Children\'s Museum', 53.2774382, -6.2187599],
-       ['The Chocolate Warehouse, Dublin', 53.3148733, -6.3343803]
-   ];
-var Outdoors = [
-       ['Phoenix Park', 53.3558855, -6.3320073],
-       ['National Botanic Gardens', 53.3725525, -6.274101],
-       ['Howth', 53.3776565, -6.200751],
-       ['Graystones', 53.1450113, -6.150619],
-       ['Sandymount Strand', 53.3305784, -6.2332952]
-   ];
-
-
-// Function to create explorer markers
+// Function to create explorer markers (Tourist information)
 function addExMarkers(latlong, attraction, type , icon, infowindow, infowindow_content){
   //create a marker
 
@@ -223,20 +164,12 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
 
+    // Set up google places autocomplete for inputs in Explorer persona
     var autocompleteFrom = new google.maps.places.Autocomplete(document.getElementById('location_from_ex'), {componentRestrictions: {country: 'ie'}});
     var autocompleteTo = new google.maps.places.Autocomplete(document.getElementById('location_to_ex'), {componentRestrictions: {country: 'ie'}});
-    // This is ready to go but needs On the go input to change id name to destinationOnTheGo
-    //var autocompleteOnTheGo = new google.maps.places.Autocomplete(document.getElementById('destinationOnTheGo'));
-
 
     autocompleteFrom.bindTo('bounds', map);
     autocompleteTo.bindTo('bounds', map);
-    //autocompleteOnTheGo.bindTo('bounds', map);
-
-    // autocompleteOnTheGo.addListener('place_changed', function() {
-    //     var place = autocompleteOnTheGo.getPlace();
-    //     console.log(place);
-    // });
 
     autocompleteFrom.addListener('place_changed', function() {
         var place = autocompleteFrom.getPlace();
@@ -248,12 +181,15 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
     });
 
     //==================================================================================
+
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    //Function to process and display directions on map
     function calculateDirections(origin, destination, date_time) {
 
-        console.log("Directions function "+date_time);
+        // console.log("Directions function "+date_time);
 
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsDisplay.set('directions', null);
 
         var request = {
             origin: origin,
@@ -274,7 +210,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
-                console.log(result);
+                // console.log(result);
             } else if (status == 'NOT_FOUND') {
                 console.log("At least one of the locations could not be geocoded");
             } else if (status == 'ZERO_RESULTS') {
@@ -283,32 +219,16 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                 console.log("Issue with directions request");
             }
 
-                $.ajax({
-                    url: "../../busyapp/views.py",
-                    type: "POST",
-                    data: JSON.stringify(result),
-                    dataType: "json",
-                    success: function(result) {
-                        alert(result);
-                        console.log('sucess');
-                    },
-                    error: function(result) {
-                        console.log('error');
-                    }
-                    // error: on_request_error
-                });
-            
-            // Tried to display part of result but this didn't work
-            // document.getElementById("directions-result").innerHTML = result.routes[0].legs[0].steps[0].instructions;
+
         });
     }
 //======================================================================
 
-
+    // Function to place users location on map
     function showUserPosition(position){
       //Converts isUser position from geolocation coords to {lat: xxx, lng: xxx}
       //and add the a marker to the map.
-      //
+
       //returns converted isUser position
       let userPosition = {}
       userPosition.lat = position.coords.latitude;
@@ -324,7 +244,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       return userPosition
     }
 
-
+    // Displays the bustops around a user within a certain range
     function displayBusStopMarkersAtLocation(coords = {lat: 53.3498, lng: -6.2603}, radius = 0.01){
       //populate the markers around the isUser
       $.getJSON("/busstops", function(busData){
@@ -345,7 +265,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                                     +"<br><br>"
                                     +"<button type=\"button\" id=\"to_"+bus_stop.stopid+"\" onclick=\"toButton(this)\">To "+bus_stop.stopid+"</button>";
 
-                addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "green", infowindow, infowindow_content, bus_stop.stopid);
+                addMarkers(new google.maps.LatLng(bus_stop.latitude, bus_stop.longitude), "blue", infowindow, infowindow_content, bus_stop.stopid);
               }
         });
 
@@ -369,6 +289,8 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       });
     }
 
+
+    //MAY NOT BE USED ANYMORE??  ***********************************************************************
 
     function displayDirectionMarkers(from, to){
       //check if input is string or object and convert to string if needed
@@ -437,14 +359,23 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         //...
       });
     }
+    // ***************************************************************************************************
 
     //Displaying routes on MAP based on user input
-    // var bus_route_input = document.getElementById("bus_number");
-    // bus_route_input.addEventListener("blur", function() {
-    //     //alert('just left the input field, the bus was '+bus_route_input.value);
-    //     displayBusStopMarkersForRoute(bus_route_input.value);
-    // });
+     var bus_route_input = document.getElementById("bus_number");
+     if (bus_route_input !== null) {
+        bus_route_input.addEventListener("blur", function() {
+            //alert('just left the input field, the bus was '+bus_route_input.value);
 
+            //Remove exisiting busroute markers.... AND Local markers from function displayBusStopMarkersAtLocation
+            deleteMarkers(markers)
+
+
+            displayBusStopMarkersForRoute(bus_route_input.value);
+        });
+     }
+
+    // Display the stops along a route on the map
     function displayBusStopMarkersForRoute(route){
         //populate the markers for an input route
         $.getJSON("/routeinfo"
@@ -603,3 +534,53 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         });
 
 });
+
+
+// Explorer map point information
+var travel_links = [
+       ['Dublin Airport', 53.4264513, -6.2521038],
+       ['Europecar Dublin City', 53.3484939, -6.2400041],
+       ['St Stephen\'s Green Luas', 53.3391899, -6.2635223],
+       ['Dublin Connolly Station', 53.351829, -6.2517332],
+       ['Aircoach O\'Connell Street', 53.3517839, -6.2633345]
+   ];
+var Shopping = [
+       ['Grafton Street', 53.3421532, -6.2620394],
+       ['Henry Street', 53.3493502, -6.2652141],
+       ['Dundrum Shopping Centre', 53.2874809, -6.2438303],
+       ['St Stephen\'s Green Shopping Centre', 53.3399155, -6.26479],
+       ['Powerscourt Townhouse Centre', 53.3422148, -6.2639623],
+       ['O\'Connell Street', 53.3512448, -6.2629729]
+   ];
+
+var Activities = [
+       ['AdventureRooms Dublin', 53.3494134, -6.2721929],
+       ['Incognito Escape Room', 53.3434981, -6.2833655],
+       ['Escape Boats', 53.3413279, -6.2411257],
+       ['Hop on Hop Off', 53.3505611, -6.2631577],
+       ['GoQuest Indoor Challenge Zone', 53.4007191, -6.3176467]
+   ];
+var SightSeeing = [
+       ['Trinity College Dublin', 53.3517996, -6.2699275],
+       ['Guinness Storehouse', 53.3418772, -6.2889033],
+       ['St. Patrick\'s Cathedral', 53.3395186, -6.2736707],
+       ['Temple Bar', 53.3454388, -6.2690681],
+       ['Dublin Castle', 53.3428893, -6/2696224],
+       ['Christ Church Cathedral', 53.3435162, -6.2732542],
+       ['St Stephen\'s Green', 53.3369012, -6.2619592],
+       ['City Hall', 53.3438672, -6.269369]
+   ];
+var Family = [
+       ['Dublin Zoo Phoenix Park', 53.3561967, -6.3074838],
+       ['The Ark - Temple Bar', 53.3449479, -6.2672568],
+       ['Viking Splash Tours', 53.3392812, -6.260881, 3],
+       ['Imaginosity, Dublin Children\'s Museum', 53.2774382, -6.2187599],
+       ['The Chocolate Warehouse, Dublin', 53.3148733, -6.3343803]
+   ];
+var Outdoors = [
+       ['Phoenix Park', 53.3558855, -6.3320073],
+       ['National Botanic Gardens', 53.3725525, -6.274101],
+       ['Howth', 53.3776565, -6.200751],
+       ['Graystones', 53.1450113, -6.150619],
+       ['Sandymount Strand', 53.3305784, -6.2332952]
+   ];

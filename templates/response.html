@@ -1,5 +1,6 @@
 <br/>
     <div class="table-condensed" id="inputbox">
+
         <table class="table table-condensed">
             <thead>
             <tr>
@@ -22,7 +23,7 @@
             <tr>
                 {% if persona != 'explorer' %}
                 <td>{{ busNum }}</td>
-                {% endif %}}
+                {% endif %}
 
                 <td>{{ from }}</td>
                 <td>{{ to }}</td>
@@ -44,8 +45,9 @@
                 <span class="sr-only">Departure time</span>
                 <th>Departure</th>
                 <span class="sr-only">Duration</span>
-
                 <th>Duration</th>
+
+
 
                 {% if persona == 'planner' %}
                     {% if bestJourneyTime %}
@@ -60,16 +62,8 @@
             </thead>
             <tbody>
             <tr>
-
-                {% if persona == 'planner' %}
-
-                    <td>{{ leave_time }}</td>
-                    {% if bestJourneyTime %}
-                    <td>{{ bestStartTime }}</td>
-                    <td> {{ bestJourneyTime }}</td>
-                    {% else %}
-                    <td>{{ bestStartTime }}</td>
-                    {% endif %}
+                 {% if persona == 'planner' %}
+                <td>{{ leave_time }}</td>
                 {% endif %}
 
                 {% if persona == 'onthego' %}
@@ -87,7 +81,7 @@
 
                 {% endif %}
 
-                {% if persona == 'planner' %}
+                {% if persona != 'explorer' %}
                     {% if journeyTime.h %}
                     <td>{{ journeyTime.h }} hours, {{ journeyTime.m }} minutes</td>
 
@@ -98,6 +92,22 @@
                     <td>{{ journeyTime.s }} seconds</td>
                     {% endif %}
                 {% endif %}
+
+
+                {% if persona == 'planner' %}
+
+
+                    {% if bestJourneyTime %}
+                    <td>{{ bestStartTime }}</td>
+                    <td> {{ bestJourneyTime }}</td>
+                    {% else %}
+                    <td>{{ bestStartTime }}</td>
+                    {% endif %}
+                {% endif %}
+
+
+
+
 
             </tr>
             </tbody>
@@ -114,7 +124,7 @@
 
     </div>
 </div>
-{% endif %}}
+{% endif %}
 
 
 {% if error != 0 %}

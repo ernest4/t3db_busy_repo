@@ -216,6 +216,7 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
             if index > 5 and value is not None:
                 if value.endswith(start_stop):
                     startStopProgramNumber = index - 5
+                    print(startStopProgramNumber)
                     continue
                 if startStopProgramNumber > 0 and value.endswith(end_stop):
                     endStopProgramNumber = index - 5
@@ -226,7 +227,6 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
 
     #Get the pickle and return the values
     file = busNum + '_' + direction + '.pkl' # replace busDirection with direction when not testing
-
     if testing:
         #Running locally with command => python manage.py runserver localhost:8765
         try:
