@@ -159,7 +159,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       //Warn the user
       $("#location_alert").css({"display" : "block"});
 
-      displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
+      //displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
 
     // Set up google places autocomplete for inputs in Explorer persona
@@ -271,7 +271,7 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       }).fail(function() {
 
       console.log("Failed!!"); //for DEBUGGING
-      alert("Warnign: map markers could not load...");
+      alert("Warning: map markers could not load...");
 
       }).always(function(){
 

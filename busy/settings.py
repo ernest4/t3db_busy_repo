@@ -27,10 +27,10 @@ SECRET_KEY = "s2+ds_%7s8$sbn3^5cw)n)50l%49#qni_!p&(hgub_#s9#qhjl"
 # SECURITY WARNING: don't run with debug turned on in production!
 
 #for local testing (Django serves static files locally)
-DEBUG = True
+#DEBUG = True
 
 #for official deployement (WhiteNoise serves static files on server)
-#DEBUG = False
+DEBUG = False
 
 
 # Application definition
@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'busyapp.apps.BusyappConfig',
 ]
 
-#SECURE_SSL_REDIRECT = True
-SECURE_SSL_REDIRECT = False #FOR LOCAL TESTING, SET IT TRUE WHEN DEPLOYING FOR HTTPS TO WORK
+SECURE_SSL_REDIRECT = True
+#SECURE_SSL_REDIRECT = False #FOR LOCAL TESTING, SET IT TRUE WHEN DEPLOYING FOR HTTPS TO WORK
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
