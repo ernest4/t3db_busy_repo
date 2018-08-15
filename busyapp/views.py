@@ -481,8 +481,8 @@ def touristform(request):
 
         # Prefered way of handling forms, validate first before using.
         if form.is_valid():
-            fromVar = form.cleaned_data['from_var_ex'].replace(' ', '+')
-            toVar = form.cleaned_data['to_var_ex'].replace(' ', '+')
+            fromVar = form.cleaned_data['from_var_ex']
+            toVar = form.cleaned_data['to_var_ex']
             dateVar = form.cleaned_data['date_var_ex']
             timeVar = form.cleaned_data['time_var_ex']
 
