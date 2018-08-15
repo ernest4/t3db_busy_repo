@@ -626,8 +626,8 @@ def touristform(request):
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
 
             return render(request, 'response.html', {'persona': 'explorer',
-                                                    'from': fromVar,
-                                                    'to': toVar,
+                                                    'from': fromVar.split(',')[0],
+                                                    'to': toVar.split(',')[0],
                                                     'date': dateVar,
                                                     'time': timeVar,
                                                     'departure': departure_time,
