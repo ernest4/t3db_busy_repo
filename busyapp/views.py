@@ -135,8 +135,6 @@ def loadTest(request):
 
 
 def testView(request):
-    #r = request.GET;
-    #return render(request, 'testpage.html', {'msg1' : r['t']})
     return render(request, 'hi')
 
 
@@ -185,10 +183,6 @@ def onthegoform(request):
     if request.method == 'GET':
         form = OnTheGoForm(request.GET)
 
-        #Example of reading unvalidated form data. This may crash the app.
-        #print(form['busnum'].value())
-        #print(form.data['busnum'])
-
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
             busNum = form.cleaned_data['busnum_var']
@@ -203,8 +197,8 @@ def onthegoform(request):
             # Fetch the right model
             ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar)
 
-            if ann_improved is None:  # Model could not be retreived
-                # server side rendering - replace with AJAX for client side rendering in the future
+            if ann_improved is None:  # Model could not be retrieved
+                # server side rendering
                 errorMSG = "Oops something went wrong :/"
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
@@ -268,7 +262,6 @@ def onthegoform(request):
                                                     'from': fromVar,
                                                     'to': toVar,
                                                     'journeyTime' : journeyTime,
-                                                     #'journeyTime': journeyTimeSeconds,
                                                     'bus1': bus1,
                                                     'bus2': bus2,
                                                     'bus3': bus3,
@@ -282,10 +275,6 @@ def onthegoform(request):
 def plannerform(request):
     if request.method == 'GET':
         form = PlannerForm(request.GET)
-
-        # Example of reading unvalidated form data. This may crash the app.
-        # print(form['busnum_var'].value())
-        # print(form.data['busnum_var'])
 
         #Preferred way of handling forms, validate first before using.
         if form.is_valid():
@@ -312,7 +301,7 @@ def plannerform(request):
             ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, weekdayIndex=datetime.datetime.today().weekday())
 
             if ann_improved is None:  # Model could not be retrieved
-                # server side rendering - replace with AJAX for client side rendering in the future
+                # server side rendering
                 errorMSG = "Oops something went wrong :/"
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
@@ -354,14 +343,8 @@ def plannerform(request):
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['h'], journeyTime['m'],journeyTime['s'] = int(journeyTime['h']), int(journeyTime['m']),int(journeyTime['s'])
-              # get rid of trailing floating point for seconds.
-            #journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
-
-
-            #bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
 
             # Find best time to travel
-
             bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
 
             # Set quickest time to inf so comparison is valid at first run
@@ -423,7 +406,7 @@ def plannerform(request):
 
 
 
-                # server side rendering - replace with AJAX for client side rendering in the future
+                # server side rendering
             return render(request, 'response.html', {'persona': 'planner',
                                                      'busNum': busNum.upper(),
                                                     'from': fromVar,
@@ -443,8 +426,6 @@ def plannerform(request):
 def getTimetableInfo(stop_id, route_id, day_time, date):
 
     #day_time in seconds, date in datetime format
-
-
     r = requests.get("https://data.dublinked.ie/cgi-bin/rtpi/timetableinformation?operator=bac&type=week&"
                      "stopid="+stop_id+"&routeid="+route_id+"&format=json")
     if r.status_code == requests.codes.ok:
@@ -662,10 +643,6 @@ def plannerform_loadtest(request):
     if request.method == 'GET':
         form = PlannerForm(request.GET)
 
-        # Example of reading unvalidated form data. This may crash the app.
-        # print(form['busnum_var'].value())
-        # print(form.data['busnum_var'])
-
         #Prefered way of handling forms, validate first before using.
         if form.is_valid():
             busNum = form.cleaned_data['busnum_var']
@@ -691,7 +668,7 @@ def plannerform_loadtest(request):
             ann_improved, start_stop, end_stop = getModelAndProgNum(busNum, fromVar, toVar, weekdayIndex=datetime.datetime.today().weekday())
 
             if ann_improved is None:  # Model could not be retrieved
-                # server side rendering - replace with AJAX for client side rendering in the future
+                # server side rendering
                 errorMSG = "Oops something went wrong :/"
                 errorMSG2 = "The combination of route and stops you have entered may not be valid \
                             and/or may not be in service on this particular weekday."
@@ -733,14 +710,8 @@ def plannerform_loadtest(request):
             journeyTime['m'], journeyTime['s'] = divmod(journeyTimeSeconds, 60)
             journeyTime['h'], journeyTime['m'] = divmod(journeyTime['m'], 60)
             journeyTime['h'], journeyTime['m'],journeyTime['s'] = int(journeyTime['h']), int(journeyTime['m']),int(journeyTime['s'])
-              # get rid of trailing floating point for seconds.
-            #journeyTime['s'] = round(journeyTime['s'])  # get rid of trailing floating point for seconds.
-
-
-            #bestStartTime = datetime.datetime.now() + datetime.timedelta(minutes=60)  # note 1h addition for linux servers
 
             # Find best time to travel
-
             bus_timetable_seconds, bus_timetable, index = getTimetableInfo(fromVar, busNum, time_of_day, dateVar)
 
             # Set quickest time to inf so comparison is valid at first run
@@ -799,7 +770,7 @@ def plannerform_loadtest(request):
             timeVar = timeVar.strftime("%H:%M")
 
 
-                # server side rendering - replace with AJAX for client side rendering in the future
+                # server side rendering
             return render(request, 'response.html', {'persona': 'planner',
                                                      'busNum': busNum.upper(),
                                                     'from': fromVar,

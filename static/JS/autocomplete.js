@@ -13,20 +13,16 @@ $("#destination").each(function(){     //#location_from,#location_to,
             var availableTags = [];
 
             var to_input = request.term; //This is the user input
-            //console.log(to_input); //DEBUGGING
 
             $.getJSON( "/autocomp" + "?format=json&operator=bac&stopname="+to_input, function(data) {
 
                 _.forEach(data.results, function(busStops){
-                    //availableTags.push(busStops.stopid+" "+busStops.fullname );
                     availableTags.push({ label: busStops.fullname+" "+busStops.stopid, value: busStops.latitude+","+busStops.longitude });
                 });
-
-                //console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
-                console.log("got autosuggest data");
+                //
             }).fail(function(){
                 alert("failed autosuggest");
             }).always(function(){
@@ -45,7 +41,6 @@ $("#destination").each(function(){     //#location_from,#location_to,
             var availableTags = [];
 
             var bus_num_input = request.term; //This is the user input
-            // console.log(bus_num_input); //DEBUGGING
 
             $.getJSON( "/autocomp/routes", function(data) {
 
@@ -56,12 +51,10 @@ $("#destination").each(function(){     //#location_from,#location_to,
                         availableTags.push({label: busRoute, value: busRoute});
                     }
                 });
-
-                // console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
-                // console.log("got autosuggest data");
+                //
             }).fail(function(){
                 alert("failed autosuggest");
             }).always(function(){
@@ -81,7 +74,6 @@ $("#destination").each(function(){     //#location_from,#location_to,
             var availableTags = [];
 
             var to_input = request.term; //This is the user input
-            //console.log(to_input); //DEBUGGING
 
             var routeList = [];  // To store all routes of a stop in loop below
 
@@ -101,12 +93,10 @@ $("#destination").each(function(){     //#location_from,#location_to,
                         availableTags.push({label: busStops.fullname + " " + busStops.stopid, value: busStops.stopid});
                     }
                 });
-
-                // console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
-                console.log("got autosuggest data");
+                //
             }).fail(function(){
                 alert("failed autosuggest");
             }).always(function(){
@@ -126,7 +116,6 @@ $("#destination").each(function(){     //#location_from,#location_to,
             var availableTags = [];
 
             var to_input = request.term; //This is the user input
-            //console.log(to_input); //DEBUGGING
 
             var routeList = [];  // To store all routes of a stop in loop below
 
@@ -146,12 +135,10 @@ $("#destination").each(function(){     //#location_from,#location_to,
                         availableTags.push({label: busStops.fullname + " " + busStops.stopid, value: busStops.stopid});
                     }
                 });
-
-                // console.log(availableTags); //DEBUGGING
                 response(availableTags);
 
             }).done(function(){
-                console.log("got autosuggest data");
+                //
             }).fail(function(){
                 alert("failed autosuggest");
             }).always(function(){

@@ -110,26 +110,18 @@ function deleteMarkers(markerArray){
 
 //Responds to onclick event when from button is clicked on a marker
 function fromButton(element){
-    console.log(element.id.slice(5)); //Extract the bus number e.g. "from_623" -> "623"
-    console.log(element.innerHTML);
-
     document.getElementById('location_from').value = element.id.slice(5); //Populate a form field
 }
 
 
 //Responds to onclick event when to button is clicked on a marker
 function toButton(element){
-    console.log(element.id.slice(3)); //Extract the bus number e.g. "to_623" -> "623"
-    console.log(element.innerHTML);
-
     document.getElementById('location_to').value = element.id.slice(3); //Populate a form field
 }
 
 
 //Populate the map with information & markers
 $( window ).on( "load", function() { //When DOM & other resources all loaded and ready...
-    console.log( "Page ready!!" ); //FOR DEBUGGING
-
     var infowindow = new google.maps.InfoWindow(); //Common infowindow handle for all infowindows
 
     var errorMSG_1 = document.getElementById("error_message_1"); //FOR DEBUGGING
@@ -138,28 +130,20 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
     //Get the isUser location
     if (navigator && navigator.geolocation) {
-      console.log("Got location");
-
       navigator.geolocation.getCurrentPosition(gotPosition, failedToGetPosition);
     } else { 
-      console.log("Failed to get location, Geolocation unavailable");
+      //
     }
 
 
     function gotPosition(position) { //success
       userPosition = showUserPosition(position);
-      //displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
-      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988});
     }
 
 
     function failedToGetPosition(error){
-      console.log("Error code:" + error.code + ", " + "Error message: " + error.message);
-
       //Warn the user
       $("#location_alert").css({"display" : "block"});
-
-      //displayBusStopMarkersAtLocation(userPosition, 0.01); //0.01 is ~ 1km
     }
 
     // Set up google places autocomplete for inputs in Explorer persona
@@ -171,11 +155,9 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
     autocompleteFrom.addListener('place_changed', function() {
         var place = autocompleteFrom.getPlace();
-        // console.log(place);
     });
     autocompleteTo.addListener('place_changed', function() {
         var place = autocompleteTo.getPlace();
-        // console.log(place);
     });
 
     var directionsService = new google.maps.DirectionsService;
@@ -183,9 +165,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
     //Function to process and display directions on map
 
     function calculateDirections(origin, destination, date_time) {
-
-        // console.log("Directions function "+date_time);
-
         directionsDisplay.set('directions', null);
 
         var request = {
@@ -204,13 +183,12 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
             if (status == 'OK') {
                 directionsDisplay.setDirections(result);
-                // console.log(result);
             } else if (status == 'NOT_FOUND') {
-                console.log("At least one of the locations could not be geocoded");
+                //
             } else if (status == 'ZERO_RESULTS') {
-                console.log("No results found");
+                //
             } else {
-                console.log("Issue with directions request");
+                //
             }
         });
     }
@@ -230,8 +208,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       addMarkers(new google.maps.LatLng(userPosition.lat, userPosition.lng), "red", infowindow, infowindow_content, "You Are Here", true);
       map.panTo({lat: userPosition.lat, lng: userPosition.lng});
 
-      //errorMSG_2.innerHTML += "Latitude: " + userPosition.lat + "<br>Longitude: " + userPosition.lng; //FOR DEBUGGING...
-
       return userPosition
     }
 
@@ -241,7 +217,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       $.getJSON("/busstops", function(busData){
 
           _.forEach(busData.results, function(bus_stop){
-              //console.log(bus_stop.operators[0].routes);
 
               if (bus_stop.latitude < (coords.lat + radius) && bus_stop.latitude > (coords.lat - radius)
               && bus_stop.longitude < (coords.lng + radius) && bus_stop.longitude > (coords.lng - radius)){
@@ -261,22 +236,11 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         });
 
       }).done(function() {
-
-      console.log("Done!!"); //for DEBUGGING
-
-      //var markerCluster = new MarkerClusterer(map, markers, {
-      //    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-      //});
-
+        //
       }).fail(function() {
-
-      console.log("Failed!!"); //for DEBUGGING
-      alert("Warning: map markers could not load...");
-
+        //
       }).always(function(){
-
-      console.log("Always...!"); //for DEBGUGGING
-
+        //
       });
     }
 
@@ -294,15 +258,11 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                 +"&mode="+"transit"
                 +"&transit_mode="+"bus", function(directionsData){
 
-        console.log(directionsData.routes[0].legs[0].steps); //DEBUGGING
-
         let index = 0; //keep track of which step along the route we are on...
         let markerColor = "blue"; //Blue is bus, Yellow is walking, Red is the user starting location.
 
         _.forEach(directionsData.routes[0].legs[0].steps, function(step){
           index++;
-
-          console.log(step); //FOR DEBUGGING
 
           if (step.travel_mode === "TRANSIT") { //must be bus...
             markerColor = "blue";
@@ -321,9 +281,8 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
           if (index == 1) { //First marker is the user starting location, make it red & remove the initial user marker...
             markerColor = "red";
             deleteMarkers([userMarker]);
-            //addMarkers(new google.maps.LatLng(step.start_location), "red", infowindow, infowindow_content, step.html_instructions);
           } else { //2nd and further markers are directional waypoints - make them yellow...
-            //addMarkers(new google.maps.LatLng(step.start_location), "yellow", infowindow, infowindow_content, step.html_instructions);
+            //
           }
 
           //Add route markers
@@ -337,15 +296,14 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         let to_obj = {}
         to_obj.lat = parseFloat(to.split(',')[0]);
         to_obj.lng = parseFloat(to.split(',')[1]);
-        //console.log(to_obj); //DEBUGGING
         markerColor = "red";
         var infowindow_content = "<b>["+index+"]Destination</b>";
         addMarkers(new google.maps.LatLng(to_obj), markerColor, infowindow, infowindow_content, "");
 
       }).done(function(){
-        console.log("Got directions data...");
+        //
       }).fail(function(){
-        console.log("Failed to get directions data...");
+        //
       }).always(function(){
         //...
       });
@@ -356,12 +314,8 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
      var bus_route_input = document.getElementById("bus_number");
      if (bus_route_input !== null) {
         bus_route_input.addEventListener("blur", function() {
-            //alert('just left the input field, the bus was '+bus_route_input.value);
-
             //Remove exisiting busroute markers.... AND Local markers from function displayBusStopMarkersAtLocation
             deleteMarkers(markers)
-
-
             displayBusStopMarkersForRoute(bus_route_input.value);
         });
      }
@@ -381,17 +335,12 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                 if (bus_route.stops.length > lastLargestSubRoute) {
                     lastLargestSubRoute = bus_route.stops.length;
                 }
-                console.log(bus_route.stops.length); //DEBUGGING
           });
-
-          console.log("Largest sub route: "+lastLargestSubRoute);
 
           _.forEach(busData.results, function(bus_route){
 
             //Second pass display the largest sub route only
             if (bus_route.stops.length == lastLargestSubRoute) {
-                console.log(bus_route.stops.length); //DEBUGGING
-
                 _.forEach(bus_route.stops, function(bus_stop){
                     let infowindow_content = "<b>Bus Stop No: </b>"+bus_stop.stopid
                                     +"<br><br>"
@@ -411,37 +360,18 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
                         bounds.extend(markers[i].getPosition());
                     }
 
-
-                    // map.setCenter(bounds.getCenter());
                     map.setCenter(bounds.getCenter());
                     map.fitBounds(bounds);
-
-                    // map.fitBounds(bounds);
-                    // map.panToBounds(bounds);
-
-                    // map.setZoom(map.getZoom()-1);
-
                 })
             }
       });
   
         }).done(function() {
-  
-        console.log("Done!!"); //for DEBUGING
-  
-        //var markerCluster = new MarkerClusterer(map, markers, {
-        //    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-        //});
-  
+            //
         }).fail(function() {
-  
-        console.log("Failed!!"); //for DEBUGING
-        alert("Warnign: map markers could not load...");
-  
+            //
         }).always(function(){
-  
-        console.log("Always...!"); //for DEBUGING
-  
+            //
         });
       }
 
@@ -463,8 +393,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
 
     //set the directions button callback...
     $( '#directionsButton' ).click(function(){
-      //displayDirectionMarkers(userPosition, {lat: 53.338331, lng: -6.2854988}); //53.338331,-6.2854988
-      //console.log(typeof $('#destination').val());
       deleteMarkers(markers); //clear current direction markers
 
       let destination = $('#destination').val();

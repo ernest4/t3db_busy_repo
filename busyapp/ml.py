@@ -47,7 +47,6 @@ def getWeather(timeStamp: int = None):
 
                 futureWeatherCodes = {} #Empty the dictionary
                 for row in weatherData['list']:
-                    #print(row['dt'],':',row['weather'][0]['id']) #FOR TESTING
                     #Update the cache
                     futureWeatherCodes[row['dt']] = row['weather'][0]['id']
 
@@ -61,7 +60,6 @@ def getWeather(timeStamp: int = None):
     def getCachedFutureWeather(timeStamp: int = None):
         index = 0
         for key_dt in futureWeatherCodes:
-            #print(key_dt, futureWeatherCodes[key_dt])
             if index > 0:
                 next_dt = key_dt
                 if timeStamp < next_dt:
@@ -216,7 +214,6 @@ def getModelAndProgNum(busNum: str, start_stop: int, end_stop: int, weekdayIndex
             if index > 5 and value is not None:
                 if value.endswith(start_stop):
                     startStopProgramNumber = index - 5
-                    print(startStopProgramNumber)
                     continue
                 if startStopProgramNumber > 0 and value.endswith(end_stop):
                     endStopProgramNumber = index - 5
