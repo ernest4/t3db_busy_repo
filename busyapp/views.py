@@ -310,9 +310,9 @@ def plannerform(request):
                                                             'busNum': busNum.upper(),
                                                             'from': fromVar,
                                                             'to': toVar,
-                                                            'journeyTime': errorMSG,
-                                                            'cost': errorMSG2,
-                                                            'bestStartTime': errorMSG3,
+                                                            'error_1': errorMSG,
+                                                            'error_2': errorMSG2,
+                                                            'error_3': errorMSG3,
                                                            'date': dateVar,
                                                            'time': timeVar,
                                                             'error': 1}) #Error code > 0 means something bad happened...
