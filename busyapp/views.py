@@ -481,8 +481,8 @@ def touristform(request):
 
         # Prefered way of handling forms, validate first before using.
         if form.is_valid():
-            fromVar = form.cleaned_data['from_var_ex'].split(',')[0]
-            toVar = form.cleaned_data['to_var_ex'].split(',')[0]
+            fromVar = form.cleaned_data['from_var_ex'].replace(' ', '+')
+            toVar = form.cleaned_data['to_var_ex'].replace(' ', '+')
             dateVar = form.cleaned_data['date_var_ex']
             timeVar = form.cleaned_data['time_var_ex']
 
@@ -625,9 +625,12 @@ def touristform(request):
             # Get time in standard 24hr format
             timeVar = form.cleaned_data['time_var_ex'].strftime("%H:%M")
 
+            fromVar = fromVar.replace('+', ' ')
+            toVar = toVar.replace('+', ' ')
+
             return render(request, 'response.html', {'persona': 'explorer',
-                                                    'from': fromVar,
-                                                    'to': toVar,
+                                                    'from': fromVar.split(',')[0],
+                                                    'to': toVar.split(',')[0],
                                                     'date': dateVar,
                                                     'time': timeVar,
                                                     'departure': departure_time,
