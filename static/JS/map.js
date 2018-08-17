@@ -244,9 +244,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
       });
     }
 
-
-    //MAY NOT BE USED ANYMORE??  ***********************************************************************
-
     function displayDirectionMarkers(from, to){
       //check if input is string or object and convert to string if needed
       let origin = typeof from === "string" ? from : from.lat+","+from.lng;
@@ -308,7 +305,6 @@ $( window ).on( "load", function() { //When DOM & other resources all loaded and
         //...
       });
     }
-    // ***************************************************************************************************
 
     //Displaying routes on MAP based on user input
      var bus_route_input = document.getElementById("bus_number");
