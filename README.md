@@ -24,7 +24,7 @@ Go to t3db_busy_repo. To run the application from the terminal (note, you need t
 
     heroku local -p 8765
 
-And open it in the browser at [http://127.0.0.1:8765/](http://127.0.0.1:8765/).
+And open it in the browser at [http://localhost:8765/](http://localhost:8765/).
 
 
 ## Built With
