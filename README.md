@@ -20,7 +20,7 @@ For example, on Ubuntu:
 
         git clone https://github.com/ernest4/t3db_busy_repo.git
         
-Go to t3db_busy_repo. To run the application from the terminal:
+Go to t3db_busy_repo. To run the application from the terminal (note, you need to have [https://devcenter.heroku.com/articles/heroku-cli](Heroku CLI) installed):
 
     heroku local -p 8765
 
@@ -48,6 +48,6 @@ And open it in the browser at [http://127.0.0.1:8765/](http://127.0.0.1:8765/).
 
 * **Julia Boes** - [GitHub](https://github.com/FrauBoes)
 * **Daragh O'Farrell** - [GitHub](https://github.com/Basschops)
-* **ernestas monkevičius** - [GitHub](https://github.com/ernest4)
+* **Ernestas Monkevičius** - [GitHub](https://github.com/ernest4)
 * **Jonathan Leon** - [GitHub](https://github.com/jonnyleon1)
 
