@@ -18,7 +18,7 @@ For example, on Ubuntu:
 
 ## Quick Start
 
-        git clone https://github.com/ernest4/t3db_busy_repo.git
+    git clone https://github.com/ernest4/t3db_busy_repo.git
         
 Go to t3db_busy_repo. To run the application from the terminal (note, you need to have [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed):
 
