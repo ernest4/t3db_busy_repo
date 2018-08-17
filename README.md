@@ -1,49 +1,53 @@
-# Heroku Django Starter Template
+# Dublin Busy
 
-An utterly fantastic project starter template for Django 2.0.
+Web application for Dublin Bus journey time predictions as developed by T3DB
 
-## Features
-
-- Production-ready configuration for Static Files, Database Settings, Gunicorn, etc.
-- Enhancements to Django's static file serving functionality via WhiteNoise.
-- Latest Python 3.6 runtime environment.
-
-## How to Use
-
-To use this project, follow these steps:
-
-1. Create your working environment.
-2. Install Django (`$ pipenv install django`)
-3. Create a new project using this template
-
-## Creating Your Project
-
-Using this template to create a new Django app is easy::
-
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
-
-(If this doesn't work on windows, replace `django-admin.py` with `django-admin`)
-
-You can replace ``helloworld`` with your desired project name.
-
-## Deployment to Heroku
-
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
-
-    $ heroku create
-    $ git push heroku master
-
-    $ heroku run python manage.py migrate
-
-See also, a [ready-made application](https://github.com/heroku/python-getting-started), ready to deploy.
+Available from www.dublinbusy.com
 
 
-## License: MIT
+## Prerequisites
 
-## Further Reading
+The application is built to be used with Python 3. Update `Makefile` to switch to Python 2 if needed.
 
-- [Gunicorn](https://warehouse.python.org/project/gunicorn/)
-- [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
-- [dj-database-url](https://warehouse.python.org/project/dj-database-url/)
+Some Flask dependencies are compiled during installation, so `gcc` and Python header files need to be present.
+For example, on Ubuntu:
+
+    apt install build-essential python3-dev
+    pip install virtualenv
+
+
+## Quick Start
+
+        git clone https://github.com/ernest4/t3db_busy_repo.git
+        
+Go to t3db_busy_repo. To run the application from the terminal:
+
+    heroku local -p 8765
+
+And open it in the browser at [http://127.0.0.1:8765/](http://127.0.0.1:8765/).
+
+
+## Built With
+
+* [heroku](https://heroku.com) - Heroku (PaaS) that enables developers to build, run, and operate applications entirely in the cloud.
+* [Django](http://flask.pocoo.org/) - The web framework used
+* [jQuery](https://jquery.com/) - JavaScript library
+* [Bootstrap](https://getbootstrap.com/) - Front-end library
+* [Google Maps](https://developers.google.com/maps/) - Real-time information for mapping and navigation
+* [Jupyter Notebook](http://jupyter.org/) - Web application used for data analysis
+* [Hotjar](http://hotjar.com/) - Web application used for heat mapping user experience
+
+
+## Data Used
+
+* [RTPI data](https://smartdublin.ie/smartstories/real-time-passenger-information/ ) - Historic planned and actual bus arrival times.
+* [OpenWeatherMap](https://openweathermap.org/history-bulk) - History Bulk Weather Data.
+* [OpenWeatherMap](https://openweathermap.org/current) - Current Weather Data.
+
+## Authors
+
+* **Julia Boes** - [GitHub](https://github.com/FrauBoes)
+* **Daragh O'Farrell** - [GitHub](https://github.com/Basschops)
+* **ernestas monkevičius** - [GitHub](https://github.com/ernest4)
+* **Jonathan Leon** - [GitHub](https://github.com/jonnyleon1)
+
