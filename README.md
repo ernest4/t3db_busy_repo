@@ -40,9 +40,11 @@ And open it in the browser at [http://localhost:8765/](http://localhost:8765/).
 
 ## Data Used
 
-* [RTPI data](https://smartdublin.ie/smartstories/real-time-passenger-information/ ) - Historic planned and actual bus arrival times.
+* [RTPI](https://smartdublin.ie/smartstories/real-time-passenger-information/ ) - Historic planned and actual bus arrival times.
 * [OpenWeatherMap](https://openweathermap.org/history-bulk) - History Bulk Weather Data.
 * [OpenWeatherMap](https://openweathermap.org/current) - Current Weather Data.
+* [GTFS](https://developers.google.com/transit/gtfs/) - Google Transit Feed Specification
+* [Dublin Bus](https://www.dublinbus.ie/) - Historic arrival time data from Dublin Bus
 
 ## Authors
 
